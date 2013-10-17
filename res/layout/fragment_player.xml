@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/player_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+	<LinearLayout
+	android:id="@+id/player_layout_playlist"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal" >
+		<Button
+		    android:id="@+id/playlist_slow"
+		    android:layout_width="wrap_content"
+		    android:layout_height="match_parent"
+		    android:text="Langsam" />
+		<Button
+		    android:id="@+id/playlist_normal"
+		    android:layout_width="wrap_content"
+		    android:layout_height="match_parent"
+		    android:text="Normal" />
+		<Button
+		    android:id="@+id/playlist_fast"
+		    android:layout_width="wrap_content"
+		    android:layout_height="match_parent"
+		    android:text="Schnell" />
+	</LinearLayout>
+</LinearLayout>
