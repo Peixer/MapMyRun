@@ -7,22 +7,29 @@
 	<LinearLayout
 	android:id="@+id/player_layout_playlist"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="horizontal" >
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    style="?android:attr/buttonBarButtonStyle" >
 		<Button
 		    android:id="@+id/playlist_slow"
-		    android:layout_width="wrap_content"
-		    android:layout_height="match_parent"
+		    android:layout_width="0dp"
+		    android:layout_height="wrap_content"
+		    android:layout_weight="1"
+		    style="?android:attr/buttonBarButtonStyle"
 		    android:text="Langsam" />
 		<Button
 		    android:id="@+id/playlist_normal"
-		    android:layout_width="wrap_content"
-		    android:layout_height="match_parent"
+		    android:layout_width="0dp"
+		    android:layout_height="wrap_content"
+		    android:layout_weight="1"
+		    style="?android:attr/buttonBarButtonStyle"
 		    android:text="Normal" />
 		<Button
 		    android:id="@+id/playlist_fast"
-		    android:layout_width="wrap_content"
-		    android:layout_height="match_parent"
+		    android:layout_width="0dp"
+		    android:layout_height="wrap_content"
+		    android:layout_weight="1"
+		    style="?android:attr/buttonBarButtonStyle"
 		    android:text="Schnell" />
 	</LinearLayout>
 </LinearLayout>
