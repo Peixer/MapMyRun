@@ -5,31 +5,68 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 	<LinearLayout
-	android:id="@+id/player_layout_playlist"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    style="?android:attr/buttonBarButtonStyle" >
+		android:id="@+id/player_layout_playlists"
+		android:layout_margin="10dp"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:orientation="horizontal" >
 		<Button
-		    android:id="@+id/playlist_slow"
+		    android:id="@+id/player_playlist_slow"
+		    android:background="#00FF00"
+		    android:textColor="#000000"
 		    android:layout_width="0dp"
 		    android:layout_height="wrap_content"
 		    android:layout_weight="1"
-		    style="?android:attr/buttonBarButtonStyle"
-		    android:text="Langsam" />
+		    android:text="@string/button_playlist_slow" />
 		<Button
-		    android:id="@+id/playlist_normal"
+		    android:id="@+id/player_playlist_normal"
+		    android:background="#FFFF00"
+		    android:textColor="#000000"
 		    android:layout_width="0dp"
 		    android:layout_height="wrap_content"
 		    android:layout_weight="1"
-		    style="?android:attr/buttonBarButtonStyle"
-		    android:text="Normal" />
+		    android:text="@string/button_playlist_normal" />
 		<Button
-		    android:id="@+id/playlist_fast"
+		    android:id="@+id/player_playlist_fast"
+		    android:background="#FF0000"
+		    android:textColor="#000000"
 		    android:layout_width="0dp"
 		    android:layout_height="wrap_content"
 		    android:layout_weight="1"
-		    style="?android:attr/buttonBarButtonStyle"
-		    android:text="Schnell" />
+		    android:text="@string/button_playlist_fast" />
+	</LinearLayout>
+	<ListView 
+	    android:id="@android:id/list"
+	    android:layout_margin="10dp"
+	    android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_weight="3" />
+	<LinearLayout
+		android:id="@+id/player_layout_player"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_margin="10dp"
+	    android:orientation="horizontal" >
+		<ImageView
+		    android:id="@+id/player_previous"
+		    android:contentDescription=""
+		    android:layout_width="0dp"
+		    android:layout_height="wrap_content"
+		    android:layout_weight="1"
+		    android:src="@drawable/ic_action_previous" />
+		<ImageView
+		    android:id="@+id/player_player_play"
+		    android:contentDescription="a"
+		    android:layout_width="0dp"
+		    android:layout_height="wrap_content"
+		    android:layout_weight="1"
+		    android:src="@drawable/ic_action_play" />
+		<ImageView
+		    android:id="@+id/player_player_next"
+		    android:contentDescription=""
+		    android:layout_width="0dp"
+		    android:layout_height="wrap_content"
+		    android:layout_weight="1"
+		    android:src="@drawable/ic_action_next" />
 	</LinearLayout>
 </LinearLayout>

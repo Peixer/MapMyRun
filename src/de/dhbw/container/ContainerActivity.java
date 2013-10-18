@@ -2,6 +2,8 @@ package de.dhbw.container;
 
 import java.util.Locale;
 
+import de.dhbw.player.PlayerFragment;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Fragment;
@@ -136,13 +138,10 @@ public class ContainerActivity extends Activity {
     	
     	Fragment fragment;
     	
-    	if (position == 0)
+    	if (position == 4)
     	{
     		// update the main content by replacing fragments
-            fragment = new PlanetFragment();
-            Bundle args = new Bundle();
-            args.putInt(PlanetFragment.ARG_PLANET_NUMBER, position);
-            fragment.setArguments(args);
+            fragment = new PlayerFragment();
     	}
     	else
     	{

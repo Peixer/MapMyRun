@@ -6,6 +6,14 @@
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_container">Hauptmenü</string>
     
+    <string name="button_playlist_slow">Langsam</string>
+    <string name="button_playlist_normal">Normal</string>
+    <string name="button_playlist_fast">Schnell</string>
+    
+    <string name="button_player_description_previous">Vorheriges Lied</string>
+    <string name="button_player_description_play">Wiedergabe</string>
+    <string name="button_player_description_next">Nächstes Lied</string>
+    
     <string name="drawer_open">Menü öffnen</string>
     <string name="drawer_close">Menü schließen</string>
     <string name="action_websearch">Web search</string>
