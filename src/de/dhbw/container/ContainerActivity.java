@@ -2,16 +2,14 @@ package de.dhbw.container;
 
 import java.util.Locale;
 
-import de.dhbw.player.PlayerFragment;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.app.SearchManager;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -25,7 +23,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 public class ContainerActivity extends Activity {
     private DrawerLayout mDrawerLayout;
@@ -68,12 +65,10 @@ public class ContainerActivity extends Activity {
                 R.string.drawer_close  /* "close drawer" description for accessibility */
                 ) {
             public void onDrawerClosed(View view) {
-                getActionBar().setTitle(mTitle);
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
 
             public void onDrawerOpened(View drawerView) {
-                getActionBar().setTitle(mDrawerTitle);
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
         };
@@ -110,17 +105,11 @@ public class ContainerActivity extends Activity {
         // Handle action buttons
         switch(item.getItemId()) 
         {
-	        /*case R.id.action_websearch:
+	        case R.id.action_music_player:
 	            // create intent to perform web search for this planet
-	            Intent intent = new Intent(Intent.ACTION_WEB_SEARCH);
-	            intent.putExtra(SearchManager.QUERY, getActionBar().getTitle());
-	            // catch event that there's no activity to handle intent
-	            if (intent.resolveActivity(getPackageManager()) != null) {
-	                startActivity(intent);
-	            } else {
-	                Toast.makeText(this, R.string.app_not_available, Toast.LENGTH_LONG).show();
-	            }
-	            return true;*/
+	        	Intent intent = new Intent(MediaStore.INTENT_ACTION_MUSIC_PLAYER);
+	        	startActivity(intent);
+	            return true;
 	        default:
 	            return super.onOptionsItemSelected(item);
         }
@@ -138,33 +127,18 @@ public class ContainerActivity extends Activity {
     	
     	Fragment fragment;
     	
-    	if (position == 4)
-    	{
-    		// update the main content by replacing fragments
-            fragment = new PlayerFragment();
-    	}
-    	else
-    	{
-    		// update the main content by replacing fragments
-            fragment = new PlanetFragment();
-            Bundle args = new Bundle();
-            args.putInt(PlanetFragment.ARG_PLANET_NUMBER, position);
-            fragment.setArguments(args);
-    	}
+		// update the main content by replacing fragments
+        fragment = new PlanetFragment();
+        Bundle args = new Bundle();
+        args.putInt(PlanetFragment.ARG_PLANET_NUMBER, position);
+        fragment.setArguments(args);
 
         FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
 
         // update selected item and title, then close the drawer
         mDrawerList.setItemChecked(position, true);
-        setTitle(mNavigationTitles[position]);
         mDrawerLayout.closeDrawer(mDrawerList);
-    }
-
-    @Override
-    public void setTitle(CharSequence title) {
-        mTitle = title;
-        getActionBar().setTitle(mTitle);
     }
 
     /**
@@ -206,7 +180,7 @@ public class ContainerActivity extends Activity {
             int imageId = getResources().getIdentifier(planet.toLowerCase(Locale.getDefault()),
                             "drawable", getActivity().getPackageName());
             ((ImageView) rootView.findViewById(R.id.image)).setImageResource(imageId);
-            getActivity().setTitle(planet);
+            //getActivity().setTitle(planet);
             return rootView;
         }
     }

@@ -2,9 +2,8 @@
 <resources>
 
     <string name="app_name">MapMyRun</string>
-    <string name="action_settings">Einstellungen</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="title_activity_container">Hauptmenü</string>
+    <string name="action_settings">Einstellungen</string>    
+    <string name="action_music_player">Öffne Musik</string>
     
     <string name="button_playlist_slow">Langsam</string>
     <string name="button_playlist_normal">Normal</string>
@@ -24,7 +23,6 @@
         <item>Auswertung 1</item>
         <item>Auswertung 2</item>
         <item>Auswertung 3</item>
-        <item>Musik-Player</item>
     </string-array>
 
 </resources>
