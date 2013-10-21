@@ -29,8 +29,8 @@ public class ContainerActivity extends Activity {
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
 
-    private CharSequence mDrawerTitle;
-    private CharSequence mTitle;
+    //private CharSequence mDrawerTitle;
+    //private CharSequence mTitle;
     private String[] mNavigationTitles;
 
     @SuppressLint("NewApi")
@@ -39,7 +39,7 @@ public class ContainerActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_container);
 
-        mTitle = mDrawerTitle = getTitle();
+        //mTitle = mDrawerTitle = getTitle();
         mNavigationTitles = getResources().getStringArray(R.array.navigation_array);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
