@@ -110,6 +110,9 @@ public class ContainerActivity extends Activity {
 	        	Intent intent = new Intent(MediaStore.INTENT_ACTION_MUSIC_PLAYER);
 	        	startActivity(intent);
 	            return true;
+	        case R.id.action_achievements:
+	        	// insert action to open achievements page (activity or fragment)
+	        	;
 	        default:
 	            return super.onOptionsItemSelected(item);
         }

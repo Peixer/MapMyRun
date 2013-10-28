@@ -3,4 +3,8 @@
           android:icon="@drawable/ic_music_note"
           android:title="@string/action_music_player"
           android:showAsAction="always" />
+    <item android:id="@+id/action_achievements"
+          android:icon="@drawable/ic_trophy"
+          android:title="@string/action_achievements"
+          android:showAsAction="always" />
 </menu>

@@ -4,6 +4,7 @@
     <string name="app_name">MapMyRun</string>
     <string name="action_settings">Einstellungen</string>    
     <string name="action_music_player">Öffne Musik</string>
+    <string name="action_achievements">Öffne Achievements</string>
     
     <string name="button_playlist_slow">Langsam</string>
     <string name="button_playlist_normal">Normal</string>
