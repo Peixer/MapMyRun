@@ -27,7 +27,7 @@ public class MenuContainerActivity extends SherlockFragmentActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_container);
+		setContentView(R.layout.menu_container);
 
 		mNavigationTitles = getResources().getStringArray(R.array.navigation_array);
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -41,7 +41,7 @@ public class MenuContainerActivity extends SherlockFragmentActivity {
 				GravityCompat.START);
 		// set up the drawer's list view with items and click listener
 		mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-				R.layout.drawer_list_item, mNavigationTitles));
+				R.layout.menu_list_item, mNavigationTitles));
 		mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
 		// enable ActionBar app icon to behave as action to toggle nav drawer

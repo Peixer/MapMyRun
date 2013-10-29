@@ -20,7 +20,7 @@ public class LiveTrackingFragment extends SherlockFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.fragment_planet, container,
+		View rootView = inflater.inflate(R.layout.live_tracking_fragment, container,
 				false);
 		int i = getArguments().getInt(ARG_PLANET_NUMBER);
 		String planet = getResources().getStringArray(R.array.navigation_array)[i];
