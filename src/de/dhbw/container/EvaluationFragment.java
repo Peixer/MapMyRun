@@ -71,5 +71,4 @@ public class EvaluationFragment extends SherlockFragment{
 		fl.addView(v);
 		return fl;
 	}
-
 }

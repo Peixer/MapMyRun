@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -153,4 +154,17 @@ public class MenuContainerActivity extends SherlockFragmentActivity {
 
 		mDrawerLayout.closeDrawer(mDrawerList);
 	}
+	
+	public void changeTrackingState(View view) {
+		if (view.getTag() == null) {
+			view.setTag(1);
+			((TextView) view).setText("Live-Tracking anhalten");
+		} else if ((Integer) view.getTag() == 1) {
+			((TextView) view).setText("Live-Tracking auswerten");
+		} else {
+
+		}
+
+	}
+	
 }
