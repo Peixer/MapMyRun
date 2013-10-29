@@ -21,9 +21,7 @@
     
     <string-array name="navigation_array">
         <item>Live-Tracking</item>
-        <item>Auswertung 1</item>
-        <item>Auswertung 2</item>
-        <item>Auswertung 3</item>
+        <item>Auswertung</item>
     </string-array>
 
 </resources>
