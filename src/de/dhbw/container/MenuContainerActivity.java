@@ -140,15 +140,16 @@ public class MenuContainerActivity extends SherlockFragmentActivity {
 		
 		case 0:
 			SherlockFragment tracking_from_menu = new LiveTrackingFragment();
-			getToTrackingEvaluation(tracking_from_menu);
+			getSupportFragmentManager().beginTransaction()
+			.replace(R.id.currentFragment, tracking_from_menu).commit();
 			break;
 		case 1:
 			SherlockFragment fragment = new TotalEvaluationFragment();
 			getToTotalEvaluation(fragment);
 			break;
 		default:
-			SherlockFragment tracking_default = new LiveTrackingFragment();
-			getToTrackingEvaluation(tracking_default);
+			SherlockFragment tracking_at_launch = new LiveTrackingFragment();
+			getToTracking(tracking_at_launch);
 		}
 
 		mDrawerLayout.closeDrawer(mDrawerList);
@@ -165,17 +166,17 @@ public class MenuContainerActivity extends SherlockFragmentActivity {
 			view.setTag(2);
 			((TextView) view).setText("Live-Tracking auswerten");
 		} else if ((Integer) view.getTag() == 2){
-			getBackToTrackingEvaluation();
+			getToTrackingEvaluation();
 		}
 
 	}
 	
-	public void getToTrackingEvaluation(SherlockFragment single_evaluation){
+	public void getToTracking(SherlockFragment single_evaluation){
 		getSupportFragmentManager().beginTransaction()
 		.add(R.id.currentFragment, single_evaluation).commit();
 	}
 	
-	public void getBackToTrackingEvaluation(){
+	public void getToTrackingEvaluation(){
 		getSupportFragmentManager()
 		.beginTransaction()
 		.replace(R.id.currentFragment,
@@ -183,10 +184,14 @@ public class MenuContainerActivity extends SherlockFragmentActivity {
 				EvaluationViewPager.TAG).addToBackStack(null).commit();
 	}
 	
-	public void getToTotalEvaluation(SherlockFragment total_evaluation){
-		getSupportFragmentManager()
-		.beginTransaction()
-		.replace(R.id.currentFragment, total_evaluation).addToBackStack(null).commit();
+	public void getToTotalEvaluation(SherlockFragment total_evaluation) {
+		if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
+			getSupportFragmentManager().beginTransaction()
+					.replace(R.id.currentFragment, total_evaluation).addToBackStack(null).commit();
+		} else {
+			getSupportFragmentManager().beginTransaction()
+					.replace(R.id.currentFragment, total_evaluation).commit();
+		}
 	}
 	
 }
