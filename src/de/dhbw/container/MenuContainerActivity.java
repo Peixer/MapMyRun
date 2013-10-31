@@ -136,19 +136,15 @@ public class MenuContainerActivity extends SherlockFragmentActivity {
 		case 1:
 			getSupportFragmentManager()
 					.beginTransaction()
-					.add(R.id.content,
+					.add(R.id.currentFragment,
 							EvaluationViewPager.newInstance(),
 							EvaluationViewPager.TAG).commit();
 			break;
 		default:
 
 			SherlockFragment fragment = new LiveTrackingFragment();
-			Bundle args = new Bundle();
-			args.putInt(LiveTrackingFragment.ARG_PLANET_NUMBER, position);
-			fragment.setArguments(args);
-
 			getSupportFragmentManager().beginTransaction()
-					.add(R.id.content, fragment).commit();
+					.add(R.id.currentFragment, fragment).commit();
 			break;
 		}
 
@@ -160,9 +156,16 @@ public class MenuContainerActivity extends SherlockFragmentActivity {
 			view.setTag(1);
 			((TextView) view).setText("Live-Tracking anhalten");
 		} else if ((Integer) view.getTag() == 1) {
+			view.setTag(2);
 			((TextView) view).setText("Live-Tracking auswerten");
-		} else {
-
+		} else if ((Integer) view.getTag() == 2){
+			getSupportFragmentManager()
+			.beginTransaction()
+			.replace(R.id.currentFragment,
+					EvaluationViewPager.newInstance(),
+					EvaluationViewPager.TAG).addToBackStack(null).commit();
+			
+			
 		}
 
 	}
