@@ -16,6 +16,10 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 
+import de.dhbw.contents.EvaluationViewPager;
+import de.dhbw.contents.LiveTrackingFragment;
+import de.dhbw.contents.TotalEvaluationFragment;
+
 public class MenuContainerActivity extends SherlockFragmentActivity {
 	DrawerLayout mDrawerLayout;
 	ListView mDrawerList;
@@ -133,23 +137,25 @@ public class MenuContainerActivity extends SherlockFragmentActivity {
 	private void selectItem(int position) {
 
 		switch (position) {
+		
+		case 0:
+			SherlockFragment tracking_from_menu = new LiveTrackingFragment();
+			getToTrackingEvaluation(tracking_from_menu);
+			break;
 		case 1:
-			getSupportFragmentManager()
-					.beginTransaction()
-					.add(R.id.currentFragment,
-							EvaluationViewPager.newInstance(),
-							EvaluationViewPager.TAG).commit();
+			SherlockFragment fragment = new TotalEvaluationFragment();
+			getToTotalEvaluation(fragment);
 			break;
 		default:
-
-			SherlockFragment fragment = new LiveTrackingFragment();
-			getSupportFragmentManager().beginTransaction()
-					.add(R.id.currentFragment, fragment).commit();
-			break;
+			SherlockFragment tracking_default = new LiveTrackingFragment();
+			getToTrackingEvaluation(tracking_default);
 		}
 
 		mDrawerLayout.closeDrawer(mDrawerList);
 	}
+	
+	
+	
 	
 	public void changeTrackingState(View view) {
 		if (view.getTag() == null) {
@@ -159,15 +165,28 @@ public class MenuContainerActivity extends SherlockFragmentActivity {
 			view.setTag(2);
 			((TextView) view).setText("Live-Tracking auswerten");
 		} else if ((Integer) view.getTag() == 2){
-			getSupportFragmentManager()
-			.beginTransaction()
-			.replace(R.id.currentFragment,
-					EvaluationViewPager.newInstance(),
-					EvaluationViewPager.TAG).addToBackStack(null).commit();
-			
-			
+			getBackToTrackingEvaluation();
 		}
 
+	}
+	
+	public void getToTrackingEvaluation(SherlockFragment single_evaluation){
+		getSupportFragmentManager().beginTransaction()
+		.add(R.id.currentFragment, single_evaluation).commit();
+	}
+	
+	public void getBackToTrackingEvaluation(){
+		getSupportFragmentManager()
+		.beginTransaction()
+		.replace(R.id.currentFragment,
+				EvaluationViewPager.newInstance(),
+				EvaluationViewPager.TAG).addToBackStack(null).commit();
+	}
+	
+	public void getToTotalEvaluation(SherlockFragment total_evaluation){
+		getSupportFragmentManager()
+		.beginTransaction()
+		.replace(R.id.currentFragment, total_evaluation).addToBackStack(null).commit();
 	}
 	
 }
