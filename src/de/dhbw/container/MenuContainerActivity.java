@@ -140,6 +140,10 @@ public class MenuContainerActivity extends SherlockFragmentActivity {
 		
 		case 0:
 			SherlockFragment tracking_from_menu = new LiveTrackingFragment();
+			
+			if (getSupportFragmentManager().getBackStackEntryCount()!= 0){
+				getSupportFragmentManager().popBackStack();
+			}
 			getSupportFragmentManager().beginTransaction()
 			.replace(R.id.currentFragment, tracking_from_menu).commit();
 			break;
