@@ -5,13 +5,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.actionbarsherlock.app.SherlockFragment;
+import com.google.android.gms.maps.MapView;
 
 import de.dhbw.container.R;
-import de.dhbw.container.R.layout;
 
 public class LiveTrackingFragment extends SherlockFragment {
-	public static final String ARG_PLANET_NUMBER = "planet_number";
-
+	MapView m;
 	public LiveTrackingFragment() {
 		// Empty constructor required for fragment subclasses
 	}
@@ -21,6 +20,34 @@ public class LiveTrackingFragment extends SherlockFragment {
 			Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.live_tracking_fragment, container,
 				false);
+		m = (MapView) rootView.findViewById(R.id.mapView);
+		m.onCreate(savedInstanceState);
+		
+		
 		return rootView;
 	}
+	
+	@Override
+    public void onResume() {
+        super.onResume();
+        m.onResume();
+    }
+		     
+    @Override
+    public void onPause() {
+        super.onPause();
+        m.onPause();
+    }
+     
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        m.onDestroy();
+    }
+     
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        m.onLowMemory();
+    }
 }
