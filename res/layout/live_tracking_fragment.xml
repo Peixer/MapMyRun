@@ -19,6 +19,9 @@
     android:layout_height="fill_parent"
     android:paddingLeft="16dp"
     android:paddingRight="16dp" >
+    
+    
+    
     <Button android:id="@+id/tracking"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -26,3 +29,4 @@
         android:text="@string/start_new_workout"
         android:onClick="changeTrackingState"  />
 </RelativeLayout>
+
