@@ -1,7 +1,9 @@
 package de.dhbw.container;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -19,6 +21,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
+import de.dhbw.achievement.AchievementFragment;
 import de.dhbw.contents.EvaluationViewPager;
 import de.dhbw.contents.LiveTrackingFragment;
 import de.dhbw.contents.TotalEvaluationFragment;
@@ -108,9 +111,24 @@ public class MenuContainerActivity extends SherlockFragmentActivity {
 					mDrawerLayout.openDrawer(mDrawerList);
 				break;
 			
-			case R.id.action_music_player:
-				;	// Call default music player
-
+			case R.id.action_music_player: // Call default music player
+				
+				/* Deprecated code for music player call
+				Intent intent = new Intent(MediaStore.INTENT_ACTION_MUSIC_PLAYER);
+				startActivity(intent);*/
+				
+				Intent intent = new Intent();
+				intent.setAction("android.intent.action.MAIN");
+				intent.addCategory("android.intent.category.APP_MUSIC");
+				startActivity(intent);
+				break;
+				
+			case R.id.action_achievements:
+				getSupportFragmentManager().beginTransaction().replace(R.id.currentFragment, new AchievementFragment()).commit();
+				break;
+				
+			default:
+				;
 		}
 
 		return super.onOptionsItemSelected(item);
@@ -156,11 +174,11 @@ public class MenuContainerActivity extends SherlockFragmentActivity {
 			break;
 		case 1:
 			SherlockFragment fragment = new TotalEvaluationFragment();
-			getToTotalEvaluation(fragment);
+			getSupportFragmentManager().beginTransaction().replace(R.id.currentFragment, new TotalEvaluationFragment()).commit();
 			break;
 		default:
 			SherlockFragment tracking_at_launch = new LiveTrackingFragment();
-			getToTracking(tracking_at_launch);
+			getSupportFragmentManager().beginTransaction().add(R.id.currentFragment, tracking_at_launch).commit();
 		}
 
 		mDrawerLayout.closeDrawer(mDrawerList);
@@ -169,7 +187,7 @@ public class MenuContainerActivity extends SherlockFragmentActivity {
 	
 	
 	
-	public void changeTrackingState(View view) {
+	/*public void changeTrackingState(View view) {
 		if (view.getTag() == null) {
 			
 			gps = new GPSTracker(MenuContainerActivity.this);
@@ -220,6 +238,6 @@ public class MenuContainerActivity extends SherlockFragmentActivity {
 			getSupportFragmentManager().beginTransaction()
 					.replace(R.id.currentFragment, total_evaluation).commit();
 		}
-	}
+	}*/
 	
 }

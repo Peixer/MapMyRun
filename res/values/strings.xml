@@ -14,8 +14,9 @@
     <string name="button_player_description_play">Wiedergabe</string>
     <string name="button_player_description_next">Nächstes Lied</string>
     
+    <string name="achievements_icon_default">Achievement-Bild</string>
     
-     <string name="start_new_workout">Live-Tracking starten</string>
+    <string name="start_new_workout">Live-Tracking starten</string>
     
     <string name="drawer_open">Menü öffnen</string>
     <string name="drawer_close">Menü schließen</string>
