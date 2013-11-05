@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.dhbw.container.R;
+import de.dhbw.database.Achievement;
+import de.dhbw.database.DataBaseHandler;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
@@ -12,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 public class AchievementFragment extends ListFragment{
@@ -56,10 +57,13 @@ public class AchievementFragment extends ListFragment{
 			TextView descriptionView = (TextView) view.findViewById(R.id.achievement_description);
 			
 			//ListView listView = getListView();
+			DataBaseHandler db = new DataBaseHandler(getActivity());
+			Achievement achievement = db.getAchievement(position+1);
 			
-			imageView.setImageResource(R.drawable.ic_questionmark);
-			nameView.setText(listElements.get(position));
-			descriptionView.setText(listElements.get(position));
+			int imageID = getResources().getIdentifier(achievement.getImageName() , "drawable", getActivity().getPackageName());
+			imageView.setImageResource(imageID);
+			nameView.setText(achievement.getName());
+			descriptionView.setText(achievement.getDescription());
 			
 			return view;
 			

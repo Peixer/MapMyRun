@@ -6,6 +6,7 @@ import java.util.List;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.CursorIndexOutOfBoundsException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -26,7 +27,7 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 
 	// All Static variables
     // Database Version
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 3;
  
     // Database Name
     private static final String DATABASE_NAME = "workoutsManager";
@@ -71,11 +72,11 @@ public class DataBaseHandler extends SQLiteOpenHelper{
     	Log.d("Achievements Query", CREATE_ACHIEVEMENT_TABLE);
         db.execSQL(CREATE_ACHIEVEMENT_TABLE);
         
-        addAchievement(new Achievement(0, "Name1", "Beschreibung1", "ic_questionmark", "km", 5));
-        addAchievement(new Achievement(1, "Name2", "Beschreibung2", "ic_questionmark", "km", 10));
-        addAchievement(new Achievement(2, "Name3", "Beschreibung3", "ic_questionmark", "km", 20));
-        addAchievement(new Achievement(3, "Name4", "Beschreibung4", "ic_questionmark", "km", 50));
-        addAchievement(new Achievement(4, "Name5", "Beschreibung5", "ic_questionmark", "km", 75));
+        addAchievement(new Achievement(0, "Name1", "Beschreibung1", "ic_questionmark", "km", 5),db);
+        addAchievement(new Achievement(1, "Name2", "Beschreibung2", "ic_questionmark", "km", 10),db);
+        addAchievement(new Achievement(2, "Name3", "Beschreibung3", "ic_questionmark", "km", 20),db);
+        addAchievement(new Achievement(3, "Name4", "Beschreibung4", "ic_questionmark", "km", 50),db);
+        addAchievement(new Achievement(4, "Name5", "Beschreibung5", "ic_questionmark", "km", 75),db);
     }
  
     // Upgrading database
@@ -206,10 +207,10 @@ public class DataBaseHandler extends SQLiteOpenHelper{
      */
  
     // Adding new achievement
-    public void addAchievement(Achievement achievement) {
-    	
-    	SQLiteDatabase db = this.getWritableDatabase();
+    public void addAchievement(Achievement achievement, SQLiteDatabase db) {
 	 
+    	//SQLiteDatabase db = getWritableDatabase();
+    	
     	ContentValues values = new ContentValues();
 	    values.put(KEY_NAME, achievement.getName());
 	    values.put(KEY_DESCRIPTION, achievement.getDescription());
@@ -219,13 +220,13 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 	    
 	    // Inserting Row
 	    db.insert(TABLE_ACHIEVEMENTS, null, values);
-	    db.close(); // Closing database connection
+	    //db.close(); // Closing database connection
     }
     
     // Get number of achievements
     public int getAchievementCount() {
         String countQuery = "SELECT  * FROM " + TABLE_ACHIEVEMENTS;
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery(countQuery, null);
         cursor.close();
 	 
@@ -234,19 +235,21 @@ public class DataBaseHandler extends SQLiteOpenHelper{
     
     // Get achievement from id
     public Achievement getAchievement(int id) {
-    	SQLiteDatabase db = this.getReadableDatabase();
+    	SQLiteDatabase db = getReadableDatabase();
     	  
-	    Cursor cursor = db.query(TABLE_WORKOUTS, null, KEY_ID + "= ?", new String[] {String.valueOf(id)}, null, null, null, null);
+	    Cursor cursor = db.query(TABLE_ACHIEVEMENTS, null, KEY_ID + "= ?", new String[] {String.valueOf(id)}, null, null, null, null);
 	    if (cursor != null)
 	        cursor.moveToFirst();
+	    
+	    Log.d("Database", "ID: " + id + ", CursorCount: " + cursor.getCount());
 	 
 	    Achievement achievement = new Achievement(
-	    		Integer.parseInt(cursor.getString(0)),
-	            cursor.getString(1), 
-	            cursor.getString(2), 
-	            cursor.getString(3), 
-	            cursor.getString(4),
-	            Integer.parseInt(cursor.getString(5)));
+	    		Integer.parseInt(cursor.getString(cursor.getColumnIndex(KEY_ID))),
+	            cursor.getString(cursor.getColumnIndex(KEY_NAME)), 
+	            cursor.getString(cursor.getColumnIndex(KEY_DESCRIPTION)), 
+	            cursor.getString(cursor.getColumnIndex(KEY_IMAGENAME)), 
+	            cursor.getString(cursor.getColumnIndex(KEY_REQUIREMENT_UNIT)),
+	            cursor.getInt(cursor.getColumnIndex(KEY_REQUIREMENT_NUMBER)));
 	    // return achievement
 	    return achievement;
 	}
