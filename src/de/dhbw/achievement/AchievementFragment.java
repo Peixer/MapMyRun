@@ -9,6 +9,7 @@ import de.dhbw.database.DataBaseHandler;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,7 +62,10 @@ public class AchievementFragment extends ListFragment{
 			Achievement achievement = db.getAchievement(position+1);
 			
 			int imageID = getResources().getIdentifier(achievement.getImageName() , "drawable", getActivity().getPackageName());
-			imageView.setImageResource(imageID);
+			if (imageID == 0)
+				imageView.setImageResource(R.drawable.ic_questionmark);
+			else
+				imageView.setImageResource(imageID);
 			nameView.setText(achievement.getName());
 			descriptionView.setText(achievement.getDescription());
 			

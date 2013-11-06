@@ -23,16 +23,15 @@ public class Achievement {
 		this.name = name;
 		this.description = description;
 		this.imageName = imageName;
-		if (!validateImageName(imageName))
-			this.imageName = "ic_questionmark";
 		this.requiredUnit = requiredUnit;
 		this.requiredNumber = requiredNumber;
 	}
-	
-	private boolean validateImageName(String imageName)
+
+	public String toString()
 	{
-		File file = new File("res/"+imageName);
-		return file.exists();
+		String string = "ID: "+id+", Name: "+name+", Description: "+description+", ImageName: "
+							+imageName+", Requirement: "+requiredNumber+" "+requiredUnit;
+		return string;
 	}
 
 	public int getId() {

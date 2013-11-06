@@ -6,7 +6,6 @@ import java.util.List;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.CursorIndexOutOfBoundsException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -27,7 +26,7 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 
 	// All Static variables
     // Database Version
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 8;
  
     // Database Name
     private static final String DATABASE_NAME = "workoutsManager";
@@ -57,26 +56,27 @@ public class DataBaseHandler extends SQLiteOpenHelper{
     public void onCreate(SQLiteDatabase db) {
         String CREATE_WORKOUTS_TABLE = "CREATE TABLE " + TABLE_WORKOUTS + "("
                 + KEY_ID + " INTEGER PRIMARY KEY," + KEY_DURATION + " REAL,"
-                + KEY_PACE + " REAL" + KEY_ELEVATION_DOWNWARDS + 
-                " REAL" + KEY_ELEVATION_UPWARDS + " REAL"
-                + CALORIES_BURNED + " REAL" + ")";
+                + KEY_PACE + " REAL," + KEY_ELEVATION_DOWNWARDS + 
+                " REAL," + KEY_ELEVATION_UPWARDS + " REAL,"
+                + CALORIES_BURNED + " REAL" + ");";
         Log.d("Workout Query", CREATE_WORKOUTS_TABLE);
         db.execSQL(CREATE_WORKOUTS_TABLE);
         
         String CREATE_ACHIEVEMENT_TABLE = "CREATE TABLE " + TABLE_ACHIEVEMENTS + "(";
     	String[][] spalten = {{KEY_ID,"INTEGER PRIMARY KEY"},{KEY_NAME,"TEXT"},{KEY_DESCRIPTION,"TEXT"},{KEY_IMAGENAME,"TEXT"},
-    						{KEY_REQUIREMENT_NUMBER,"INTEGER"},{KEY_REQUIREMENT_UNIT,"REAL"}};
+    						{KEY_REQUIREMENT_NUMBER,"INTEGER"},{KEY_REQUIREMENT_UNIT,"TEXT"}};
     	for (String[] spalte : spalten)
     		CREATE_ACHIEVEMENT_TABLE += spalte[0] + " " + spalte[1] + ", ";	
     	CREATE_ACHIEVEMENT_TABLE = CREATE_ACHIEVEMENT_TABLE.substring(0, CREATE_ACHIEVEMENT_TABLE.length()-2) + ");";
     	Log.d("Achievements Query", CREATE_ACHIEVEMENT_TABLE);
         db.execSQL(CREATE_ACHIEVEMENT_TABLE);
         
-        addAchievement(new Achievement(0, "Name1", "Beschreibung1", "ic_questionmark", "km", 5),db);
-        addAchievement(new Achievement(1, "Name2", "Beschreibung2", "ic_questionmark", "km", 10),db);
-        addAchievement(new Achievement(2, "Name3", "Beschreibung3", "ic_questionmark", "km", 20),db);
-        addAchievement(new Achievement(3, "Name4", "Beschreibung4", "ic_questionmark", "km", 50),db);
-        addAchievement(new Achievement(4, "Name5", "Beschreibung5", "ic_questionmark", "km", 75),db);
+        // Add sample Achievements
+        addAchievement(db, new Achievement(0, "Beginner", "Laufe insgesamt 5 Kilometer", "ic_questionmark", "km", 5));
+        addAchievement(db, new Achievement(1, "City Run", "Laufe insgesamt 10 Kilometer", "ic_music_note", "km", 10));
+        addAchievement(db, new Achievement(2, "Marathon", "Laufe insgesamt 42 Kilometer", "ic_app", "km", 42));
+        addAchievement(db, new Achievement(3, "Runner", "Laufe insgesamt 50 Kilometer", "ic_trophy", "km", 50));
+        addAchievement(db, new Achievement(4, "Always running", "Laufe insgesamt 75 Kilometer", "ic_launcher", "km", 75));
     }
  
     // Upgrading database
@@ -84,7 +84,7 @@ public class DataBaseHandler extends SQLiteOpenHelper{
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Drop older table if existed
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_WORKOUTS);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ACHIEVEMENTS);
+        db.execSQL("DROP TABLE " + TABLE_ACHIEVEMENTS);
         
         // Create tables again
         onCreate(db);
@@ -207,17 +207,26 @@ public class DataBaseHandler extends SQLiteOpenHelper{
      */
  
     // Adding new achievement
-    public void addAchievement(Achievement achievement, SQLiteDatabase db) {
-	 
-    	//SQLiteDatabase db = getWritableDatabase();
-    	
+    public void addAchievement(SQLiteDatabase db, Achievement achievement) {
     	ContentValues values = new ContentValues();
 	    values.put(KEY_NAME, achievement.getName());
 	    values.put(KEY_DESCRIPTION, achievement.getDescription());
 	    values.put(KEY_IMAGENAME, achievement.getImageName());
 	    values.put(KEY_REQUIREMENT_NUMBER, achievement.getRequiredNumber());
-	    values.put(KEY_REQUIREMENT_UNIT, achievement.getRequiredUnit());	    
-	    
+	    values.put(KEY_REQUIREMENT_UNIT, achievement.getRequiredUnit());    
+	    // Inserting Row
+	    db.insert(TABLE_ACHIEVEMENTS, null, values);
+	    //db.close(); // Closing database connection
+    }
+    
+    public void addAchievement(Achievement achievement) {
+    	SQLiteDatabase db = getWritableDatabase();	
+    	ContentValues values = new ContentValues();
+	    values.put(KEY_NAME, achievement.getName());
+	    values.put(KEY_DESCRIPTION, achievement.getDescription());
+	    values.put(KEY_IMAGENAME, achievement.getImageName());
+	    values.put(KEY_REQUIREMENT_NUMBER, achievement.getRequiredNumber());
+	    values.put(KEY_REQUIREMENT_UNIT, achievement.getRequiredUnit());    
 	    // Inserting Row
 	    db.insert(TABLE_ACHIEVEMENTS, null, values);
 	    //db.close(); // Closing database connection
