@@ -30,8 +30,11 @@ public class AchievementFragment extends ListFragment{
 		View view = inflater.inflate(R.layout.achievement_fragment, container, false);
 		
 		List<String> tempList = new ArrayList<String>();
-		for (int i=0;i<5;i++)
-			tempList.add("Test"+i);
+		DataBaseHandler db = new DataBaseHandler(getActivity());
+		for (int i=0; i<db.getAchievementCount(); i++)
+			tempList.add("");
+		
+		// Expandable list: http://androidword.blogspot.de/2012/01/how-to-use-expandablelistview.html
 		setListAdapter(new AchievementsArrayAdapter(getActivity(), R.layout.achievements_list_element, R.id.achievement_name, tempList));
 		
 		return super.onCreateView(inflater, container, savedInstanceState);
@@ -39,12 +42,9 @@ public class AchievementFragment extends ListFragment{
 	
 	public class AchievementsArrayAdapter extends ArrayAdapter<String> {
 		
-		private List<String> listElements;
-		
 		public AchievementsArrayAdapter(Context context, int resource, int textViewResourceId, List<String> objects) 
 		{			
-			super(context, resource, textViewResourceId, objects);			
-			listElements = objects;
+			super(context, resource, textViewResourceId, objects);
 		}
 		
 		@Override

@@ -1,7 +1,5 @@
 package de.dhbw.database;
 
-import java.io.File;
-
 public class Achievement {
 	
 	private int id;
@@ -18,8 +16,21 @@ public class Achievement {
 		int resID = getResources().getIdentifier(mDrawableName , "drawable", getPackageName());
 	 */
 	
+	public Achievement() {
+		// default contructor
+	}
+	
 	public Achievement(int id, String name, String description, String imageName, String requiredUnit, int requiredNumber) {
 		this.id = id;
+		this.name = name;
+		this.description = description;
+		this.imageName = imageName;
+		this.requiredUnit = requiredUnit;
+		this.requiredNumber = requiredNumber;
+	}
+	
+	public Achievement(String name, String description, String imageName, String requiredUnit, int requiredNumber) {
+		this.id = -1;
 		this.name = name;
 		this.description = description;
 		this.imageName = imageName;
