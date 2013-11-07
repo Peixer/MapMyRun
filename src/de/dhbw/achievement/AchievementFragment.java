@@ -34,7 +34,12 @@ public class AchievementFragment extends ListFragment{
 		for (int i=0; i<db.getAchievementCount(); i++)
 			tempList.add("");
 		
-		// Expandable list: http://androidword.blogspot.de/2012/01/how-to-use-expandablelistview.html
+		/* Expandable list: http://androidword.blogspot.de/2012/01/how-to-use-expandablelistview.html
+			Gesamtdistanz
+			Gesamtzeit
+			Einzeldistanz
+			Einzelzeit		 
+		*/
 		setListAdapter(new AchievementsArrayAdapter(getActivity(), R.layout.achievements_list_element, R.id.achievement_name, tempList));
 		
 		return super.onCreateView(inflater, container, savedInstanceState);
