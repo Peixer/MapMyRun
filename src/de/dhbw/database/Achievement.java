@@ -10,6 +10,8 @@ public class Achievement {
 	private String requiredUnit;
 	private int requiredNumber;
 	
+	private boolean achieved;
+	
 	/*
 	 	Code to get the ID from a String (http://stackoverflow.com/questions/9481334/how-to-replace-r-drawable-somestring)
 	 	String mDrawableName = "myimg";
@@ -37,11 +39,21 @@ public class Achievement {
 		this.requiredUnit = requiredUnit;
 		this.requiredNumber = requiredNumber;
 	}
+	
+	public Achievement(String name, String description, String imageName, String requiredUnit, int requiredNumber, boolean achieved) {
+		this.id = -1;
+		this.name = name;
+		this.description = description;
+		this.imageName = imageName;
+		this.requiredUnit = requiredUnit;
+		this.requiredNumber = requiredNumber;
+		this.achieved = achieved;
+	}
 
 	public String toString()
 	{
 		String string = "ID: "+id+", Name: "+name+", Description: "+description+", ImageName: "
-							+imageName+", Requirement: "+requiredNumber+" "+requiredUnit;
+							+imageName+", Requirement: "+requiredNumber+" "+requiredUnit+", Achieved: "+achieved;
 		return string;
 	}
 
@@ -91,6 +103,14 @@ public class Achievement {
 
 	public void setRequiredNumber(int requiredNumber) {
 		this.requiredNumber = requiredNumber;
+	}
+
+	public boolean isAchieved() {
+		return achieved;
+	}
+
+	public void setAchieved(boolean achieved) {
+		this.achieved = achieved;
 	}
 	
 }

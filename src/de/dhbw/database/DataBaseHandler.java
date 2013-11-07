@@ -26,7 +26,7 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 
 	// All Static variables
     // Database Version
-    private static final int DATABASE_VERSION = 9;
+    private static final int DATABASE_VERSION = 10;
  
     // Database Name
     private static final String DATABASE_NAME = "workoutsManager";
@@ -50,6 +50,7 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 	    private static final String KEY_IMAGENAME = "imagename";
 	    private static final String KEY_REQUIREMENT_NUMBER = "requirednumber";
 	    private static final String KEY_REQUIREMENT_UNIT = "unit";
+	    private static final String KEY_ACHIEVED = "achieved";
     
     // Creating Tables
     @Override
@@ -64,7 +65,7 @@ public class DataBaseHandler extends SQLiteOpenHelper{
         
         String CREATE_ACHIEVEMENT_TABLE = "CREATE TABLE " + TABLE_ACHIEVEMENTS + "(";
     	String[][] spalten = {{KEY_ID,"INTEGER PRIMARY KEY"},{KEY_NAME,"TEXT"},{KEY_DESCRIPTION,"TEXT"},{KEY_IMAGENAME,"TEXT"},
-    						{KEY_REQUIREMENT_NUMBER,"INTEGER"},{KEY_REQUIREMENT_UNIT,"TEXT"}};
+    						{KEY_REQUIREMENT_NUMBER,"INTEGER"},{KEY_REQUIREMENT_UNIT,"TEXT"},{KEY_ACHIEVED,"INTEGER"}};
     	for (String[] spalte : spalten)
     		CREATE_ACHIEVEMENT_TABLE += spalte[0] + " " + spalte[1] + ", ";	
     	CREATE_ACHIEVEMENT_TABLE = CREATE_ACHIEVEMENT_TABLE.substring(0, CREATE_ACHIEVEMENT_TABLE.length()-2) + ");";
@@ -208,10 +209,10 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 	    values.put(KEY_DESCRIPTION, achievement.getDescription());
 	    values.put(KEY_IMAGENAME, achievement.getImageName());
 	    values.put(KEY_REQUIREMENT_NUMBER, achievement.getRequiredNumber());
-	    values.put(KEY_REQUIREMENT_UNIT, achievement.getRequiredUnit());    
+	    values.put(KEY_REQUIREMENT_UNIT, achievement.getRequiredUnit());
+	    values.put(KEY_ACHIEVED, achievement.isAchieved());
 	    // Inserting Row
 	    db.insert(TABLE_ACHIEVEMENTS, null, values);
-	    //db.close(); // Closing database connection
     }
     
     public void addAchievement(Achievement achievement) {
@@ -221,10 +222,11 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 	    values.put(KEY_DESCRIPTION, achievement.getDescription());
 	    values.put(KEY_IMAGENAME, achievement.getImageName());
 	    values.put(KEY_REQUIREMENT_NUMBER, achievement.getRequiredNumber());
-	    values.put(KEY_REQUIREMENT_UNIT, achievement.getRequiredUnit());    
+	    values.put(KEY_REQUIREMENT_UNIT, achievement.getRequiredUnit());  
+	    values.put(KEY_ACHIEVED, achievement.isAchieved());
 	    // Inserting Row
 	    db.insert(TABLE_ACHIEVEMENTS, null, values);
-	    //db.close(); // Closing database connection
+	    db.close(); // Closing database connection
     }
     
     // Get number of achievements
@@ -234,6 +236,19 @@ public class DataBaseHandler extends SQLiteOpenHelper{
         Cursor cursor = db.rawQuery(countQuery, null);
         int count = cursor.getCount();
         cursor.close();
+        db.close();
+        
+        return count;
+	}
+    
+ // Get number of achievements by unit
+    public int getAchievementCount(String unit) {
+        String countQuery = "SELECT * FROM " + TABLE_ACHIEVEMENTS + " WHERE " + KEY_REQUIREMENT_UNIT + "='" + unit + "'";
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery(countQuery, null);
+        int count = cursor.getCount();
+        cursor.close();
+        db.close();
 	 
         return count;
 	}
@@ -243,6 +258,7 @@ public class DataBaseHandler extends SQLiteOpenHelper{
     	SQLiteDatabase db = getReadableDatabase();
     	  
 	    Cursor cursor = db.query(TABLE_ACHIEVEMENTS, null, KEY_ID + "= ?", new String[] {String.valueOf(id)}, null, null, null, null);
+
 	    if (cursor != null)
 	        cursor.moveToFirst();
 	    
@@ -255,8 +271,11 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 	            cursor.getString(cursor.getColumnIndex(KEY_IMAGENAME)), 
 	            cursor.getString(cursor.getColumnIndex(KEY_REQUIREMENT_UNIT)),
 	            cursor.getInt(cursor.getColumnIndex(KEY_REQUIREMENT_NUMBER)));
-	    // return achievement
-	    return achievement;
+	    
+	    cursor.close();
+	    db.close();
+	    
+	    return achievement; // return achievement
 	}
     
     // Getting All Workouts
@@ -282,6 +301,9 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 		            achievementList.add(achievement);
 	        } while (cursor.moveToNext());
 	    }
+	    
+	    cursor.close();
+	    db.close();
 	 
 	    // return achievement list
 	    return achievementList;
@@ -310,6 +332,9 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 			            achievementList.add(achievement);
 		        } while (cursor.moveToNext());
 		    }
+		    
+		    cursor.close();
+		    db.close();
 		 
 		    // return achievement list
 		    return achievementList;
