@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp" >
+
+    <TextView
+        android:id="@+id/achievement_list_header"
+        android:layout_width="match_parent"
+        android:layout_height="45dp" 
+        android:gravity="center"
+        android:paddingLeft="?android:attr/expandableListPreferredItemPaddingLeft"      
+        android:textColor="#BBBBBB"
+        android:textSize="18sp" />
+<!--  
+	android:layout_marginBottom="100dp"
+    android:layout_marginTop="100dp"    
+-->
+</LinearLayout>
