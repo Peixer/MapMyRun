@@ -16,41 +16,10 @@
 
 
 
-<TableLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/tableLayout1"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/live_tracking"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-<<<<<<< HEAD
-    android:stretchColumns="*" >
-    
-    <TableRow
-        android:id="@+id/tableRow2"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_weight="1" >
-       	<com.google.android.gms.maps.MapView
-		   xmlns:android="http://schemas.android.com/apk/res/android"
-		   android:id="@+id/mapView"/>
-
-    </TableRow>
-
-    <TableRow
-        android:id="@+id/tableRow1"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_weight="0" >
-    	<Button android:id="@+id/tracking"
-		   android:text="@string/start_new_workout"
-		   android:onClick="changeTrackingState"/>   
-
-    </TableRow>
-    
-
-</TableLayout>
-
-
-=======
     android:paddingLeft="16dp"
     android:paddingRight="16dp" >
     
@@ -61,7 +30,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:text="@string/start_new_workout"
-        android:onClick="changeTrackingState"  />
+        android:onClick="changeTrackingState" />
 </RelativeLayout>
->>>>>>> c08deecc2aea8c282d014c0f6fa314c4c1b8622f
 
