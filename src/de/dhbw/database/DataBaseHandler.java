@@ -33,10 +33,12 @@ public class DataBaseHandler extends SQLiteOpenHelper{
  
     // Workouts table name
     private static final String TABLE_WORKOUTS = "workouts";
+    //Coordinates table name
+    private static final String TABLE_COORDINATES = "coordinates";
     // Achievement table name
     private static final String TABLE_ACHIEVEMENTS = "achievements";
  
-    // Contacts Table Columns names
+ 
     private static final String KEY_ID = "id";
     	//Workouts
 	    private static final String KEY_DURATION = "duration";
@@ -44,6 +46,9 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 	    private static final String KEY_ELEVATION_DOWNWARDS = "elevation_downwards";
 	    private static final String KEY_ELEVATION_UPWARDS = "elevation_upwards";
 	    private static final String CALORIES_BURNED = "calories_burned";
+	    //Coordinates
+	    private static final String KEY_LONGITUDE = "longitude";
+	    private static final String KEY_LATITUDE = "latitude";
 	    //Achievements
 	    private static final String KEY_NAME = "name";
 	    private static final String KEY_DESCRIPTION = "description";
@@ -357,21 +362,21 @@ public class DataBaseHandler extends SQLiteOpenHelper{
         addAchievement(db, new Achievement("Indestructible!", "Laufe insgesamt 10 Stunden", "ic_launcher", "ts", 36000));
         
         // single distance achievements
-        addAchievement(db, new Achievement("So it begins...", "Laufe einen Kilometer am Stück", "ic_questionmark", "skm", 1));
-        addAchievement(db, new Achievement("Double the distance!", "Laufe 2 Kilometer am Stück", "ic_music_note", "skm", 2));
-        addAchievement(db, new Achievement("High Five!", "Laufe 5 Kilometer am Stück", "ic_app", "skm", 5));
-        addAchievement(db, new Achievement("City Run", "Laufe 10 Kilometer am Stück", "ic_trophy", "skm", 10));
-        addAchievement(db, new Achievement("Run, Forrest, run!", "Laufe 20 Kilometer am Stück", "ic_launcher", "skm", 20));
-        addAchievement(db, new Achievement("You deserve a cookie.", "Laufe 30 Kilometer am Stück", "ic_launcher", "skm", 30));
-        addAchievement(db, new Achievement("Almost there...", "Laufe 40 Kilometer am Stück", "ic_launcher", "skm", 40));
-        addAchievement(db, new Achievement("Just ran a marathon.", "Laufe 42 Kilometer am Stück", "ic_launcher", "skm", 42));
+        addAchievement(db, new Achievement("So it begins...", "Laufe einen Kilometer am Stï¿½ck", "ic_questionmark", "skm", 1));
+        addAchievement(db, new Achievement("Double the distance!", "Laufe 2 Kilometer am Stï¿½ck", "ic_music_note", "skm", 2));
+        addAchievement(db, new Achievement("High Five!", "Laufe 5 Kilometer am Stï¿½ck", "ic_app", "skm", 5));
+        addAchievement(db, new Achievement("City Run", "Laufe 10 Kilometer am Stï¿½ck", "ic_trophy", "skm", 10));
+        addAchievement(db, new Achievement("Run, Forrest, run!", "Laufe 20 Kilometer am Stï¿½ck", "ic_launcher", "skm", 20));
+        addAchievement(db, new Achievement("You deserve a cookie.", "Laufe 30 Kilometer am Stï¿½ck", "ic_launcher", "skm", 30));
+        addAchievement(db, new Achievement("Almost there...", "Laufe 40 Kilometer am Stï¿½ck", "ic_launcher", "skm", 40));
+        addAchievement(db, new Achievement("Just ran a marathon.", "Laufe 42 Kilometer am Stï¿½ck", "ic_launcher", "skm", 42));
         
         // single time achievements
-        addAchievement(db, new Achievement("The first experiences", "Laufe 1 Minute am Stück", "ic_questionmark", "ss", 60));
-        addAchievement(db, new Achievement("Training", "Laufe 10 Minuten am Stück", "ic_music_note", "ss", 600));
-        addAchievement(db, new Achievement("Walker", "Laufe 20 Minuten am Stück", "ic_app", "ss", 1200));
-        addAchievement(db, new Achievement("Runner", "Laufe 30 Minuten am Stück", "ic_trophy", "ss", 1800));
-        addAchievement(db, new Achievement("You are tired now...or are you?", "Laufe 1 Stunde am Stück", "ic_launcher", "ss", 3600));
+        addAchievement(db, new Achievement("The first experiences", "Laufe 1 Minute am Stï¿½ck", "ic_questionmark", "ss", 60));
+        addAchievement(db, new Achievement("Training", "Laufe 10 Minuten am Stï¿½ck", "ic_music_note", "ss", 600));
+        addAchievement(db, new Achievement("Walker", "Laufe 20 Minuten am Stï¿½ck", "ic_app", "ss", 1200));
+        addAchievement(db, new Achievement("Runner", "Laufe 30 Minuten am Stï¿½ck", "ic_trophy", "ss", 1800));
+        addAchievement(db, new Achievement("You are tired now...or are you?", "Laufe 1 Stunde am Stï¿½ck", "ic_launcher", "ss", 3600));
     }
 }
 
