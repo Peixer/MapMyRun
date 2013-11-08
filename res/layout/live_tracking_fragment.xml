@@ -21,7 +21,6 @@
     android:id="@+id/tableLayout1"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-<<<<<<< HEAD
     android:stretchColumns="*" >
     
     <TableRow
@@ -50,18 +49,4 @@
 </TableLayout>
 
 
-=======
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp" >
-    
-    
-    
-    <Button android:id="@+id/tracking"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:text="@string/start_new_workout"
-        android:onClick="changeTrackingState"  />
-</RelativeLayout>
->>>>>>> c08deecc2aea8c282d014c0f6fa314c4c1b8622f
 
