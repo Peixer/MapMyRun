@@ -10,17 +10,23 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 
 import de.dhbw.contents.EvaluationViewPager;
 import de.dhbw.contents.LiveTrackingFragment;
 import de.dhbw.contents.TotalEvaluationFragment;
+import de.dhbw.tracking.GPSTracker;
 
 public class MenuContainerActivity extends SherlockFragmentActivity {
+	
+	GPSTracker gps;
 	DrawerLayout mDrawerLayout;
 	ListView mDrawerList;
 	ActionBarDrawerToggle mDrawerToggle;
@@ -78,6 +84,7 @@ public class MenuContainerActivity extends SherlockFragmentActivity {
 		if (savedInstanceState == null) {
 			selectItem(0);
 		}
+
 
 	}
 
@@ -164,6 +171,23 @@ public class MenuContainerActivity extends SherlockFragmentActivity {
 	
 	public void changeTrackingState(View view) {
 		if (view.getTag() == null) {
+			
+			gps = new GPSTracker(MenuContainerActivity.this);
+			 
+            // check if GPS enabled    
+            if(gps.canGetLocation()){
+                 
+                double latitude = gps.getLatitude();
+                double longitude = gps.getLongitude();
+                 
+                // \n is for new line
+                Toast.makeText(getApplicationContext(), "Your Location is - \nLat: " + latitude + "\nLong: " + longitude, Toast.LENGTH_LONG).show();   
+            }else{
+                // can't get location
+                // GPS or Network is not enabled
+                // Ask user to enable GPS/network in settings
+                gps.showSettingsAlert();
+            }
 			view.setTag(1);
 			((TextView) view).setText("Live-Tracking anhalten");
 		} else if ((Integer) view.getTag() == 1) {
