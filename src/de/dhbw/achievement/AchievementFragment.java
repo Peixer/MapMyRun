@@ -15,9 +15,9 @@ import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.android.gms.games.achievement.Achievement;
 
 import de.dhbw.container.R;
+import de.dhbw.database.Achievement;
 import de.dhbw.database.DataBaseHandler;
 
 @SuppressLint("NewApi")

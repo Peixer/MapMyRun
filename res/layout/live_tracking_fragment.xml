@@ -21,8 +21,6 @@
     android:paddingLeft="16dp"
     android:paddingRight="16dp" >
     
-    
-    
     <Button android:id="@+id/tracking"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"

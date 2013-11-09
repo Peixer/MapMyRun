@@ -16,11 +16,10 @@ import com.actionbarsherlock.view.MenuInflater;
 import de.dhbw.achievement.AchievementFragment;
 import de.dhbw.contents.LiveTrackingFragment;
 import de.dhbw.contents.TotalEvaluationFragment;
-import de.dhbw.tracking.GPSTracker;
 
 public class MenuContainerActivity extends SherlockFragmentActivity {
 
-	GPSTracker gps;
+
 	DrawerLayout mDrawerLayout;
 	ListView mDrawerList;
 	ActionBarDrawerToggle mDrawerToggle;

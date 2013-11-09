@@ -38,35 +38,44 @@ public class DataBaseHandler extends SQLiteOpenHelper{
     // Achievement table name
     private static final String TABLE_ACHIEVEMENTS = "achievements";
  
- 
+    //common column names
     private static final String KEY_ID = "id";
-    	//Workouts
-	    private static final String KEY_DURATION = "duration";
-	    private static final String KEY_PACE = "pace";
-	    private static final String KEY_ELEVATION_DOWNWARDS = "elevation_downwards";
-	    private static final String KEY_ELEVATION_UPWARDS = "elevation_upwards";
-	    private static final String CALORIES_BURNED = "calories_burned";
-	    //Coordinates
-	    private static final String KEY_LONGITUDE = "longitude";
-	    private static final String KEY_LATITUDE = "latitude";
-	    //Achievements
-	    private static final String KEY_NAME = "name";
-	    private static final String KEY_DESCRIPTION = "description";
-	    private static final String KEY_IMAGENAME = "imagename";
-	    private static final String KEY_REQUIREMENT_NUMBER = "requirednumber";
-	    private static final String KEY_REQUIREMENT_UNIT = "unit";
-	    private static final String KEY_ACHIEVED = "achieved";
+	//Workouts
+    private static final String KEY_DURATION = "duration";
+    private static final String KEY_PACE = "pace";
+    private static final String KEY_ELEVATION_DOWNWARDS = "elevation_downwards";
+    private static final String KEY_ELEVATION_UPWARDS = "elevation_upwards";
+    private static final String CALORIES_BURNED = "calories_burned";
+    //Coordinates
+    private static final String KEY_LONGITUDE = "longitude";
+    private static final String KEY_LATITUDE = "latitude";
+    //Achievements
+    private static final String KEY_NAME = "name";
+    private static final String KEY_DESCRIPTION = "description";
+    private static final String KEY_IMAGENAME = "imagename";
+    private static final String KEY_REQUIREMENT_NUMBER = "requirednumber";
+    private static final String KEY_REQUIREMENT_UNIT = "unit";
+    private static final String KEY_ACHIEVED = "achieved";
     
-    // Creating Tables
+    //Create Table Statements
+    //Create Workouts Table Statement
+    String CREATE_WORKOUTS_TABLE = "CREATE TABLE " + TABLE_WORKOUTS + "("
+    		+ KEY_ID + " INTEGER PRIMARY KEY," + KEY_DURATION + " REAL,"
+    		+ KEY_PACE + " REAL," + KEY_ELEVATION_DOWNWARDS + 
+    		" REAL," + KEY_ELEVATION_UPWARDS + " REAL,"
+    		+ CALORIES_BURNED + " REAL" + ");";
+    //Create Coordinates Table Statement
+    String CREATE_COORDINATES_TABLE = "CREATE TABLE " + TABLE_COORDINATES + "("
+    		+ KEY_ID + " INTEGER PRIMARY KEY," + KEY_LONGITUDE + " REAL,"
+    		+ KEY_LATITUDE + " REAL" + ");";
+    
+    
+    // Generating Tables
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_WORKOUTS_TABLE = "CREATE TABLE " + TABLE_WORKOUTS + "("
-                + KEY_ID + " INTEGER PRIMARY KEY," + KEY_DURATION + " REAL,"
-                + KEY_PACE + " REAL," + KEY_ELEVATION_DOWNWARDS + 
-                " REAL," + KEY_ELEVATION_UPWARDS + " REAL,"
-                + CALORIES_BURNED + " REAL" + ");";
-        Log.d("Workout Query", CREATE_WORKOUTS_TABLE);
         db.execSQL(CREATE_WORKOUTS_TABLE);
+        Log.d("Workout Query", CREATE_WORKOUTS_TABLE);
+        
         
         String CREATE_ACHIEVEMENT_TABLE = "CREATE TABLE " + TABLE_ACHIEVEMENTS + "(";
     	String[][] spalten = {{KEY_ID,"INTEGER PRIMARY KEY"},{KEY_NAME,"TEXT"},{KEY_DESCRIPTION,"TEXT"},{KEY_IMAGENAME,"TEXT"},
@@ -76,20 +85,21 @@ public class DataBaseHandler extends SQLiteOpenHelper{
     	CREATE_ACHIEVEMENT_TABLE = CREATE_ACHIEVEMENT_TABLE.substring(0, CREATE_ACHIEVEMENT_TABLE.length()-2) + ");";
     	Log.d("Achievements Query", CREATE_ACHIEVEMENT_TABLE);
         db.execSQL(CREATE_ACHIEVEMENT_TABLE);
-        
         addAchievements(db);
     }
- 
+    
     // Upgrading database
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Drop older table if existed
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_WORKOUTS);
-        db.execSQL("DROP TABLE " + TABLE_ACHIEVEMENTS);
-        
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ACHIEVEMENTS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_COORDINATES);
         // Create tables again
         onCreate(db);
     }
+    
+    
     
  // Adding new workout
     public void addWorkout(Workout workout) {
@@ -206,6 +216,82 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 	    KEY_REQUIREMENT_NUMBER
 	    KEY_REQUIREMENT_UNIT
      */
+    
+    // add a pair of coordinates
+    public void addCoordinates(SQLiteDatabase db, Coordinates coordinate) {
+    	ContentValues values = new ContentValues();
+	    values.put(KEY_LONGITUDE, coordinate.get_longitude());
+	    values.put(KEY_LATITUDE, coordinate.get_latitude());
+	    // Inserting Row
+	    db.insert(TABLE_COORDINATES, null, values);
+    }
+    
+    public void addCoordinates(Coordinates coordinate) {
+    	SQLiteDatabase db = this.getWritableDatabase();
+    	ContentValues values = new ContentValues();
+	    values.put(KEY_LONGITUDE, coordinate.get_longitude());
+	    values.put(KEY_LATITUDE, coordinate.get_latitude());
+	    // Inserting Row
+	    db.insert(TABLE_COORDINATES, null, values);
+    }
+    
+    // Get number of coordinate pairs
+    public int getCoordinatePairsCount() {
+        String countQuery = "SELECT * FROM " + TABLE_COORDINATES;
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery(countQuery, null);
+        int count = cursor.getCount();
+        cursor.close();
+        db.close();
+        
+        return count;
+	}
+  
+    
+    // Get pair of coordinates from id
+    public Coordinates getCoordinatePair(int id) {
+    	SQLiteDatabase db = this.getReadableDatabase();
+    	  
+	    Cursor cursor = db.query(TABLE_COORDINATES, new String[] { KEY_ID,
+	    		KEY_LONGITUDE,
+	    		KEY_LATITUDE }, KEY_ID + "=?",
+	            new String[] { String.valueOf(id) }, null, null, null, null);
+	    if (cursor != null)
+	        cursor.moveToFirst();
+	 
+	    Coordinates coordinates = new Coordinates(
+	    		Integer.parseInt(cursor.getString(0)),
+	            Double.parseDouble(cursor.getString(1)), 
+	            Double.parseDouble(cursor.getString(2)));
+	    // return pair of coordinates
+	    return coordinates;
+		}
+    
+    
+    // Getting All Pair of Coordinates
+    	 public List <Coordinates> getAllCoordinatePairs() {
+    	    List <Coordinates> coordinateList = new ArrayList<Coordinates>();
+    	    // Select All Query
+    	    String selectQuery = "SELECT  * FROM " + TABLE_COORDINATES;
+    	 
+    	    SQLiteDatabase db = this.getWritableDatabase();
+    	    Cursor cursor = db.rawQuery(selectQuery, null);
+    	 
+    	    // looping through all rows and adding to list
+    	    if (cursor.moveToFirst()) {
+    	        do {
+    	            Coordinates coordinates = new Coordinates();
+    	            coordinates.set_id(cursor.getInt(cursor.getColumnIndex(KEY_ID)));
+    	            coordinates.set_longitude(cursor.getDouble(cursor.getColumnIndex(KEY_LONGITUDE)));
+    	            coordinates.set_latitude(cursor.getDouble(cursor.getColumnIndex(KEY_LATITUDE)));
+    	            // Adding pair of coordinates to list
+    	            coordinateList.add(coordinates);
+    	        } while (cursor.moveToNext());
+    	    }
+    	 
+    	    // return list of coordinate pairs
+    	    return coordinateList;
+		}
  
     // Adding new achievement
     public void addAchievement(SQLiteDatabase db, Achievement achievement) {
@@ -283,7 +369,8 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 	    return achievement; // return achievement
 	}
     
-    // Getting All Workouts
+    // Getting All Achievements
+    
 	public List <Achievement> getAllAchievements() {
 	    List <Achievement> achievementList = new ArrayList<Achievement>();
 	    // Select All Query

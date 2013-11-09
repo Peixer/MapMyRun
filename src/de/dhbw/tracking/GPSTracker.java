@@ -1,5 +1,7 @@
 package de.dhbw.tracking;
 
+import de.dhbw.database.Coordinates;
+import de.dhbw.database.DataBaseHandler;
 import android.app.AlertDialog;
 import android.app.Service;
 import android.content.Context;
@@ -15,6 +17,7 @@ import android.util.Log;
 
 public class GPSTracker extends Service implements LocationListener {
 	private final Context mContext;
+	
 
 	// flag for GPS status
 	boolean isGPSEnabled = false;
@@ -29,10 +32,10 @@ public class GPSTracker extends Service implements LocationListener {
 	double longitude; // longitude
 
 	// The minimum distance to change Updates in meters
-	private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10; // 10 meters
+	private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 1; // 1 meter
 
 	// The minimum time between updates in milliseconds
-	private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1; // 1 minute
+	private static final long MIN_TIME_BW_UPDATES = 1000; //1 sec
 
 	// Declaring a Location Manager
 	protected LocationManager locationManager;
@@ -73,6 +76,8 @@ public class GPSTracker extends Service implements LocationListener {
                         if (location != null) {
                             latitude = location.getLatitude();
                             longitude = location.getLongitude();
+                        	DataBaseHandler db = new DataBaseHandler(mContext);
+                        	db.addCoordinates(new Coordinates(longitude, latitude));
                         }
                     }
                 }
@@ -90,6 +95,8 @@ public class GPSTracker extends Service implements LocationListener {
                             if (location != null) {
                                 latitude = location.getLatitude();
                                 longitude = location.getLongitude();
+                             	DataBaseHandler db = new DataBaseHandler(mContext);
+                            	db.addCoordinates(new Coordinates(longitude, latitude));
                             }
                         }
                     }
@@ -104,7 +111,17 @@ public class GPSTracker extends Service implements LocationListener {
     }
     @Override
     public void onLocationChanged(Location location) {
+//    	location = getLocation();
+//    	longitude = location.getLongitude();
+//    	latitude = location.getLatitude();
+//    	updateDatabase(longitude, latitude);
     }
+//    
+//    public void updateDatabase(double longitude, double latitude){
+//    	DataBaseHandler db = new DataBaseHandler(mContext);
+//    	db.open();
+//    	db.addCoordinates(new Coordinates(longitude, latitude));
+//    }
  
     @Override
     public void onProviderDisabled(String provider) {
