@@ -71,8 +71,10 @@ public class LiveTrackingFragment extends SherlockFragment {
 									+ listContents.get(i).get_longitude()
 									+ "\nLat: "
 									+ listContents.get(i).get_latitude()
-									+ "\nAlt: " 
-									+ listContents.get(i).get_altitude()
+									+ "\nAlt: "
+									+ gps.getElevationFromGoogleMaps(
+											listContents.get(i).get_longitude(),
+											listContents.get(i).get_latitude())
 									+ "\nTime: "
 									+ listContents.get(i).get_timestamp(),
 							Toast.LENGTH_LONG).show();
