@@ -39,7 +39,6 @@ public class LiveTrackingFragment extends SherlockFragment {
 		// inflat and return the layout
 		View v = inflater.inflate(R.layout.live_tracking_fragment, container,
 				false);
-		gps = new GPSTracker(getActivity());
 
 		Button trackingButton = (Button) v.findViewById(R.id.tracking);
 		trackingButton.setOnClickListener(new OnClickListener() {
@@ -55,33 +54,38 @@ public class LiveTrackingFragment extends SherlockFragment {
 
 	public void changeTrackingState(View view) {
 		if (view.getTag() == null) {
-			
+			gps = new GPSTracker(getActivity());
+			view.setTag(1);
+			((TextView) view).setText("Live-Tracking anhalten");
+		} else if ((Integer) view.getTag() == 1) {
 			if (gps.canGetLocation()) {
 				
 				DataBaseHandler db = new DataBaseHandler(getActivity());
 				List <Coordinates> listContents = new ArrayList<Coordinates>();
 				listContents = db.getAllCoordinatePairs();
 				
-				for (i=0; i<listContents.size(); i++){
+				for (i = 0; i < listContents.size(); i++) {
 					Toast.makeText(
 							getActivity(),
-							"Your Location is - \nLon: " + listContents.get(i).get_longitude()
-							+ "\nLat: " + listContents.get(i).get_latitude(), 
+							"Your Location is - \nLon: "
+									+ listContents.get(i).get_longitude()
+									+ "\nLat: "
+									+ listContents.get(i).get_latitude()
+									+ "\nAlt: " 
+									+ listContents.get(i).get_altitude()
+									+ "\nTime: "
+									+ listContents.get(i).get_timestamp(),
 							Toast.LENGTH_LONG).show();
 				}
 			}else {
 				gps.showSettingsAlert();
 			}
-			view.setTag(1);
-			((TextView) view).setText("Live-Tracking anhalten");
-		} else if ((Integer) view.getTag() == 1) {
-			gps.stopUsingGPS();
 			view.setTag(2);
 			((TextView) view).setText("Live-Tracking auswerten");
 		} else if ((Integer) view.getTag() == 2) {
+			gps.stopUsingGPS();
 			getToTrackingEvaluation();
 		}
-
 	}
 
 	public void getToTracking(SherlockFragment single_evaluation) {

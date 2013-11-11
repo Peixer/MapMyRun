@@ -38,32 +38,58 @@ public class TrackService {
 	
 	
 	//calculates the sum of total elevations
-//	
-//	public double calcElevation(List<Coordinates> listContents){
-//		double ascend = 0;
-//		int i;
-//		for (i = 0; i < listContents.size(); i++) {
-//			if (listContents.get(i+1).get_altitude() > listContents.get(i).get_altitude()){
-//				ascend = ascend + (listContents.get(i+1).get_altitude() - listContents.get(i).get_altitude());
-//			}
-//		}
-//		return ascend;
-//	}
-//	
-//	//calculates the sum of total descent
-//	
-//	public double calcDescent(List<Coordinates> listContents){
-//		double descent = 0;
-//		int i;
-//		for (i = 0; i < listContents.size(); i++) {
-//			if (listContents.get(i+1).get_altitude() < listContents.get(i).get_altitude()){
-//				descent = descent + (listContents.get(i).get_altitude() - listContents.get(i+1).get_altitude());
-//			}
-//		}
-//		return descent;
-//	}
 	
-	//TODO calculates duration
+	public double calcElevation(List<Coordinates> listContents){
+		double ascend = 0;
+		int i;
+		for (i = 0; i < listContents.size(); i++) {
+			if (listContents.get(i+1).get_altitude() > listContents.get(i).get_altitude()){
+				ascend = ascend + (listContents.get(i+1).get_altitude() - listContents.get(i).get_altitude());
+			}
+		}
+		return ascend;
+	}
+	
+	//calculates the sum of total descent
+	
+	public double calcDescent(List<Coordinates> listContents){
+		double descent = 0;
+		int i;
+		for (i = 0; i < listContents.size(); i++) {
+			if (listContents.get(i+1).get_altitude() < listContents.get(i).get_altitude()){
+				descent = descent + (listContents.get(i).get_altitude() - listContents.get(i+1).get_altitude());
+			}
+		}
+		return descent;
+	}
+	
+	//calculates duration
+	
+	public String calcDuration(List<Coordinates> listContents){
+		int numberOfSamples = listContents.size();
+		long firstTimeStamp = listContents.get(0).get_timestamp();
+		long lastTimeStamp = listContents.get(numberOfSamples-1).get_timestamp();
+		long duration = lastTimeStamp - firstTimeStamp;
+		long secondInMillis = 1000;
+		long minuteInMillis = secondInMillis * 60;
+		long hourInMillis = minuteInMillis * 60;
+		long dayInMillis = hourInMillis * 24;
+		long yearInMillis = dayInMillis * 365;
+		
+		long elapsedYears = duration/yearInMillis;
+		duration = duration % yearInMillis;
+		long elapsedDays = duration/dayInMillis;
+		duration = duration % dayInMillis;
+		long elapsedHours = duration/hourInMillis;
+		duration = duration % hourInMillis;
+		long elapsedMinutes = duration/minuteInMillis;
+		duration = duration % minuteInMillis;
+		long elapsedSeconds = duration/secondInMillis;
+		
+		return elapsedHours + " : " + elapsedMinutes + " : " + elapsedSeconds;
+		
+	}
+	
 	//TODO calculates space
 	//TODO calculates calories burned	
 	

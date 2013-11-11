@@ -49,6 +49,8 @@ public class DataBaseHandler extends SQLiteOpenHelper{
     //Coordinates
     private static final String KEY_LONGITUDE = "longitude";
     private static final String KEY_LATITUDE = "latitude";
+    private static final String KEY_ALTITUDE = "altitude";
+    private static final String KEY_TIMESTAMP = "timestamp";
     //Achievements
     private static final String KEY_NAME = "name";
     private static final String KEY_DESCRIPTION = "description";
@@ -67,7 +69,7 @@ public class DataBaseHandler extends SQLiteOpenHelper{
     //Create Coordinates Table Statement
     String CREATE_COORDINATES_TABLE = "CREATE TABLE " + TABLE_COORDINATES + "("
     		+ KEY_ID + " INTEGER PRIMARY KEY," + KEY_LONGITUDE + " REAL,"
-    		+ KEY_LATITUDE + " REAL" + ");";
+    		+ KEY_LATITUDE + " REAL," + KEY_ALTITUDE + " REAL," + KEY_TIMESTAMP + " REAL" +");";
     
     
     // Generating Tables
@@ -87,6 +89,13 @@ public class DataBaseHandler extends SQLiteOpenHelper{
         db.execSQL(CREATE_ACHIEVEMENT_TABLE);
         addAchievements(db);
     }
+    
+//    @Override
+//    public void onOpen(SQLiteDatabase db){
+//      db.execSQL("DROP TABLE IF EXISTS " + TABLE_COORDINATES);
+//      db.execSQL(CREATE_COORDINATES_TABLE);
+//      Log.d("Workout Query", CREATE_COORDINATES_TABLE);
+//    }
     
     // Upgrading database
     @Override
@@ -222,6 +231,8 @@ public class DataBaseHandler extends SQLiteOpenHelper{
     	ContentValues values = new ContentValues();
 	    values.put(KEY_LONGITUDE, coordinate.get_longitude());
 	    values.put(KEY_LATITUDE, coordinate.get_latitude());
+	    values.put(KEY_ALTITUDE, coordinate.get_altitude());
+	    values.put(KEY_TIMESTAMP, coordinate.get_timestamp());
 	    // Inserting Row
 	    db.insert(TABLE_COORDINATES, null, values);
     }
@@ -231,6 +242,8 @@ public class DataBaseHandler extends SQLiteOpenHelper{
     	ContentValues values = new ContentValues();
 	    values.put(KEY_LONGITUDE, coordinate.get_longitude());
 	    values.put(KEY_LATITUDE, coordinate.get_latitude());
+	    values.put(KEY_ALTITUDE, coordinate.get_altitude());
+	    values.put(KEY_TIMESTAMP, coordinate.get_timestamp());
 	    // Inserting Row
 	    db.insert(TABLE_COORDINATES, null, values);
     }
@@ -254,15 +267,20 @@ public class DataBaseHandler extends SQLiteOpenHelper{
     	  
 	    Cursor cursor = db.query(TABLE_COORDINATES, new String[] { KEY_ID,
 	    		KEY_LONGITUDE,
-	    		KEY_LATITUDE }, KEY_ID + "=?",
+	    		KEY_LATITUDE,
+	    		KEY_ALTITUDE,
+	    		KEY_TIMESTAMP}, KEY_ID + "=?",
 	            new String[] { String.valueOf(id) }, null, null, null, null);
+
 	    if (cursor != null)
 	        cursor.moveToFirst();
 	 
 	    Coordinates coordinates = new Coordinates(
-	    		Integer.parseInt(cursor.getString(0)),
+	    	    Integer.parseInt(cursor.getString(0)),
 	            Double.parseDouble(cursor.getString(1)), 
-	            Double.parseDouble(cursor.getString(2)));
+	            Double.parseDouble(cursor.getString(2)),
+	            Double.parseDouble(cursor.getString(3)),
+	            Long.parseLong(cursor.getString(4)));
 	    // return pair of coordinates
 	    return coordinates;
 		}
@@ -284,6 +302,8 @@ public class DataBaseHandler extends SQLiteOpenHelper{
     	            coordinates.set_id(cursor.getInt(cursor.getColumnIndex(KEY_ID)));
     	            coordinates.set_longitude(cursor.getDouble(cursor.getColumnIndex(KEY_LONGITUDE)));
     	            coordinates.set_latitude(cursor.getDouble(cursor.getColumnIndex(KEY_LATITUDE)));
+    	            coordinates.set_altitude(cursor.getDouble(cursor.getColumnIndex(KEY_ALTITUDE)));
+    	            coordinates.set_timestamp(cursor.getLong(cursor.getColumnIndex(KEY_TIMESTAMP)));
     	            // Adding pair of coordinates to list
     	            coordinateList.add(coordinates);
     	        } while (cursor.moveToNext());
@@ -466,4 +486,3 @@ public class DataBaseHandler extends SQLiteOpenHelper{
         addAchievement(db, new Achievement("You are tired now...or are you?", "Laufe 1 Stunde am St�ck", "ic_launcher", "ss", 3600));
     }
 }
-

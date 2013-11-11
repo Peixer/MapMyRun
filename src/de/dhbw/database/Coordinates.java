@@ -1,3 +1,4 @@
+
 package de.dhbw.database;
 
 public class Coordinates {
@@ -5,6 +6,8 @@ public class Coordinates {
     int _id;
     Double _longitude;
     Double _latitude;
+    Double _altitude;
+    long _timestamp;
     
     //Constructors
     
@@ -12,16 +15,36 @@ public class Coordinates {
     	
     }
     
-    public Coordinates(int id, Double longitude, Double latitude){
+    public Coordinates(int id, Double longitude, Double latitude, Double altitude, long timestamp){
     	this._id = id;
     	this._longitude = longitude;
     	this._latitude = latitude;
+    	this._altitude = altitude;
+    	this._timestamp = timestamp;
     }
 
-    public Coordinates(Double longitude, Double latitude){
+    public Coordinates(Double longitude, Double latitude, Double altitude, long timestamp){
     	this._longitude = longitude;
     	this._latitude = latitude;
+    	this._altitude = altitude;
+    	this._timestamp = timestamp;
     }
+
+	public long get_timestamp() {
+		return _timestamp;
+	}
+
+	public void set_timestamp(long _timestamp) {
+		this._timestamp = _timestamp;
+	}
+
+	public Double get_altitude() {
+		return _altitude;
+	}
+
+	public void set_altitude(Double _altitude) {
+		this._altitude = _altitude;
+	}
 
 	public int get_id() {
 		return _id;

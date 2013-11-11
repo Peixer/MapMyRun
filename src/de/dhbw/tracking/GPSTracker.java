@@ -30,6 +30,8 @@ public class GPSTracker extends Service implements LocationListener {
 	Location location; // location
 	double latitude; // latitude
 	double longitude; // longitude
+	double altitude; //altitude
+	long timestamp;//timestamp of tracking samples
 
 	// The minimum distance to change Updates in meters
 	private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 1; // 1 meter
@@ -103,8 +105,10 @@ public class GPSTracker extends Service implements LocationListener {
 		if (location != null) {
 			latitude = location.getLatitude();
 			longitude = location.getLongitude();
+			altitude = location.getAltitude();
+			timestamp = location.getTime();
 			DataBaseHandler db = new DataBaseHandler(mContext);
-			db.addCoordinates(new Coordinates(longitude, latitude));
+			db.addCoordinates(new Coordinates(longitude, latitude, altitude, timestamp));
 		}
 	}
  
