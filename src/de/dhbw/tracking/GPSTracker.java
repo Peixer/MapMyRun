@@ -245,7 +245,7 @@ public class GPSTracker extends Service implements LocationListener {
                     int start = respStr.indexOf(tagOpen) + tagOpen.length();
                     int end = respStr.indexOf(tagClose);
                     String value = respStr.substring(start, end);
-                    result = (double)(Double.parseDouble(value)*3.2808399); // convert from meters to feet
+                    result = (double)(Double.parseDouble(value));
                 }
                 instream.close();
             }
