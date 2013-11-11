@@ -38,30 +38,30 @@ public class TrackService {
 	
 	
 	//calculates the sum of total elevations
-	
-	public double calcElevation(List<Coordinates> listContents){
-		double ascend = 0;
-		int i;
-		for (i = 0; i < listContents.size(); i++) {
-			if (listContents.get(i+1).get_altitude() > listContents.get(i).get_altitude()){
-				ascend = ascend + (listContents.get(i+1).get_altitude() - listContents.get(i).get_altitude());
-			}
-		}
-		return ascend;
-	}
-	
-	//calculates the sum of total descent
-	
-	public double calcDescent(List<Coordinates> listContents){
-		double descent = 0;
-		int i;
-		for (i = 0; i < listContents.size(); i++) {
-			if (listContents.get(i+1).get_altitude() < listContents.get(i).get_altitude()){
-				descent = descent + (listContents.get(i).get_altitude() - listContents.get(i+1).get_altitude());
-			}
-		}
-		return descent;
-	}
+//	
+//	public double calcElevation(List<Coordinates> listContents){
+//		double ascend = 0;
+//		int i;
+//		for (i = 0; i < listContents.size(); i++) {
+//			if (listContents.get(i+1).get_altitude() > listContents.get(i).get_altitude()){
+//				ascend = ascend + (listContents.get(i+1).get_altitude() - listContents.get(i).get_altitude());
+//			}
+//		}
+//		return ascend;
+//	}
+//	
+//	//calculates the sum of total descent
+//	
+//	public double calcDescent(List<Coordinates> listContents){
+//		double descent = 0;
+//		int i;
+//		for (i = 0; i < listContents.size(); i++) {
+//			if (listContents.get(i+1).get_altitude() < listContents.get(i).get_altitude()){
+//				descent = descent + (listContents.get(i).get_altitude() - listContents.get(i+1).get_altitude());
+//			}
+//		}
+//		return descent;
+//	}
 	
 	//TODO calculates duration
 	//TODO calculates space

@@ -28,12 +28,6 @@ import de.dhbw.tracking.GPSTracker;
 public class LiveTrackingFragment extends SherlockFragment {
 
 	private GPSTracker gps;
-	final String[] items={"lorem", "ipsum", "dolor",
-			"sit", "amet",
-			"consectetuer", "adipiscing", "elit", "morbi", "vel",
-			"ligula", "vitae", "arcu", "aliquet", "mollis",
-			"etiam", "vel", "erat", "placerat", "ante",
-			"porttitor", "sodales", "pellentesque", "augue", "purus"};
     int i;
 	public LiveTrackingFragment() {
 		// Empty constructor required for fragment subclasses
@@ -45,9 +39,7 @@ public class LiveTrackingFragment extends SherlockFragment {
 		// inflat and return the layout
 		View v = inflater.inflate(R.layout.live_tracking_fragment, container,
 				false);
-//		ListView lv = (ExpandableListView) v.findViewById(android.R.id.list);
-//		ListAdapter adapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, items);
-//	    lv.setAdapter(adapter);
+		gps = new GPSTracker(getActivity());
 
 		Button trackingButton = (Button) v.findViewById(R.id.tracking);
 		trackingButton.setOnClickListener(new OnClickListener() {
@@ -64,10 +56,7 @@ public class LiveTrackingFragment extends SherlockFragment {
 	public void changeTrackingState(View view) {
 		if (view.getTag() == null) {
 			
-			gps = new GPSTracker(getActivity());
 			if (gps.canGetLocation()) {
-				
-				
 				
 				DataBaseHandler db = new DataBaseHandler(getActivity());
 				List <Coordinates> listContents = new ArrayList<Coordinates>();
@@ -86,6 +75,7 @@ public class LiveTrackingFragment extends SherlockFragment {
 			view.setTag(1);
 			((TextView) view).setText("Live-Tracking anhalten");
 		} else if ((Integer) view.getTag() == 1) {
+			gps.stopUsingGPS();
 			view.setTag(2);
 			((TextView) view).setText("Live-Tracking auswerten");
 		} else if ((Integer) view.getTag() == 2) {

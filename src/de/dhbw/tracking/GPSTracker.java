@@ -73,12 +73,6 @@ public class GPSTracker extends Service implements LocationListener {
                     if (locationManager != null) {
                         location = locationManager
                                 .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                        if (location != null) {
-                            latitude = location.getLatitude();
-                            longitude = location.getLongitude();
-                        	DataBaseHandler db = new DataBaseHandler(mContext);
-                        	db.addCoordinates(new Coordinates(longitude, latitude));
-                        }
                     }
                 }
                 // if GPS Enabled get lat/long using GPS Services
@@ -92,12 +86,6 @@ public class GPSTracker extends Service implements LocationListener {
                         if (locationManager != null) {
                             location = locationManager
                                     .getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                            if (location != null) {
-                                latitude = location.getLatitude();
-                                longitude = location.getLongitude();
-                             	DataBaseHandler db = new DataBaseHandler(mContext);
-                            	db.addCoordinates(new Coordinates(longitude, latitude));
-                            }
                         }
                     }
                 }
@@ -109,19 +97,16 @@ public class GPSTracker extends Service implements LocationListener {
  
         return location;
     }
-    @Override
-    public void onLocationChanged(Location location) {
-//    	location = getLocation();
-//    	longitude = location.getLongitude();
-//    	latitude = location.getLatitude();
-//    	updateDatabase(longitude, latitude);
-    }
-//    
-//    public void updateDatabase(double longitude, double latitude){
-//    	DataBaseHandler db = new DataBaseHandler(mContext);
-//    	db.open();
-//    	db.addCoordinates(new Coordinates(longitude, latitude));
-//    }
+
+	@Override
+	public void onLocationChanged(Location location) {
+		if (location != null) {
+			latitude = location.getLatitude();
+			longitude = location.getLongitude();
+			DataBaseHandler db = new DataBaseHandler(mContext);
+			db.addCoordinates(new Coordinates(longitude, latitude));
+		}
+	}
  
     @Override
     public void onProviderDisabled(String provider) {
