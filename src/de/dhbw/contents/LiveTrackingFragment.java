@@ -36,6 +36,8 @@ public class LiveTrackingFragment extends SherlockFragment {
 		// inflat and return the layout
 		View v = inflater.inflate(R.layout.live_tracking_fragment, container,
 				false);
+		
+		v.findViewById(R.id.mapview).setVisibility(View.GONE);
 
 		Button trackingButton = (Button) v.findViewById(R.id.tracking);
 		trackingButton.setOnClickListener(new OnClickListener() {		
@@ -69,6 +71,7 @@ public class LiveTrackingFragment extends SherlockFragment {
 	            gps.showSettingsAlert();
 	        }
 			view.setTag(1);
+			((View)view.getParent()).findViewById(R.id.mapview).setVisibility(View.VISIBLE);
 			((TextView) view).setText("Live-Tracking anhalten");
 		} else if ((Integer) view.getTag() == 1) {
 			view.setTag(2);
