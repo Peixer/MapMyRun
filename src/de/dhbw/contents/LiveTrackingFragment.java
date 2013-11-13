@@ -1,31 +1,34 @@
 package de.dhbw.contents;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ExpandableListView;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.MapsInitializer;
 
-import de.dhbw.container.MenuContainerActivity;
+import de.dhbw.achievement.AchievementFragment.SavedTabsListAdapter;
 import de.dhbw.container.R;
-import de.dhbw.container.R.layout;
+import de.dhbw.database.Coordinates;
+import de.dhbw.database.DataBaseHandler;
 import de.dhbw.tracking.GPSTracker;
 
 public class LiveTrackingFragment extends SherlockFragment {
-	private MapView mMapView;
-	private GPSTracker gps;
 
+	private GPSTracker gps;
+    int i;
 	public LiveTrackingFragment() {
 		// Empty constructor required for fragment subclasses
 	}
@@ -40,68 +43,79 @@ public class LiveTrackingFragment extends SherlockFragment {
 		v.findViewById(R.id.mapview).setVisibility(View.GONE);
 
 		Button trackingButton = (Button) v.findViewById(R.id.tracking);
-		trackingButton.setOnClickListener(new OnClickListener() {		
+		trackingButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
 				changeTrackingState(view);
 			}
 		});
-		
+
 		return v;
 
 	}
-	
+
 	public void changeTrackingState(View view) {
 		if (view.getTag() == null) {
-			
 			gps = new GPSTracker(getActivity());
-			 
-	        // check if GPS enabled    
-	        if(gps.canGetLocation()){
-	             
-	            double latitude = gps.getLatitude();
-	            double longitude = gps.getLongitude();
-	             
-	            // \n is for new line
-	            Toast.makeText(getActivity(), "Your Location is - \nLat: " + latitude + "\nLong: " + longitude, Toast.LENGTH_LONG).show();   
-	        }else{
-	            // can't get location
-	            // GPS or Network is not enabled
-	            // Ask user to enable GPS/network in settings
-	            gps.showSettingsAlert();
-	        }
 			view.setTag(1);
 			((View)view.getParent()).findViewById(R.id.mapview).setVisibility(View.VISIBLE);
 			((TextView) view).setText("Live-Tracking anhalten");
 		} else if ((Integer) view.getTag() == 1) {
+			if (gps.canGetLocation()) {
+				
+				DataBaseHandler db = new DataBaseHandler(getActivity());
+				List <Coordinates> listContents = new ArrayList<Coordinates>();
+				listContents = db.getAllCoordinatePairs();
+				
+				for (i = 0; i < listContents.size(); i++) {
+					Toast.makeText(
+							getActivity(),
+							"Your Location is - \nLon: "
+									+ listContents.get(i).get_longitude()
+									+ "\nLat: "
+									+ listContents.get(i).get_latitude()
+									+ "\nAlt: "
+									+ gps.getElevationFromGoogleMaps(
+											listContents.get(i).get_longitude(),
+											listContents.get(i).get_latitude())
+									+ "\nTime: "
+									+ listContents.get(i).get_timestamp(),
+							Toast.LENGTH_LONG).show();
+				}
+			}else {
+				gps.showSettingsAlert();
+			}
 			view.setTag(2);
 			((TextView) view).setText("Live-Tracking auswerten");
-		} else if ((Integer) view.getTag() == 2){
+		} else if ((Integer) view.getTag() == 2) {
+			gps.stopUsingGPS();
 			getToTrackingEvaluation();
 		}
-	
 	}
-	
-	public void getToTracking(SherlockFragment single_evaluation){
+
+	public void getToTracking(SherlockFragment single_evaluation) {
 		getActivity().getSupportFragmentManager().beginTransaction()
-		.add(R.id.currentFragment, single_evaluation).commit();
+				.add(R.id.currentFragment, single_evaluation).commit();
 	}
-	
-	public void getToTrackingEvaluation(){
-		getActivity().getSupportFragmentManager()
-		.beginTransaction()
-		.replace(R.id.currentFragment,
-				EvaluationViewPager.newInstance(),
-				EvaluationViewPager.TAG).addToBackStack(null).commit();
+
+	public void getToTrackingEvaluation() {
+		getActivity()
+				.getSupportFragmentManager()
+				.beginTransaction()
+				.replace(R.id.currentFragment,
+						EvaluationViewPager.newInstance(),
+						EvaluationViewPager.TAG).addToBackStack(null).commit();
 	}
-	
+
 	public void getToTotalEvaluation(SherlockFragment total_evaluation) {
 		if (getActivity().getSupportFragmentManager().getBackStackEntryCount() == 0) {
 			getActivity().getSupportFragmentManager().beginTransaction()
-					.replace(R.id.currentFragment, total_evaluation).addToBackStack(null).commit();
+					.replace(R.id.currentFragment, total_evaluation)
+					.addToBackStack(null).commit();
 		} else {
 			getActivity().getSupportFragmentManager().beginTransaction()
 					.replace(R.id.currentFragment, total_evaluation).commit();
 		}
 	}
+
 }

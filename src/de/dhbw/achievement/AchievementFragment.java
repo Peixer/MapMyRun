@@ -1,10 +1,5 @@
 package de.dhbw.achievement;
 
-import java.util.List;
-
-import de.dhbw.container.R;
-import de.dhbw.database.Achievement;
-import de.dhbw.database.DataBaseHandler;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -15,11 +10,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+
+import de.dhbw.container.R;
+import de.dhbw.database.Achievement;
+import de.dhbw.database.DataBaseHandler;
 
 @SuppressLint("NewApi")
 public class AchievementFragment extends Fragment{
@@ -177,9 +176,6 @@ public class AchievementFragment extends Fragment{
 
 	    @Override
 	    public View getChildView(int i, int i1, boolean b, View arg0, ViewGroup viewGroup) {
-	        /*TextView textView = new TextView(AchievementFragment.this.getActivity());
-	        textView.setText(getChild(i, i1).toString());
-	        return textView;*/
 	    	
 	    	LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			View view = inflater.inflate(R.layout.achievements_list_element, viewGroup, false);
@@ -192,10 +188,10 @@ public class AchievementFragment extends Fragment{
 			DataBaseHandler db = new DataBaseHandler(getActivity());
 			//Achievement achievement = db.getAchievement(position+1);
 			
-			Achievement achievement = db.getAchievementsByUnit(getUnitByPos(i)).get(i1);
+			Achievement achievement = (Achievement) db.getAchievementsByUnit(getUnitByPos(i)).get(i1);
 	    	Log.d("ListItem Gruppe "+i+", Item "+i1, achievement.toString());
 			
-			int imageID = getResources().getIdentifier(achievement.getImageName() , "drawable", getActivity().getPackageName());
+			int imageID = getResources().getIdentifier(achievement.getName() , "drawable", getActivity().getPackageName());
 			if (imageID == 0)
 				imageView.setImageResource(R.drawable.ic_questionmark);
 			else
@@ -212,39 +208,4 @@ public class AchievementFragment extends Fragment{
 	    	return false;
 	    }
 	}
-	
-	/*public class AchievementsArrayAdapter extends ArrayAdapter<String> {
-		
-		public AchievementsArrayAdapter(Context context, int resource, int textViewResourceId, List<String> objects) 
-		{			
-			super(context, resource, textViewResourceId, objects);
-		}
-		
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-		
-			LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			View view = inflater.inflate(R.layout.achievements_list_element, parent, false);
-			
-			ImageView imageView = (ImageView) view.findViewById(R.id.achievement_icon);
-			TextView nameView = (TextView) view.findViewById(R.id.achievement_name);
-			TextView descriptionView = (TextView) view.findViewById(R.id.achievement_description);
-			
-			//ListView listView = getListView();
-			DataBaseHandler db = new DataBaseHandler(getActivity());
-			Achievement achievement = db.getAchievement(position+1);
-			
-			int imageID = getResources().getIdentifier(achievement.getImageName() , "drawable", getActivity().getPackageName());
-			if (imageID == 0)
-				imageView.setImageResource(R.drawable.ic_questionmark);
-			else
-				imageView.setImageResource(imageID);
-			nameView.setText(achievement.getName());
-			descriptionView.setText(achievement.getDescription());
-			
-			return view;
-			
-			//return super.getView(position, convertView, parent);
-		}
-	}*/
 }
