@@ -17,21 +17,74 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/live_tracking"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp" >
+    android:layout_height="fill_parent" >
     
-    <Button android:id="@+id/tracking"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:text="@string/start_new_workout" />
-    
-     <org.osmdroid.views.MapView
+    <org.osmdroid.views.MapView
          android:id="@+id/mapview"
          android:layout_width="match_parent"
-         android:layout_height="fill_parent"
+         android:layout_height="match_parent"
          android:layout_below="@+id/tracking"
          tilesource="Mapnik" />
+    
+    <LinearLayout
+        android:id="@+id/workout_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/tracking"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:orientation="vertical" >
+    	<LinearLayout
+	        android:id="@+id/workout_row_0"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:layout_weight="1"
+	        android:orientation="horizontal" >
+    		<include layout="@layout/live_tracking_fragment_element"
+    		    android:id="@+id/workout_element_0"
+    		    android:padding="100dp" />
+    	</LinearLayout>
+    	<LinearLayout
+	        android:id="@+id/workout_row_1"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:layout_weight="1"
+	        android:orientation="horizontal" >
+    		<include layout="@layout/live_tracking_fragment_element"
+    		    android:id="@+id/workout_element_1" />
+    		<include layout="@layout/live_tracking_fragment_element"
+    		    android:id="@+id/workout_element_2" />
+    	</LinearLayout>
+    	<LinearLayout
+	        android:id="@+id/workout_row_2"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:layout_weight="1"
+	        android:orientation="horizontal" >
+    		<include layout="@layout/live_tracking_fragment_element"
+    		    android:id="@+id/workout_element_3" />
+    		<include layout="@layout/live_tracking_fragment_element"
+    		    android:id="@+id/workout_element_4" />
+    	</LinearLayout>
+    	<LinearLayout
+	        android:id="@+id/workout_row_3"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:layout_weight="1"
+	        android:orientation="horizontal" >
+    		<include layout="@layout/live_tracking_fragment_element"
+    		    android:id="@+id/workout_element_5" />
+    		<include layout="@layout/live_tracking_fragment_element"
+    		    android:id="@+id/workout_element_6" />
+    	</LinearLayout>
+    </LinearLayout>
+    
+    <Button
+        android:id="@+id/tracking"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:text="@string/button_workout_start" />
 
 </RelativeLayout>

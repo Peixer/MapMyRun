@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -12,6 +13,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ExpandableListView;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -19,7 +23,6 @@ import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
 
-import de.dhbw.achievement.AchievementFragment.SavedTabsListAdapter;
 import de.dhbw.container.R;
 import de.dhbw.database.Coordinates;
 import de.dhbw.database.DataBaseHandler;
@@ -29,6 +32,7 @@ public class LiveTrackingFragment extends SherlockFragment {
 
 	private GPSTracker gps;
     int i;
+    private String[] mGridItems = {"Dauer","Kilometer","Noch","Irgendein","Feature","Keine","Ahnung","Was"};
 	public LiveTrackingFragment() {
 		// Empty constructor required for fragment subclasses
 	}
@@ -36,7 +40,7 @@ public class LiveTrackingFragment extends SherlockFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		// inflat and return the layout
+		// inflate and return the layout
 		View v = inflater.inflate(R.layout.live_tracking_fragment, container,
 				false);
 		
@@ -49,6 +53,22 @@ public class LiveTrackingFragment extends SherlockFragment {
 				changeTrackingState(view);
 			}
 		});
+		
+		// Set List
+		
+		for (i=0; i<mGridItems.length; i++)
+		{
+			
+			int viewId = getResources().getIdentifier("workout_element_"+i, "id", getActivity().getPackageName());
+			View listElement = v.findViewById(viewId);
+			((TextView) listElement.findViewById(R.id.live_tracking_element_value_text)).setText("0:00");
+			((ImageView) listElement.findViewById(R.id.live_tracking_element_value_icon)).setImageResource(R.drawable.ic_launcher);
+						
+			((TextView) listElement.findViewById(R.id.live_tracking_element_name)).setText(mGridItems[i]);
+				
+			if (i >= 6)
+				break;
+		}
 
 		return v;
 
@@ -59,7 +79,7 @@ public class LiveTrackingFragment extends SherlockFragment {
 			gps = new GPSTracker(getActivity());
 			view.setTag(1);
 			((View)view.getParent()).findViewById(R.id.mapview).setVisibility(View.VISIBLE);
-			((TextView) view).setText("Live-Tracking anhalten");
+			((TextView) view).setText(getString(R.string.button_workout_stop));
 		} else if ((Integer) view.getTag() == 1) {
 			if (gps.canGetLocation()) {
 				
@@ -86,7 +106,7 @@ public class LiveTrackingFragment extends SherlockFragment {
 				gps.showSettingsAlert();
 			}
 			view.setTag(2);
-			((TextView) view).setText("Live-Tracking auswerten");
+			((TextView) view).setText(getString(R.string.button_workout_analyse));
 		} else if ((Integer) view.getTag() == 2) {
 			gps.stopUsingGPS();
 			getToTrackingEvaluation();

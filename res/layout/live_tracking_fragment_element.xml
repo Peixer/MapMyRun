@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/live_tracking_element_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_weight="1"
+    android:padding="15dp"
+    android:background="@drawable/live_timing_background"
+    android:orientation="vertical" >
+    <LinearLayout
+        android:id="@+id/live_tracking_element_value_layout"
+        android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:layout_weight="1"
+	    android:gravity="center" >
+	    <ImageView 
+	        android:id="@+id/live_tracking_element_value_icon"
+	        android:layout_width="match_parent"
+		    android:layout_height="match_parent"
+		    android:layout_weight="2" />
+        <TextView 
+	        android:id="@+id/live_tracking_element_value_text"
+	        android:layout_width="match_parent"
+		    android:layout_height="match_parent"
+		    android:layout_weight="1"
+		    android:textSize="30sp"
+		    android:gravity="center" />
+    </LinearLayout>    
+    <TextView 
+        android:id="@+id/live_tracking_element_name"
+        android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:layout_weight="1"
+	    android:gravity="center"
+        />
+</LinearLayout>

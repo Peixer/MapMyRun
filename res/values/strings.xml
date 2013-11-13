@@ -10,9 +10,9 @@
     <string name="button_playlist_normal">Normal</string>
     <string name="button_playlist_fast">Schnell</string>
     
-    <string name="button_player_description_previous">Vorheriges Lied</string>
-    <string name="button_player_description_play">Wiedergabe</string>
-    <string name="button_player_description_next">Nächstes Lied</string>
+    <string name="button_workout_start">Start</string>
+    <string name="button_workout_stop">Stop</string>
+    <string name="button_workout_analyse">Auswerten</string>
     
     <string name="achievements_icon_default">Achievement-Bild</string>
     
