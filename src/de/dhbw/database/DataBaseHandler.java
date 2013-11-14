@@ -26,7 +26,7 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 
 	// All Static variables
     // Database Version
-    private static final int DATABASE_VERSION = 10;
+    private static final int DATABASE_VERSION = 14;
  
     // Database Name
     private static final String DATABASE_NAME = "workoutsManager";
@@ -37,6 +37,8 @@ public class DataBaseHandler extends SQLiteOpenHelper{
     private static final String TABLE_COORDINATES = "coordinates";
     // Achievement table name
     private static final String TABLE_ACHIEVEMENTS = "achievements";
+    // AnalysisCategory table name
+    private static final String TABLE_ANALYSIS_CATEGORY = "analysiscategory";
  
     //common column names
     private static final String KEY_ID = "id";
@@ -58,6 +60,8 @@ public class DataBaseHandler extends SQLiteOpenHelper{
     private static final String KEY_REQUIREMENT_NUMBER = "requirednumber";
     private static final String KEY_REQUIREMENT_UNIT = "unit";
     private static final String KEY_ACHIEVED = "achieved";
+    //AnalysisCategory
+    private static final String KEY_FORMAT = "format";
     
     //Create Table Statements
     //Create Workouts Table Statement
@@ -70,24 +74,28 @@ public class DataBaseHandler extends SQLiteOpenHelper{
     String CREATE_COORDINATES_TABLE = "CREATE TABLE " + TABLE_COORDINATES + "("
     		+ KEY_ID + " INTEGER PRIMARY KEY," + KEY_LONGITUDE + " REAL,"
     		+ KEY_LATITUDE + " REAL," + KEY_ALTITUDE + " REAL," + KEY_TIMESTAMP + " REAL" +");";
-    
+    //Create Achievements Table Statement
+    String CREATE_ACHIEVEMENT_TABLE = "CREATE TABLE " + TABLE_ACHIEVEMENTS + "("
+    		+ KEY_ID + " INTEGER PRIMARY KEY," + KEY_NAME + " TEXT," + KEY_DESCRIPTION + " TEXT,"
+    		+ KEY_IMAGENAME + " TEXT," + KEY_REQUIREMENT_NUMBER + " INTEGER," + KEY_REQUIREMENT_UNIT
+    		+" TEXT," + KEY_ACHIEVED + " INTEGER" + ");";
+    //Create AnalysisCategroy Table Statement
+    String CREATE_ANALYSIS_CATEGORY_TABLE = "CREATE TABLE " + TABLE_ANALYSIS_CATEGORY + "("
+    		+ KEY_ID + " INTEGER PRIMARY KEY," + KEY_NAME + " TEXT," + KEY_IMAGENAME + " TEXT,"
+    		+ KEY_FORMAT + " TEXT" + ");";
     
     // Generating Tables
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_WORKOUTS_TABLE);
+        db.execSQL(CREATE_COORDINATES_TABLE);
         Log.d("Workout Query", CREATE_WORKOUTS_TABLE);
         
-        
-        String CREATE_ACHIEVEMENT_TABLE = "CREATE TABLE " + TABLE_ACHIEVEMENTS + "(";
-    	String[][] spalten = {{KEY_ID,"INTEGER PRIMARY KEY"},{KEY_NAME,"TEXT"},{KEY_DESCRIPTION,"TEXT"},{KEY_IMAGENAME,"TEXT"},
-    						{KEY_REQUIREMENT_NUMBER,"INTEGER"},{KEY_REQUIREMENT_UNIT,"TEXT"},{KEY_ACHIEVED,"INTEGER"}};
-    	for (String[] spalte : spalten)
-    		CREATE_ACHIEVEMENT_TABLE += spalte[0] + " " + spalte[1] + ", ";	
-    	CREATE_ACHIEVEMENT_TABLE = CREATE_ACHIEVEMENT_TABLE.substring(0, CREATE_ACHIEVEMENT_TABLE.length()-2) + ");";
-    	Log.d("Achievements Query", CREATE_ACHIEVEMENT_TABLE);
         db.execSQL(CREATE_ACHIEVEMENT_TABLE);
         addAchievements(db);
+        
+        db.execSQL(CREATE_ANALYSIS_CATEGORY_TABLE);
+        addAnalysisCategories(db);
     }
     
 //    @Override
@@ -103,6 +111,7 @@ public class DataBaseHandler extends SQLiteOpenHelper{
         // Drop older table if existed
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_WORKOUTS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ACHIEVEMENTS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ANALYSIS_CATEGORY);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_COORDINATES);
         // Create tables again
         onCreate(db);
@@ -328,15 +337,7 @@ public class DataBaseHandler extends SQLiteOpenHelper{
     
     public void addAchievement(Achievement achievement) {
     	SQLiteDatabase db = getWritableDatabase();	
-    	ContentValues values = new ContentValues();
-	    values.put(KEY_NAME, achievement.getName());
-	    values.put(KEY_DESCRIPTION, achievement.getDescription());
-	    values.put(KEY_IMAGENAME, achievement.getImageName());
-	    values.put(KEY_REQUIREMENT_NUMBER, achievement.getRequiredNumber());
-	    values.put(KEY_REQUIREMENT_UNIT, achievement.getRequiredUnit());  
-	    values.put(KEY_ACHIEVED, achievement.isAchieved());
-	    // Inserting Row
-	    db.insert(TABLE_ACHIEVEMENTS, null, values);
+    	addAchievement(db, achievement);
 	    db.close(); // Closing database connection
     }
     
@@ -421,36 +422,93 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 	    return achievementList;
 	}
 	
-	// Getting All Workouts
-		public List <Achievement> getAchievementsByUnit(String unit) {
-		    List <Achievement> achievementList = new ArrayList<Achievement>();
-		    // Select All Query
-		    String selectQuery = "SELECT  * FROM " + TABLE_ACHIEVEMENTS + " WHERE " + KEY_REQUIREMENT_UNIT + "='"+unit+"'";
-		 
-		    SQLiteDatabase db = this.getWritableDatabase();
-		    Cursor cursor = db.rawQuery(selectQuery, null);
-		 
-		    // looping through all rows and adding to list
-		    if (cursor.moveToFirst()) {
-		        do {
-			            Achievement achievement = new Achievement();
-			            achievement.setId(cursor.getInt(cursor.getColumnIndex(KEY_ID)));
-			            achievement.setName(cursor.getString(cursor.getColumnIndex(KEY_NAME)));
-			            achievement.setDescription(cursor.getString(cursor.getColumnIndex(KEY_DESCRIPTION)));
-			            achievement.setImageName(cursor.getString(cursor.getColumnIndex(KEY_IMAGENAME)));
-			            achievement.setRequiredUnit(cursor.getString(cursor.getColumnIndex(KEY_REQUIREMENT_UNIT)));
-			            achievement.setRequiredNumber(cursor.getInt(cursor.getColumnIndex(KEY_REQUIREMENT_NUMBER)));
-			            // Adding achievement to list
-			            achievementList.add(achievement);
-		        } while (cursor.moveToNext());
-		    }
-		    
-		    cursor.close();
-		    db.close();
-		 
-		    // return achievement list
-		    return achievementList;
-		}
+	// Getting All Achievements
+	public List <Achievement> getAchievementsByUnit(String unit) {
+	    List <Achievement> achievementList = new ArrayList<Achievement>();
+	    // Select All Query
+	    String selectQuery = "SELECT  * FROM " + TABLE_ACHIEVEMENTS + " WHERE " + KEY_REQUIREMENT_UNIT + "='"+unit+"'";
+	 
+	    SQLiteDatabase db = this.getWritableDatabase();
+	    Cursor cursor = db.rawQuery(selectQuery, null);
+	 
+	    // looping through all rows and adding to list
+	    if (cursor.moveToFirst()) {
+	        do {
+		            Achievement achievement = new Achievement();
+		            achievement.setId(cursor.getInt(cursor.getColumnIndex(KEY_ID)));
+		            achievement.setName(cursor.getString(cursor.getColumnIndex(KEY_NAME)));
+		            achievement.setDescription(cursor.getString(cursor.getColumnIndex(KEY_DESCRIPTION)));
+		            achievement.setImageName(cursor.getString(cursor.getColumnIndex(KEY_IMAGENAME)));
+		            achievement.setRequiredUnit(cursor.getString(cursor.getColumnIndex(KEY_REQUIREMENT_UNIT)));
+		            achievement.setRequiredNumber(cursor.getInt(cursor.getColumnIndex(KEY_REQUIREMENT_NUMBER)));
+		            // Adding achievement to list
+		            achievementList.add(achievement);
+	        } while (cursor.moveToNext());
+	    }
+	    
+	    cursor.close();
+	    db.close();
+	 
+	    // return achievement list
+	    return achievementList;
+	}
+	
+	public List <AnalysisCategory> getAllAnalysisCategories() {
+	    List <AnalysisCategory> analysisCategoryList = new ArrayList<AnalysisCategory>();
+	    // Select All Query
+	    String selectQuery = "SELECT  * FROM " + TABLE_ANALYSIS_CATEGORY;
+	 
+	    SQLiteDatabase db = this.getReadableDatabase();
+	    Cursor cursor = db.rawQuery(selectQuery, null);
+	 
+	    // looping through all rows and adding to list
+	    if (cursor.moveToFirst()) {
+	        do {
+	        		AnalysisCategory analysisCategory = new AnalysisCategory();
+	        		analysisCategory.setId(cursor.getInt(cursor.getColumnIndex(KEY_ID)));
+	        		analysisCategory.setName(cursor.getString(cursor.getColumnIndex(KEY_NAME)));
+		            analysisCategory.setImageName(cursor.getString(cursor.getColumnIndex(KEY_IMAGENAME)));
+		            analysisCategory.setFormat(cursor.getString(cursor.getColumnIndex(KEY_FORMAT)));
+		            // Adding analysisCategory to list
+		            analysisCategoryList.add(analysisCategory);
+	        } while (cursor.moveToNext());
+	    }
+	    
+	    cursor.close();
+	    db.close();
+	 
+	    // return analysisCategoryList
+	    return analysisCategoryList;
+	}
+		
+	// Adding new AnalysisCategory
+    public void addAnalysisCategory(SQLiteDatabase db, AnalysisCategory analysisCategory) {
+    	ContentValues values = new ContentValues();
+	    values.put(KEY_NAME, analysisCategory.getName());
+	    values.put(KEY_IMAGENAME, analysisCategory.getImageName());
+	    values.put(KEY_FORMAT, analysisCategory.getFormat());
+	    // Inserting Row
+	    db.insert(TABLE_ANALYSIS_CATEGORY, null, values);
+    }
+    
+    public void addAnalysisCategory(AnalysisCategory analysisCategory) {
+    	SQLiteDatabase db = getWritableDatabase();
+    	addAnalysisCategory(db, analysisCategory);
+	    db.close(); // Closing database connection
+    }
+    
+    private void addAnalysisCategories (SQLiteDatabase db)
+    {
+    	//add analysis categories
+    	addAnalysisCategory(db, new AnalysisCategory("Dauer", "ic_action_next", "hh:mm:ss"));
+    	addAnalysisCategory(db, new AnalysisCategory("Distanz", "ic_action_play", "km"));
+    	addAnalysisCategory(db, new AnalysisCategory("Seehöhe", "ic_music_note", "m"));
+    	addAnalysisCategory(db, new AnalysisCategory("Höhenmeter auswärts", "ic_action_play", "m"));
+    	addAnalysisCategory(db, new AnalysisCategory("Höhenmeter abwärts", "ic_action_play", "m"));
+    	addAnalysisCategory(db, new AnalysisCategory("Kalorien", "ic_action_play", "kcal"));
+    	addAnalysisCategory(db, new AnalysisCategory("Durchschnittsgeschwindigkeit", "runner", "kmh"));
+    	addAnalysisCategory(db, new AnalysisCategory("Zeit", "ic_trophy", "hh:mm"));
+    }
     
     private void addAchievements(SQLiteDatabase db)
     {

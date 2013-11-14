@@ -1,7 +1,10 @@
 package de.dhbw.contents;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -24,6 +27,7 @@ import android.widget.Toast;
 import com.actionbarsherlock.app.SherlockFragment;
 
 import de.dhbw.container.R;
+import de.dhbw.database.AnalysisCategory;
 import de.dhbw.database.Coordinates;
 import de.dhbw.database.DataBaseHandler;
 import de.dhbw.tracking.GPSTracker;
@@ -32,7 +36,8 @@ public class LiveTrackingFragment extends SherlockFragment {
 
 	private GPSTracker gps;
     int i;
-    private String[] mGridItems = {"Dauer","Kilometer","Noch","Irgendein","Feature","Keine","Ahnung","Was"};
+    private DataBaseHandler db;
+    
 	public LiveTrackingFragment() {
 		// Empty constructor required for fragment subclasses
 	}
@@ -45,6 +50,8 @@ public class LiveTrackingFragment extends SherlockFragment {
 				false);
 		
 		v.findViewById(R.id.mapview).setVisibility(View.GONE);
+		
+		db = new DataBaseHandler(getActivity());
 
 		Button trackingButton = (Button) v.findViewById(R.id.tracking);
 		trackingButton.setOnClickListener(new OnClickListener() {
@@ -54,24 +61,60 @@ public class LiveTrackingFragment extends SherlockFragment {
 			}
 		});
 		
+		return v;
+	}
+	
+	@Override
+	public void onResume() {
 		// Set List
-		
-		for (i=0; i<mGridItems.length; i++)
+		View v = getView();
+		setList(v);
+		super.onResume();
+	}
+	
+	private void setList(View v)
+	{
+		List<AnalysisCategory> mGridItems = db.getAllAnalysisCategories();
+		Log.d("Test", String.valueOf(mGridItems.size()));
+		for (AnalysisCategory ac:mGridItems)
+			Log.d("Test", ac.toString());
+		for (i=0; i<mGridItems.size(); i++)
 		{
-			
 			int viewId = getResources().getIdentifier("workout_element_"+i, "id", getActivity().getPackageName());
 			View listElement = v.findViewById(viewId);
-			((TextView) listElement.findViewById(R.id.live_tracking_element_value_text)).setText("0:00");
-			((ImageView) listElement.findViewById(R.id.live_tracking_element_value_icon)).setImageResource(R.drawable.ic_launcher);
+			
+			String format = mGridItems.get(i).getFormat();
+			TextView valueView = ((TextView) listElement.findViewById(R.id.live_tracking_element_value_text));
+			if (format.equals("hh:mm:ss"))
+				valueView.setText("00:00:00");
+			else if (format.equals("km"))
+				valueView.setText("0");
+			else if (format.equals("m"))
+				valueView.setText("0");
+			else if (format.equals("kcal"))
+				valueView.setText("0");
+			else if (format.equals("kmh"))
+				valueView.setText("0,0");	
+			else if (format.equals("hh:mm"))
+			{
+				if (mGridItems.get(i).getName().equals("Zeit"))
+				{
+					Calendar c = Calendar.getInstance();
+					SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+					valueView.setText(sdf.format(c.getTime()));
+				}
+				else
+					valueView.setText("00:00");
+			}
+			
+			int imageId = getResources().getIdentifier(mGridItems.get(i).getImageName(), "drawable", getActivity().getPackageName());
+			((ImageView) listElement.findViewById(R.id.live_tracking_element_value_icon)).setImageResource(imageId);
 						
-			((TextView) listElement.findViewById(R.id.live_tracking_element_name)).setText(mGridItems[i]);
+			((TextView) listElement.findViewById(R.id.live_tracking_element_name)).setText(mGridItems.get(i).getName());
 				
 			if (i >= 6)
 				break;
 		}
-
-		return v;
-
 	}
 
 	public void changeTrackingState(View view) {

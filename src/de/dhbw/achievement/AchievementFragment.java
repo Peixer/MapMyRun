@@ -48,35 +48,11 @@ public class AchievementFragment extends Fragment{
         }
         
         return v;
-		
-		/*View view = inflater.inflate(R.layout.achievement_fragment, container, false);
-		
-		List<String> tempList = new ArrayList<String>();
-		DataBaseHandler db = new DataBaseHandler(getActivity());
-		for (int i=0; i<db.getAchievementCount(); i++)
-			tempList.add("");
-		
-		 Expandable list: http://androidword.blogspot.de/2012/01/how-to-use-expandablelistview.html
-			Gesamtdistanz
-			Gesamtzeit
-			Einzeldistanz
-			Einzelzeit
-		
-		//setListAdapter(new AchievementsArrayAdapter(getActivity(), R.layout.achievements_list_element, R.id.achievement_name, tempList));
-		
-		return super.onCreateView(inflater, container, savedInstanceState);*/
 	}
 	
 	public class SavedTabsListAdapter extends BaseExpandableListAdapter {
 		 
 	    private String[] groups = {"Gesamtdistanz", "GesamtZeit", "Einzeldistanz", "Einzelzeit"};
-
-	    /*private String[][] children = {
-	        { "Arnold", "Barry", "Chuck", "David" },
-	        { "Ace", "Bandit", "Cha-Cha", "Deuce" },
-	        { "Fluffy", "Snuggles" },
-	        { "Goldy", "Bubbles" }
-	    };*/
 	    
 	    private DataBaseHandler db = new DataBaseHandler(getActivity());
 	    
@@ -99,7 +75,6 @@ public class AchievementFragment extends Fragment{
 	    
 	    @Override
 	    public void onGroupCollapsed(int groupPosition) {
-	    	// TODO Auto-generated method stub
 	    	SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 	    	sharedPreferences.edit().putBoolean("Group"+groupPosition+"Expanded", false)
 	    							.commit();
@@ -108,7 +83,6 @@ public class AchievementFragment extends Fragment{
 	    
 	    @Override
 	    public void onGroupExpanded(int groupPosition) {
-	    	// TODO Auto-generated method stub
 	    	SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 	    	sharedPreferences.edit().putBoolean("Group"+groupPosition+"Expanded", true)
 	    							.commit();
@@ -159,11 +133,6 @@ public class AchievementFragment extends Fragment{
 
 	    @Override
 	    public View getGroupView(int i, boolean b, View arg0, ViewGroup viewGroup) {
-	        /*TextView textView = new TextView(AchievementFragment.this.getActivity());
-	        textView.setText(getGroup(i).toString());
-	        textView.setGravity(View.TEXT_ALIGNMENT_CENTER);
-	        textView.setTextSize(25);
-	        return textView;*/
 	        
 	        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			View view = inflater.inflate(R.layout.achievements_list_group, viewGroup, false);

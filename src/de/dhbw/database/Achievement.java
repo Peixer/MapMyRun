@@ -23,31 +23,30 @@ public class Achievement {
 	}
 	
 	public Achievement(int id, String name, String description, String imageName, String requiredUnit, int requiredNumber) {
-		this.id = id;
-		this.name = name;
-		this.description = description;
-		this.imageName = imageName;
-		this.requiredUnit = requiredUnit;
-		this.requiredNumber = requiredNumber;
+		setId(id);
+		setName(name);
+		setDescription(description);
+		setImageName(imageName);
+		setRequiredUnit(requiredUnit);
+		setRequiredNumber(requiredNumber);
 	}
 	
 	public Achievement(String name, String description, String imageName, String requiredUnit, int requiredNumber) {
-		this.id = -1;
-		this.name = name;
-		this.description = description;
-		this.imageName = imageName;
-		this.requiredUnit = requiredUnit;
-		this.requiredNumber = requiredNumber;
+		setId(-1);
+		setName(name);
+		setDescription(description);
+		setImageName(imageName);
+		setRequiredUnit(requiredUnit);
+		setRequiredNumber(requiredNumber);
 	}
 	
 	public Achievement(String name, String description, String imageName, String requiredUnit, int requiredNumber, boolean achieved) {
-		this.id = -1;
-		this.name = name;
-		this.description = description;
-		this.imageName = imageName;
-		this.requiredUnit = requiredUnit;
-		this.requiredNumber = requiredNumber;
-		this.achieved = achieved;
+		setId(-1);
+		setName(name);
+		setDescription(description);
+		setImageName(imageName);
+		setRequiredUnit(requiredUnit);
+		setRequiredNumber(requiredNumber);
 	}
 
 	public String toString()

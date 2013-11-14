@@ -15,6 +15,7 @@
 	        android:id="@+id/live_tracking_element_value_icon"
 	        android:layout_width="match_parent"
 		    android:layout_height="match_parent"
+		    android:padding="5dp"
 		    android:layout_weight="2" />
         <TextView 
 	        android:id="@+id/live_tracking_element_value_text"
@@ -22,7 +23,7 @@
 		    android:layout_height="match_parent"
 		    android:layout_weight="1"
 		    android:textSize="30sp"
-		    android:gravity="center" />
+		    android:gravity="left" />
     </LinearLayout>    
     <TextView 
         android:id="@+id/live_tracking_element_name"

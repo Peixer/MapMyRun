@@ -2,12 +2,22 @@ package de.dhbw.database;
 
 public class AnalysisCategory {
 
+	public AnalysisCategory() {
+		// TODO Auto-generated constructor stub
+	}
+	
 	public AnalysisCategory(int id, String name, String imageName, String format) {
 		setId(id);
 		setName(name);
 		setImageName(imageName);
 		setFormat(format);
-		
+	}
+	
+	public AnalysisCategory(String name, String imageName, String format) {
+		setId(-1);
+		setName(name);
+		setImageName(imageName);
+		setFormat(format);
 	}
 	
 	private int id;
@@ -15,6 +25,10 @@ public class AnalysisCategory {
 	private String imageName;
 	private String format;
 	
+	public String toString()
+	{
+		return "AnalysisCategory| Id: " + id + ", Name: " + name + ", ImageName: " + imageName + ", Format: " + format;				
+	}
 	
 	public int getId() {
 		return id;
