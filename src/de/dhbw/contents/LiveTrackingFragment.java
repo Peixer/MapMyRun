@@ -77,8 +77,6 @@ public class LiveTrackingFragment extends SherlockFragment {
 	
 	public void setList()
 	{
-		//TODO Remove following line after debugging
-		db.updateCategoryPosition(new CategoryPosition(1, 8));
 		
 		for (i=0; i<7; i++)
 		{
@@ -112,7 +110,7 @@ public class LiveTrackingFragment extends SherlockFragment {
 					break;
 				case 8:		//Zeit
 					Calendar c = Calendar.getInstance();
-					SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+					SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
 					valueView.setText(sdf.format(c.getTime()));
 					break;
 				default:	//Wird nie erreicht
