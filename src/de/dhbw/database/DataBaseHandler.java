@@ -459,11 +459,11 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 	public List <AnalysisCategory> getAllAnalysisCategories() {
 	    List <AnalysisCategory> analysisCategoryList = new ArrayList<AnalysisCategory>();
 	    // Select All Query
-	    String selectQuery = "SELECT  * FROM " + TABLE_ANALYSIS_CATEGORY;
+	    String selectQuery = "SELECT * FROM " + TABLE_ANALYSIS_CATEGORY;
 	 
 	    SQLiteDatabase db = this.getReadableDatabase();
 	    Cursor cursor = db.rawQuery(selectQuery, null);
-	 
+	    
 	    // looping through all rows and adding to list
 	    if (cursor.moveToFirst()) {
 	        do {
@@ -612,7 +612,7 @@ public class DataBaseHandler extends SQLiteOpenHelper{
     	addAnalysisCategory(db, new AnalysisCategory("Dauer", "ic_action_next", "hh:mm:ss"));
     	addAnalysisCategory(db, new AnalysisCategory("Distanz", "ic_action_play", "km"));
     	addAnalysisCategory(db, new AnalysisCategory("Seehöhe", "ic_music_note", "m"));
-    	addAnalysisCategory(db, new AnalysisCategory("Höhenmeter auswärts", "ic_action_play", "m"));
+    	addAnalysisCategory(db, new AnalysisCategory("Höhenmeter aufwärts", "ic_action_play", "m"));
     	addAnalysisCategory(db, new AnalysisCategory("Höhenmeter abwärts", "ic_action_play", "m"));
     	addAnalysisCategory(db, new AnalysisCategory("Kalorien", "ic_action_play", "kcal"));
     	addAnalysisCategory(db, new AnalysisCategory("Durchschnittsgeschwindigkeit", "runner", "kmh"));

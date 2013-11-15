@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+import android.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -87,15 +88,36 @@ public class LiveTrackingFragment extends SherlockFragment {
 			
 			int viewId = getResources().getIdentifier("workout_element_"+i, "id", getActivity().getPackageName());
 			View listElement = mView.findViewById(viewId);
+			listElement.setOnClickListener(new CustomListOnClickListener());
 			
 			String format = ac.getFormat();
 			TextView valueView = ((TextView) listElement.findViewById(R.id.live_tracking_element_value_text));
 			
-			/* TODO Durch CategoryId Werte "on the fly" zuordnen
+			//Werte zuordnen
 			switch(ac.getId())
 			{
-				TODO Liste mit IDs und zugehöriger Kategorie hier einfügen
-			}*/
+				case 1:		//Dauer
+					break;
+				case 2:		//Distanz
+					break;
+				case 3:		//Seehöhe
+					break;
+				case 4:		//Höhenmeter aufwärts
+					break;
+				case 5:		//Höhenmeter abwärts
+					break;
+				case 6:		//Kalorien
+					break;
+				case 7:		//Durchschnittsgeschwindigkeit
+					break;
+				case 8:		//Zeit
+					Calendar c = Calendar.getInstance();
+					SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+					valueView.setText(sdf.format(c.getTime()));
+					break;
+				default:	//Wird nie erreicht
+					break;
+			}
 			
 			if (format.equals("hh:mm:ss"))
 				valueView.setText("00:00:00");
@@ -109,13 +131,7 @@ public class LiveTrackingFragment extends SherlockFragment {
 				valueView.setText("0,0");	
 			else if (format.equals("hh:mm"))
 			{
-				if (ac.getName().equals("Zeit"))
-				{
-					Calendar c = Calendar.getInstance();
-					SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
-					valueView.setText(sdf.format(c.getTime()));
-				}
-				else
+				if (!ac.getName().equals("Zeit"))
 					valueView.setText("00:00");
 			}
 			
@@ -126,7 +142,32 @@ public class LiveTrackingFragment extends SherlockFragment {
 		}
 	}
 	
-	/*private class CustomListItemOnClickListener extends */
+	private class CustomListOnClickListener implements View.OnClickListener
+	{
+		@Override
+		public void onClick(View v) {
+			for (int i=0; i<7; i++)
+			{
+				if (v.getId() == getResources().getIdentifier("workout_element_"+i, "id", getActivity().getPackageName()))
+				{
+					CategoryListFragment mCategoryListFragment = new CategoryListFragment();
+					Bundle args = new Bundle();
+					args.putInt("position", i);
+					
+					mCategoryListFragment.setArguments(args);
+					if (getActivity().getSupportFragmentManager().getBackStackEntryCount() == 0) {
+						getActivity().getSupportFragmentManager().beginTransaction()
+								.replace(R.id.currentFragment, mCategoryListFragment)
+								.addToBackStack(null).commit();
+					} else {
+						getActivity().getSupportFragmentManager().beginTransaction()
+								.replace(R.id.currentFragment, mCategoryListFragment).commit();
+					}
+				}
+			}
+			
+		}	
+	}
 
 	public void changeTrackingState(View view) {
 		if (view.getTag() == null) {

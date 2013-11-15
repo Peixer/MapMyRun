@@ -16,6 +16,8 @@
     
     <string name="achievements_icon_default">Achievement-Bild</string>
     
+    <string name="icon_default">Standardicon</string>
+    
     <string name="start_new_workout">Live-Tracking starten</string>
     
     <string name="drawer_open">Menü öffnen</string>
