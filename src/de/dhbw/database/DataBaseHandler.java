@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.provider.SyncStateContract.Columns;
 import android.util.Log;
 
 public class DataBaseHandler extends SQLiteOpenHelper{
@@ -26,7 +27,7 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 
 	// All Static variables
     // Database Version
-    private static final int DATABASE_VERSION = 14;
+    private static final int DATABASE_VERSION = 16;
  
     // Database Name
     private static final String DATABASE_NAME = "workoutsManager";
@@ -39,6 +40,8 @@ public class DataBaseHandler extends SQLiteOpenHelper{
     private static final String TABLE_ACHIEVEMENTS = "achievements";
     // AnalysisCategory table name
     private static final String TABLE_ANALYSIS_CATEGORY = "analysiscategory";
+    // CategoryPositions table name
+    private static final String TABLE_CATEGORY_POSITIONS = "categorypositions";
  
     //common column names
     private static final String KEY_ID = "id";
@@ -62,6 +65,9 @@ public class DataBaseHandler extends SQLiteOpenHelper{
     private static final String KEY_ACHIEVED = "achieved";
     //AnalysisCategory
     private static final String KEY_FORMAT = "format";
+    //CategoryPositions
+    private static final String KEY_POSITION = "position";
+    private static final String KEY_CATEGORY_ID = "categoryid";
     
     //Create Table Statements
     //Create Workouts Table Statement
@@ -83,6 +89,9 @@ public class DataBaseHandler extends SQLiteOpenHelper{
     String CREATE_ANALYSIS_CATEGORY_TABLE = "CREATE TABLE " + TABLE_ANALYSIS_CATEGORY + "("
     		+ KEY_ID + " INTEGER PRIMARY KEY," + KEY_NAME + " TEXT," + KEY_IMAGENAME + " TEXT,"
     		+ KEY_FORMAT + " TEXT" + ");";
+  //Create CategoryPositions Table Statement
+    String CREATE_CATEGORY_POSITIONS_TABLE = "CREATE TABLE " + TABLE_CATEGORY_POSITIONS + "("
+    		+ KEY_POSITION + " INTEGER PRIMARY KEY," + KEY_CATEGORY_ID + " INTEGER" + ");";
     
     // Generating Tables
     @Override
@@ -92,10 +101,13 @@ public class DataBaseHandler extends SQLiteOpenHelper{
         Log.d("Workout Query", CREATE_WORKOUTS_TABLE);
         
         db.execSQL(CREATE_ACHIEVEMENT_TABLE);
-        addAchievements(db);
+        initAchievements(db);
         
         db.execSQL(CREATE_ANALYSIS_CATEGORY_TABLE);
-        addAnalysisCategories(db);
+        initAnalysisCategories(db);
+        
+        db.execSQL(CREATE_CATEGORY_POSITIONS_TABLE);
+        initCategoryPositions(db);
     }
     
 //    @Override
@@ -112,6 +124,7 @@ public class DataBaseHandler extends SQLiteOpenHelper{
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_WORKOUTS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ACHIEVEMENTS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ANALYSIS_CATEGORY);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CATEGORY_POSITIONS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_COORDINATES);
         // Create tables again
         onCreate(db);
@@ -224,16 +237,6 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 	            new String[] { String.valueOf(workout.getID()) });
 	    db.close();
     }   
-    
-    //TODO: Achievement-Funktionen
-    
-    /*
-        KEY_NAME
-	    KEY_DESCRIPTION
-	    KEY_IMAGENAME
-	    KEY_REQUIREMENT_NUMBER
-	    KEY_REQUIREMENT_UNIT
-     */
     
     // add a pair of coordinates
     public void addCoordinates(SQLiteDatabase db, Coordinates coordinate) {
@@ -497,7 +500,113 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 	    db.close(); // Closing database connection
     }
     
-    private void addAnalysisCategories (SQLiteDatabase db)
+    // Getting CategoryId by Position
+  	public AnalysisCategory getAnalysisCategoryById(int id) {
+  		
+  		AnalysisCategory analysisCategory = new AnalysisCategory();
+  		
+  	    // Select All Query
+  	    String selectQuery = "SELECT  * FROM " + TABLE_ANALYSIS_CATEGORY + " WHERE " + KEY_ID + "='"+id+"'";
+  	 
+  	    SQLiteDatabase db = this.getWritableDatabase();
+  	    Cursor cursor = db.rawQuery(selectQuery, null);
+  	 
+  	    // looping through all rows and adding to list
+  	    if (cursor.moveToFirst()) {
+  	        analysisCategory.setId(cursor.getInt(cursor.getColumnIndex(KEY_ID)));
+  	        analysisCategory.setName(cursor.getString(cursor.getColumnIndex(KEY_NAME)));
+  	        analysisCategory.setImageName(cursor.getString(cursor.getColumnIndex(KEY_IMAGENAME)));
+  	        analysisCategory.setFormat(cursor.getString(cursor.getColumnIndex(KEY_FORMAT)));
+  	    }
+  	    else
+  	    	analysisCategory = null;
+  	    
+  	    cursor.close();
+  	    db.close();
+  	    
+  	    return analysisCategory;
+  	}
+    
+    private void addCategoryPosition(SQLiteDatabase db, CategoryPosition categoryPosition)
+    {
+    	ContentValues values = new ContentValues();
+	    values.put(KEY_CATEGORY_ID, categoryPosition.getCategoryId());
+	    values.put(KEY_POSITION, categoryPosition.getPosition());
+	    // Inserting Row
+	    db.insert(TABLE_CATEGORY_POSITIONS, null, values);
+    }
+    
+    // Updating single category position
+    public int updateCategoryPosition(CategoryPosition categoryPosition) 
+    {
+    	SQLiteDatabase db = this.getWritableDatabase();
+	  
+	    ContentValues values = new ContentValues();
+	    values.put(KEY_CATEGORY_ID, categoryPosition.getCategoryId());
+	    
+	    // updating row
+	    return db.update(TABLE_CATEGORY_POSITIONS, values, KEY_POSITION + " = ?",
+	            new String[] { String.valueOf(categoryPosition.getPosition()) });
+	}
+    
+    public List<CategoryPosition> getAllCategoryPositions()
+    {
+    	 List <CategoryPosition> categoryPositionList = new ArrayList<CategoryPosition>();
+ 	    // Select All Query
+ 	    String selectQuery = "SELECT  * FROM " + TABLE_CATEGORY_POSITIONS;
+ 	 
+ 	    SQLiteDatabase db = this.getReadableDatabase();
+ 	    Cursor cursor = db.rawQuery(selectQuery, null);
+ 	 
+ 	    // looping through all rows and adding to list
+ 	    if (cursor.moveToFirst()) {
+ 	        do {
+ 	        		CategoryPosition categoryPosition = new CategoryPosition();
+ 	        		categoryPosition.setPosition(cursor.getInt(cursor.getColumnIndex(KEY_POSITION)));
+ 	        		categoryPosition.setCategoryId(cursor.getInt(cursor.getColumnIndex(KEY_CATEGORY_ID)));
+ 		            // Adding analysisCategory to list
+ 		           categoryPositionList.add(categoryPosition);
+ 	        } while (cursor.moveToNext());
+ 	    }
+ 	    
+ 	    cursor.close();
+ 	    db.close();
+ 	 
+ 	    // return analysisCategoryList
+ 	    return categoryPositionList;
+    }
+    
+    // Getting CategoryId by Position
+ 	public int getCategoryIdByPosition(int position) {
+ 		int categoryId;
+ 	    // Select All Query
+ 	    String selectQuery = "SELECT  * FROM " + TABLE_CATEGORY_POSITIONS + " WHERE " + KEY_POSITION + "='"+position+"'";
+ 	 
+ 	    SQLiteDatabase db = this.getWritableDatabase();
+ 	    Cursor cursor = db.rawQuery(selectQuery, null);
+ 	 
+ 	    // looping through all rows and adding to list
+ 	    if (cursor.moveToFirst()) {
+ 	        categoryId = cursor.getInt(cursor.getColumnIndex(KEY_CATEGORY_ID));
+ 	    }
+ 	    else
+ 	    	categoryId = -1;
+ 	    
+ 	    cursor.close();
+ 	    db.close();
+ 	    
+ 	    return categoryId;
+ 	}
+ 	
+    
+    private void initCategoryPositions (SQLiteDatabase db)
+    {
+    	//add category positions
+    	for (int i=1; i<8; i++)
+    		addCategoryPosition(db, new CategoryPosition(i, i));
+    }
+    
+    private void initAnalysisCategories (SQLiteDatabase db)
     {
     	//add analysis categories
     	addAnalysisCategory(db, new AnalysisCategory("Dauer", "ic_action_next", "hh:mm:ss"));
@@ -510,7 +619,7 @@ public class DataBaseHandler extends SQLiteOpenHelper{
     	addAnalysisCategory(db, new AnalysisCategory("Zeit", "ic_trophy", "hh:mm"));
     }
     
-    private void addAchievements(SQLiteDatabase db)
+    private void initAchievements(SQLiteDatabase db)
     {
     	// total distance achievements
         addAchievement(db, new Achievement("Beginner", "Laufe insgesamt 5 Kilometer", "ic_questionmark", "tkm", 5));

@@ -20,11 +20,11 @@
     android:layout_height="fill_parent" >
     
     <org.osmdroid.views.MapView
-         android:id="@+id/mapview"
-         android:layout_width="match_parent"
-         android:layout_height="match_parent"
-         android:layout_below="@+id/tracking"
-         tilesource="Mapnik" />
+        android:id="@+id/mapview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/tracking"
+        tilesource="Mapnik" />
     
     <LinearLayout
         android:id="@+id/workout_layout"

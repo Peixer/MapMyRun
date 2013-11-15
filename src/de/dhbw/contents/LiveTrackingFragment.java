@@ -28,6 +28,7 @@ import com.actionbarsherlock.app.SherlockFragment;
 
 import de.dhbw.container.R;
 import de.dhbw.database.AnalysisCategory;
+import de.dhbw.database.CategoryPosition;
 import de.dhbw.database.Coordinates;
 import de.dhbw.database.DataBaseHandler;
 import de.dhbw.tracking.GPSTracker;
@@ -37,6 +38,7 @@ public class LiveTrackingFragment extends SherlockFragment {
 	private GPSTracker gps;
     int i;
     private DataBaseHandler db;
+    private View mView;
     
 	public LiveTrackingFragment() {
 		// Empty constructor required for fragment subclasses
@@ -67,24 +69,34 @@ public class LiveTrackingFragment extends SherlockFragment {
 	@Override
 	public void onResume() {
 		// Set List
-		View v = getView();
-		setList(v);
+		mView = getView();
+		setList();
 		super.onResume();
 	}
 	
-	private void setList(View v)
+	public void setList()
 	{
-		List<AnalysisCategory> mGridItems = db.getAllAnalysisCategories();
-		Log.d("Test", String.valueOf(mGridItems.size()));
-		for (AnalysisCategory ac:mGridItems)
-			Log.d("Test", ac.toString());
-		for (i=0; i<mGridItems.size(); i++)
+		//TODO Remove following line after debugging
+		db.updateCategoryPosition(new CategoryPosition(1, 8));
+		
+		for (i=0; i<7; i++)
 		{
-			int viewId = getResources().getIdentifier("workout_element_"+i, "id", getActivity().getPackageName());
-			View listElement = v.findViewById(viewId);
+			AnalysisCategory ac = db.getAnalysisCategoryById(db.getCategoryIdByPosition(i+1));
+			if (ac == null)
+				continue;
 			
-			String format = mGridItems.get(i).getFormat();
+			int viewId = getResources().getIdentifier("workout_element_"+i, "id", getActivity().getPackageName());
+			View listElement = mView.findViewById(viewId);
+			
+			String format = ac.getFormat();
 			TextView valueView = ((TextView) listElement.findViewById(R.id.live_tracking_element_value_text));
+			
+			/* TODO Durch CategoryId Werte "on the fly" zuordnen
+			switch(ac.getId())
+			{
+				TODO Liste mit IDs und zugehöriger Kategorie hier einfügen
+			}*/
+			
 			if (format.equals("hh:mm:ss"))
 				valueView.setText("00:00:00");
 			else if (format.equals("km"))
@@ -97,7 +109,7 @@ public class LiveTrackingFragment extends SherlockFragment {
 				valueView.setText("0,0");	
 			else if (format.equals("hh:mm"))
 			{
-				if (mGridItems.get(i).getName().equals("Zeit"))
+				if (ac.getName().equals("Zeit"))
 				{
 					Calendar c = Calendar.getInstance();
 					SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
@@ -107,19 +119,18 @@ public class LiveTrackingFragment extends SherlockFragment {
 					valueView.setText("00:00");
 			}
 			
-			int imageId = getResources().getIdentifier(mGridItems.get(i).getImageName(), "drawable", getActivity().getPackageName());
+			int imageId = getResources().getIdentifier(ac.getImageName(), "drawable", getActivity().getPackageName());
 			((ImageView) listElement.findViewById(R.id.live_tracking_element_value_icon)).setImageResource(imageId);
 						
-			((TextView) listElement.findViewById(R.id.live_tracking_element_name)).setText(mGridItems.get(i).getName());
-				
-			if (i >= 6)
-				break;
+			((TextView) listElement.findViewById(R.id.live_tracking_element_name)).setText(ac.getName() + " (" + ac.getFormat() + ")");
 		}
 	}
+	
+	/*private class CustomListItemOnClickListener extends */
 
 	public void changeTrackingState(View view) {
 		if (view.getTag() == null) {
-			gps = new GPSTracker(getActivity());
+			gps = new GPSTracker(getActivity(), this);
 			view.setTag(1);
 			((View)view.getParent()).findViewById(R.id.mapview).setVisibility(View.VISIBLE);
 			((TextView) view).setText(getString(R.string.button_workout_stop));
@@ -149,6 +160,8 @@ public class LiveTrackingFragment extends SherlockFragment {
 				gps.showSettingsAlert();
 			}
 			view.setTag(2);
+			mView.findViewById(R.id.workout_layout).setVisibility(View.GONE);
+			mView.findViewById(R.id.mapview).setVisibility(View.VISIBLE);
 			((TextView) view).setText(getString(R.string.button_workout_analyse));
 		} else if ((Integer) view.getTag() == 2) {
 			gps.stopUsingGPS();

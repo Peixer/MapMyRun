@@ -12,6 +12,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 
+import de.dhbw.contents.LiveTrackingFragment;
 import de.dhbw.database.Coordinates;
 import de.dhbw.database.DataBaseHandler;
 import android.app.AlertDialog;
@@ -31,7 +32,9 @@ import android.util.Log;
 public class GPSTracker extends Service implements LocationListener {
 	private final Context mContext;
 	
-
+	//LiveTrackingFragment (needed for updating list values)
+	private LiveTrackingFragment mLiveTrackingFragment;
+	
 	// flag for GPS status
 	boolean isGPSEnabled = false;
 
@@ -60,6 +63,11 @@ public class GPSTracker extends Service implements LocationListener {
 		getLocation();
 	}
 	
+	public GPSTracker(Context context, LiveTrackingFragment mLiveTrackingFragment) {
+		this.mContext = context;
+		setLiveTrackingFragment(mLiveTrackingFragment);
+		getLocation();
+	}
 	
 	public Location getLocation() {
         try {
@@ -123,6 +131,8 @@ public class GPSTracker extends Service implements LocationListener {
 			DataBaseHandler db = new DataBaseHandler(mContext);
 			db.addCoordinates(new Coordinates(longitude, latitude, altitude, timestamp));
 		}
+		// Update List
+		mLiveTrackingFragment.setList();
 	}
  
     @Override
@@ -254,6 +264,14 @@ public class GPSTracker extends Service implements LocationListener {
 
         return result;
     }
+
+	public LiveTrackingFragment getLiveTrackingFragment() {
+		return mLiveTrackingFragment;
+	}
+
+	public void setLiveTrackingFragment(LiveTrackingFragment mLiveTrackingFragment) {
+		this.mLiveTrackingFragment = mLiveTrackingFragment;
+	}
 
     
 }
