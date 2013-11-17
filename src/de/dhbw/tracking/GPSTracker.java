@@ -126,7 +126,7 @@ public class GPSTracker extends Service implements LocationListener {
 		if (location != null) {
 			latitude = location.getLatitude();
 			longitude = location.getLongitude();
-			altitude = location.getAltitude();
+			altitude = getElevationFromGoogleMaps(longitude, latitude);
 			timestamp = location.getTime();
 			DataBaseHandler db = new DataBaseHandler(mContext);
 			db.addCoordinates(new Coordinates(longitude, latitude, altitude, timestamp));
@@ -228,7 +228,7 @@ public class GPSTracker extends Service implements LocationListener {
         }      
     }
     
-    public double getElevationFromGoogleMaps(double longitude, double latitude) {
+    public static double getElevationFromGoogleMaps(double longitude, double latitude) {
     	StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 
     	StrictMode.setThreadPolicy(policy); 

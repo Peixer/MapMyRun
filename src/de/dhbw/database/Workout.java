@@ -3,11 +3,12 @@ package de.dhbw.database;
 public class Workout {
 	 //private variables
     int _id;
-    Float _duration;
-    Float _pace;
-    Float _elevation_downwards;
-    Float _elevation_upwards;
-    Float _calories_burned;
+    String _duration;
+    Double _pace;
+    Double _elevation_downwards;
+    Double _elevation_upwards;
+    Double _calories_burned;
+    Double _distance;
     
      
     // Empty constructor
@@ -16,21 +17,40 @@ public class Workout {
     }
     // constructor
     public Workout(int id, 
-    		       Float duration, 
-    		       Float pace, 
-    		       Float elevation_downwards, 
-    		       Float elevation_upwards, 
-    		       Float calories_burned){
+    		       String duration, 
+    		       Double pace, 
+    		       Double elevation_downwards, 
+    		       Double elevation_upwards, 
+    		       Double calories_burned, 
+    		       Double distance){
         this._id = id;
         this._duration = duration;
         this._pace = pace;
         this._elevation_downwards = elevation_downwards;
         this._elevation_upwards = elevation_upwards;
         this._calories_burned = calories_burned;
+        this._distance = distance;
     }
+
+	public Workout(String duration, Double pace,
+			Double elevation_downwards, Double elevation_upwards,
+			Double calories_burned, Double distance) {
+		this._duration = duration;
+		this._pace = pace;
+		this._elevation_downwards = elevation_downwards;
+		this._elevation_upwards = elevation_upwards;
+		this._calories_burned = calories_burned;
+		this._distance = distance;
+	}
      
-    // constructor
-    public Workout(Float duration, Float pace){
+    public Double get_distance() {
+		return _distance;
+	}
+	public void set_distance(Double _distance) {
+		this._distance = _distance;
+	}
+	// constructor
+    public Workout(String duration, Double pace){
 		this._duration = duration;
 	    this._pace = pace;
     }
@@ -44,41 +64,41 @@ public class Workout {
         this._id = id;
     }
      
-    public Float getElevationDownwards() {
+    public Double getElevationDownwards() {
 		return _elevation_downwards;
 	}
-	public void setElevationDownwards(Float _elevation_downwards) {
+	public void setElevationDownwards(Double _elevation_downwards) {
 		this._elevation_downwards = _elevation_downwards;
 	}
-	public Float getElevationUpwards() {
+	public Double getElevationUpwards() {
 		return _elevation_upwards;
 	}
-	public void setElevationUpwards(Float _elevation_upwards) {
+	public void setElevationUpwards(Double _elevation_upwards) {
 		this._elevation_upwards = _elevation_upwards;
 	}
-	public Float getCaloriesBurned() {
+	public Double getCaloriesBurned() {
 		return _calories_burned;
 	}
-	public void setCaloriesBurned(Float _calories_burned) {
+	public void setCaloriesBurned(Double _calories_burned) {
 		this._calories_burned = _calories_burned;
 	}
 	// getting duration
-    public Float getDuration(){
+    public String getDuration(){
         return this._duration;
     }
      
     // setting duration
-    public void setDuration(Float duration){
+    public void setDuration(String duration){
         this._duration = duration;
     }
      
     // getting phone number
-    public Float getPace(){
+    public Double getPace(){
         return this._pace;
     }
      
     // setting phone number
-    public void setPace(Float pace){
+    public void setPace(Double pace){
         this._pace = pace;
     }
 }

@@ -32,6 +32,8 @@ import de.dhbw.database.AnalysisCategory;
 import de.dhbw.database.CategoryPosition;
 import de.dhbw.database.Coordinates;
 import de.dhbw.database.DataBaseHandler;
+import de.dhbw.database.Workout;
+import de.dhbw.helpers.TrackService;
 import de.dhbw.tracking.GPSTracker;
 
 public class LiveTrackingFragment extends SherlockFragment {
@@ -90,19 +92,26 @@ public class LiveTrackingFragment extends SherlockFragment {
 			
 			String format = ac.getFormat();
 			TextView valueView = ((TextView) listElement.findViewById(R.id.live_tracking_element_value_text));
+			db = new DataBaseHandler(getActivity());
+			List <Coordinates> listContents = new ArrayList<Coordinates>();
+			listContents = db.getAllCoordinatePairs();
 			
 			//Werte zuordnen
 			switch(ac.getId())
 			{
-				case 1:		//Dauer
+				case 1:		
+//					valueView.setText(TrackService.calcDuration(listContents));
 					break;
-				case 2:		//Distanz
+				case 2:		
+					valueView.setText(String.valueOf(TrackService.calcDistance(listContents)));
 					break;
-				case 3:		//Seehöhe
+				case 3:		
 					break;
-				case 4:		//Höhenmeter aufwärts
+				case 4:		
+					valueView.setText(String.valueOf(TrackService.calcElevation(listContents)));
 					break;
-				case 5:		//Höhenmeter abwärts
+				case 5:		
+					valueView.setText(String.valueOf(TrackService.calcDescent(listContents)));
 					break;
 				case 6:		//Kalorien
 					break;
@@ -137,6 +146,7 @@ public class LiveTrackingFragment extends SherlockFragment {
 			((ImageView) listElement.findViewById(R.id.live_tracking_element_value_icon)).setImageResource(imageId);
 						
 			((TextView) listElement.findViewById(R.id.live_tracking_element_name)).setText(ac.getName() + " (" + ac.getFormat() + ")");
+		
 		}
 	}
 	
@@ -171,14 +181,15 @@ public class LiveTrackingFragment extends SherlockFragment {
 		if (view.getTag() == null) {
 			gps = new GPSTracker(getActivity(), this);
 			view.setTag(1);
-			((View)view.getParent()).findViewById(R.id.mapview).setVisibility(View.VISIBLE);
 			((TextView) view).setText(getString(R.string.button_workout_stop));
 		} else if ((Integer) view.getTag() == 1) {
 			if (gps.canGetLocation()) {
 				
-				DataBaseHandler db = new DataBaseHandler(getActivity());
 				List <Coordinates> listContents = new ArrayList<Coordinates>();
 				listContents = db.getAllCoordinatePairs();
+				List <Workout> listWorkouts = new ArrayList<Workout>();
+				listWorkouts = db.getAllWorkouts();
+				
 				
 				for (i = 0; i < listContents.size(); i++) {
 					Toast.makeText(
@@ -188,11 +199,17 @@ public class LiveTrackingFragment extends SherlockFragment {
 									+ "\nLat: "
 									+ listContents.get(i).get_latitude()
 									+ "\nAlt: "
-									+ gps.getElevationFromGoogleMaps(
+									+ GPSTracker.getElevationFromGoogleMaps(
 											listContents.get(i).get_longitude(),
 											listContents.get(i).get_latitude())
-									+ "\nTime: "
-									+ listContents.get(i).get_timestamp(),
+								    + "\nDuration"
+								    + TrackService.calcDuration(listContents)
+								    + "\nNumberOfWorkouts: "
+								    + listWorkouts.size()
+							        + "\nElevation"
+							        + TrackService.calcElevation(listContents)
+									+ "\nDistance: "
+									+ TrackService.calcDistance(listContents),
 							Toast.LENGTH_LONG).show();
 				}
 			}else {
@@ -201,11 +218,26 @@ public class LiveTrackingFragment extends SherlockFragment {
 			view.setTag(2);
 			mView.findViewById(R.id.workout_layout).setVisibility(View.GONE);
 			mView.findViewById(R.id.mapview).setVisibility(View.VISIBLE);
+			gps.stopUsingGPS();
+			populateWorkoutWithData();
+			db.clearCoordinates();
+			
 			((TextView) view).setText(getString(R.string.button_workout_analyse));
 		} else if ((Integer) view.getTag() == 2) {
-			gps.stopUsingGPS();
 			getToTrackingEvaluation();
 		}
+	}
+	
+	public void populateWorkoutWithData(){
+		List <Coordinates> listContents = new ArrayList<Coordinates>();
+		listContents = db.getAllCoordinatePairs();
+		String duration = TrackService.calcDuration(listContents);
+		double pace = 12; // erstmal fix, methode zur Berechnung fehlt noch
+		double elevation = TrackService.calcElevation(listContents);
+		double descent = TrackService.calcDescent(listContents);
+		double calories_burned = 123;  // erstmal fix, methode zur Berechnung fehlt noch
+		double distance = TrackService.calcDistance(listContents);
+	    db.addWorkout(new Workout(duration, pace, elevation, descent, calories_burned, distance));
 	}
 
 	public void getToTracking(SherlockFragment single_evaluation) {
@@ -217,7 +249,7 @@ public class LiveTrackingFragment extends SherlockFragment {
 		getActivity()
 				.getSupportFragmentManager()
 				.beginTransaction()
-				.replace(R.id.currentFragment,
+			.replace(R.id.currentFragment,
 						EvaluationViewPager.newInstance(),
 						EvaluationViewPager.TAG).addToBackStack(null).commit();
 	}

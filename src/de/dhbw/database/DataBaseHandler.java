@@ -50,7 +50,8 @@ public class DataBaseHandler extends SQLiteOpenHelper{
     private static final String KEY_PACE = "pace";
     private static final String KEY_ELEVATION_DOWNWARDS = "elevation_downwards";
     private static final String KEY_ELEVATION_UPWARDS = "elevation_upwards";
-    private static final String CALORIES_BURNED = "calories_burned";
+    private static final String KEY_CALORIES_BURNED = "calories_burned";
+    private static final String KEY_DISTANCE = "calories_burned";
     //Coordinates
     private static final String KEY_LONGITUDE = "longitude";
     private static final String KEY_LATITUDE = "latitude";
@@ -72,10 +73,10 @@ public class DataBaseHandler extends SQLiteOpenHelper{
     //Create Table Statements
     //Create Workouts Table Statement
     String CREATE_WORKOUTS_TABLE = "CREATE TABLE " + TABLE_WORKOUTS + "("
-    		+ KEY_ID + " INTEGER PRIMARY KEY," + KEY_DURATION + " REAL,"
+    		+ KEY_ID + " INTEGER PRIMARY KEY," + KEY_DURATION + " TEXT,"
     		+ KEY_PACE + " REAL," + KEY_ELEVATION_DOWNWARDS + 
     		" REAL," + KEY_ELEVATION_UPWARDS + " REAL,"
-    		+ CALORIES_BURNED + " REAL" + ");";
+    		+ KEY_CALORIES_BURNED + " REAL" + KEY_DISTANCE + " REAL" + ");";
     //Create Coordinates Table Statement
     String CREATE_COORDINATES_TABLE = "CREATE TABLE " + TABLE_COORDINATES + "("
     		+ KEY_ID + " INTEGER PRIMARY KEY," + KEY_LONGITUDE + " REAL,"
@@ -112,10 +113,14 @@ public class DataBaseHandler extends SQLiteOpenHelper{
     
 //    @Override
 //    public void onOpen(SQLiteDatabase db){
-//      db.execSQL("DROP TABLE IF EXISTS " + TABLE_COORDINATES);
-//      db.execSQL(CREATE_COORDINATES_TABLE);
-//      Log.d("Workout Query", CREATE_COORDINATES_TABLE);
+//        db.execSQL("DROP TABLE IF EXISTS " + TABLE_WORKOUTS);
+//        db.execSQL(CREATE_WORKOUTS_TABLE);
 //    }
+    
+    public void clearCoordinates(){
+      SQLiteDatabase db = this.getWritableDatabase();
+      db.delete("COORDINATES", null, null);
+    }
     
     // Upgrading database
     @Override
@@ -142,8 +147,8 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 	    values.put(KEY_PACE, workout.getPace()); 
 	    values.put(KEY_ELEVATION_DOWNWARDS, workout.getElevationDownwards()); 
 	    values.put(KEY_ELEVATION_UPWARDS, workout.getElevationUpwards()); 
-	    values.put(CALORIES_BURNED, workout.getCaloriesBurned()); 
-	    
+	    values.put(KEY_CALORIES_BURNED, workout.getCaloriesBurned()); 
+	    values.put(KEY_DISTANCE, workout.get_distance()); 
 	    
 	    // Inserting Row
 	    db.insert(TABLE_WORKOUTS, null, values);
@@ -159,18 +164,20 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 	    		KEY_PACE,
 	    		KEY_ELEVATION_DOWNWARDS,
 	    		KEY_ELEVATION_UPWARDS, 
-	    		CALORIES_BURNED }, KEY_ID + "=?",
+	    		KEY_CALORIES_BURNED,
+	    		KEY_DISTANCE}, KEY_ID + "=?",
 	            new String[] { String.valueOf(id) }, null, null, null, null);
 	    if (cursor != null)
 	        cursor.moveToFirst();
 	 
 	    Workout workout = new Workout(
 	    		Integer.parseInt(cursor.getString(0)),
-	            Float.parseFloat(cursor.getString(1)), 
-	            Float.parseFloat(cursor.getString(2)), 
-	            Float.parseFloat(cursor.getString(3)), 
-	            Float.parseFloat(cursor.getString(4)),
-	            Float.parseFloat(cursor.getString(5)));
+	            cursor.getString(1), 
+	            Double.parseDouble(cursor.getString(2)), 
+	            Double.parseDouble(cursor.getString(3)), 
+	            Double.parseDouble(cursor.getString(4)),
+	            Double.parseDouble(cursor.getString(5)),
+	            Double.parseDouble(cursor.getString(6)));
 	    // return workout
 	    return workout;
 		}
@@ -188,12 +195,14 @@ public class DataBaseHandler extends SQLiteOpenHelper{
     	    if (cursor.moveToFirst()) {
     	        do {
     	            Workout workout = new Workout();
-    	            workout.setID(Integer.parseInt(cursor.getString(0)));
-    	            workout.setDuration(Float.parseFloat(cursor.getString(1)));
-    	            workout.setPace(Float.parseFloat(cursor.getString(2)));
-    	            workout.setElevationDownwards(Float.parseFloat(cursor.getString(3)));
-    	            workout.setElevationUpwards(Float.parseFloat(cursor.getString(4)));
-    	            workout.setCaloriesBurned(Float.parseFloat(cursor.getString(5)));
+    	            workout.setID(cursor.getInt(cursor.getColumnIndex(KEY_ID)));
+    	            workout.setDuration(cursor.getString(cursor.getColumnIndex(KEY_DURATION)));
+    	            workout.setPace(cursor.getDouble(cursor.getColumnIndex(KEY_PACE)));
+    	            workout.setElevationDownwards(cursor.getDouble(cursor.getColumnIndex(KEY_ELEVATION_DOWNWARDS)));
+    	            workout.setElevationUpwards(cursor.getDouble(cursor.getColumnIndex(KEY_ELEVATION_UPWARDS)));
+    	            workout.setCaloriesBurned(cursor.getDouble(cursor.getColumnIndex(KEY_CALORIES_BURNED)));
+    	            workout.set_distance(cursor.getDouble(cursor.getColumnIndex(KEY_DISTANCE)));
+    	            
     	            // Adding workout to list
     	            workoutList.add(workout);
     	        } while (cursor.moveToNext());
@@ -223,7 +232,8 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 	    values.put(KEY_PACE, workout.getPace());
 	    values.put(KEY_ELEVATION_DOWNWARDS, workout.getElevationDownwards());
 	    values.put(KEY_ELEVATION_UPWARDS, workout.getElevationUpwards());
-	    values.put(CALORIES_BURNED, workout.getCaloriesBurned());
+	    values.put(KEY_CALORIES_BURNED, workout.getCaloriesBurned());
+	    values.put(KEY_DISTANCE, workout.get_distance());
 	    
 	    // updating row
 	    return db.update(TABLE_WORKOUTS, values, KEY_ID + " = ?",
@@ -611,9 +621,9 @@ public class DataBaseHandler extends SQLiteOpenHelper{
     	//add analysis categories
     	addAnalysisCategory(db, new AnalysisCategory("Dauer", "ic_action_next", "hh:mm:ss"));
     	addAnalysisCategory(db, new AnalysisCategory("Distanz", "ic_action_play", "km"));
-    	addAnalysisCategory(db, new AnalysisCategory("Seehöhe", "ic_music_note", "m"));
-    	addAnalysisCategory(db, new AnalysisCategory("Höhenmeter aufwärts", "ic_action_play", "m"));
-    	addAnalysisCategory(db, new AnalysisCategory("Höhenmeter abwärts", "ic_action_play", "m"));
+    	addAnalysisCategory(db, new AnalysisCategory("Seehï¿½he", "ic_music_note", "m"));
+    	addAnalysisCategory(db, new AnalysisCategory("Hï¿½henmeter aufwï¿½rts", "ic_action_play", "m"));
+    	addAnalysisCategory(db, new AnalysisCategory("Hï¿½henmeter abwï¿½rts", "ic_action_play", "m"));
     	addAnalysisCategory(db, new AnalysisCategory("Kalorien", "ic_action_play", "kcal"));
     	addAnalysisCategory(db, new AnalysisCategory("Durchschnittsgeschwindigkeit", "runner", "kmh"));
     	addAnalysisCategory(db, new AnalysisCategory("Zeit", "ic_trophy", "hh:mm"));

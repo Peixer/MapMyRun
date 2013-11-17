@@ -12,11 +12,11 @@ public class TrackService {
 
 	
 	//calculates the distance of the tracked route
-	public double calcDistance(List<Coordinates> listContents) {
+	public static double calcDistance(List<Coordinates> listContents) {
 		int R = 6371;
 		double distance = 0;
 		int i;
-		for (i = 0; i < listContents.size(); i++) {
+		for (i = 0; i < (listContents.size() - 1); i++) {
 			
 			double dLat = Math.toRadians(listContents.get(i + 1).get_latitude()
 					- listContents.get(i).get_latitude());
@@ -39,10 +39,10 @@ public class TrackService {
 	
 	//calculates the sum of total elevations
 	
-	public double calcElevation(List<Coordinates> listContents){
+	public static double calcElevation(List<Coordinates> listContents){
 		double ascend = 0;
 		int i;
-		for (i = 0; i < listContents.size(); i++) {
+		for (i = 0; i < (listContents.size()-1); i++) {
 			if (listContents.get(i+1).get_altitude() > listContents.get(i).get_altitude()){
 				ascend = ascend + (listContents.get(i+1).get_altitude() - listContents.get(i).get_altitude());
 			}
@@ -52,10 +52,10 @@ public class TrackService {
 	
 	//calculates the sum of total descent
 	
-	public double calcDescent(List<Coordinates> listContents){
+	public static double calcDescent(List<Coordinates> listContents){
 		double descent = 0;
 		int i;
-		for (i = 0; i < listContents.size(); i++) {
+		for (i = 0; i < (listContents.size()-1); i++) {
 			if (listContents.get(i+1).get_altitude() < listContents.get(i).get_altitude()){
 				descent = descent + (listContents.get(i).get_altitude() - listContents.get(i+1).get_altitude());
 			}
@@ -65,7 +65,7 @@ public class TrackService {
 	
 	//calculates duration
 	
-	public String calcDuration(List<Coordinates> listContents){
+	public static String calcDuration(List<Coordinates> listContents){
 		int numberOfSamples = listContents.size();
 		long firstTimeStamp = listContents.get(0).get_timestamp();
 		long lastTimeStamp = listContents.get(numberOfSamples-1).get_timestamp();
