@@ -9,7 +9,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.provider.SyncStateContract.Columns;
 import android.util.Log;
 
 public class DataBaseHandler extends SQLiteOpenHelper{
@@ -17,17 +16,15 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 	   public DataBaseHandler(Context context, String name, CursorFactory factory,
 			int version) {
 		super(context, name, factory, version);
-		// TODO Auto-generated constructor stub
 	}
 	   
 	   public DataBaseHandler(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
-		// TODO Auto-generated constructor stub
 	}
 
 	// All Static variables
     // Database Version
-    private static final int DATABASE_VERSION = 16;
+    private static final int DATABASE_VERSION = 17;
  
     // Database Name
     private static final String DATABASE_NAME = "workoutsManager";
@@ -207,7 +204,8 @@ public class DataBaseHandler extends SQLiteOpenHelper{
     	            workoutList.add(workout);
     	        } while (cursor.moveToNext());
     	    }
-    	 
+    	    
+    	    db.close();
     	    // return workout list
     	    return workoutList;
 		}
@@ -217,9 +215,10 @@ public class DataBaseHandler extends SQLiteOpenHelper{
         String countQuery = "SELECT  * FROM " + TABLE_WORKOUTS;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(countQuery, null);
+        int count = cursor.getCount();
         cursor.close();
-	 
-        return cursor.getCount();
+        db.close();
+        return count;
 		}
     
     
@@ -236,8 +235,11 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 	    values.put(KEY_DISTANCE, workout.get_distance());
 	    
 	    // updating row
-	    return db.update(TABLE_WORKOUTS, values, KEY_ID + " = ?",
+	    int dbUpdate = db.update(TABLE_WORKOUTS, values, KEY_ID + " = ?",
 	            new String[] { String.valueOf(workout.getID()) });
+	    db.close();
+	    
+	    return dbUpdate;
 		}
      
     // Deleting single contact
@@ -261,13 +263,8 @@ public class DataBaseHandler extends SQLiteOpenHelper{
     
     public void addCoordinates(Coordinates coordinate) {
     	SQLiteDatabase db = this.getWritableDatabase();
-    	ContentValues values = new ContentValues();
-	    values.put(KEY_LONGITUDE, coordinate.get_longitude());
-	    values.put(KEY_LATITUDE, coordinate.get_latitude());
-	    values.put(KEY_ALTITUDE, coordinate.get_altitude());
-	    values.put(KEY_TIMESTAMP, coordinate.get_timestamp());
-	    // Inserting Row
-	    db.insert(TABLE_COORDINATES, null, values);
+    	addCoordinates(db, coordinate);
+	    db.close();
     }
     
     // Get number of coordinate pairs
@@ -304,6 +301,10 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 	            Double.parseDouble(cursor.getString(3)),
 	            Long.parseLong(cursor.getString(4)));
 	    // return pair of coordinates
+	    
+	    cursor.close();
+	    db.close();
+	    
 	    return coordinates;
 		}
     
@@ -330,6 +331,9 @@ public class DataBaseHandler extends SQLiteOpenHelper{
     	            coordinateList.add(coordinates);
     	        } while (cursor.moveToNext());
     	    }
+    	    
+    	    cursor.close();
+    	    db.close();
     	 
     	    // return list of coordinate pairs
     	    return coordinateList;

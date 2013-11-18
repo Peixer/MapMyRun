@@ -229,8 +229,9 @@ public class LiveTrackingFragment extends SherlockFragment {
 				
 				List <Coordinates> listContents = new ArrayList<Coordinates>();
 				listContents = db.getAllCoordinatePairs();
-//				List <Workout> listWorkouts = new ArrayList<Workout>();
-//				listWorkouts = db.getAllWorkouts();
+				// TODO: Fix Lists
+				List <Workout> listWorkouts = new ArrayList<Workout>();
+				listWorkouts = db.getAllWorkouts();
 				
 				
 				for (i = 0; i < listContents.size(); i++) {
@@ -246,8 +247,8 @@ public class LiveTrackingFragment extends SherlockFragment {
 											listContents.get(i).get_latitude())
 								    + "\nDuration"
 								    + TrackService.calcDuration(listContents)
-//								    + "\nNumberOfWorkouts: "
-//								    + listWorkouts.size()
+								    + "\nNumberOfWorkouts: "
+								    + listWorkouts.size()
 							        + "\nElevation"
 							        + TrackService.calcElevation(listContents)
 									+ "\nDistance: "
