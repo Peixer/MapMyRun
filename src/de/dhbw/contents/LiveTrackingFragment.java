@@ -6,6 +6,8 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+import org.osmdroid.views.MapView;
+
 import android.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
@@ -54,8 +56,9 @@ public class LiveTrackingFragment extends SherlockFragment {
 		View v = inflater.inflate(R.layout.live_tracking_fragment, container,
 				false);
 		
-		v.findViewById(R.id.mapview).setVisibility(View.GONE);
-		
+//		v.findViewById(R.id.mapview).setVisibility(View.GONE);
+		MapView mapView = (MapView) v.findViewById(R.id.mapview);
+		mapView.setVisibility(View.GONE);
 		db = new DataBaseHandler(getActivity());
 
 		Button trackingButton = (Button) v.findViewById(R.id.tracking);
@@ -187,8 +190,8 @@ public class LiveTrackingFragment extends SherlockFragment {
 				
 				List <Coordinates> listContents = new ArrayList<Coordinates>();
 				listContents = db.getAllCoordinatePairs();
-				List <Workout> listWorkouts = new ArrayList<Workout>();
-				listWorkouts = db.getAllWorkouts();
+//				List <Workout> listWorkouts = new ArrayList<Workout>();
+//				listWorkouts = db.getAllWorkouts();
 				
 				
 				for (i = 0; i < listContents.size(); i++) {
@@ -204,8 +207,8 @@ public class LiveTrackingFragment extends SherlockFragment {
 											listContents.get(i).get_latitude())
 								    + "\nDuration"
 								    + TrackService.calcDuration(listContents)
-								    + "\nNumberOfWorkouts: "
-								    + listWorkouts.size()
+//								    + "\nNumberOfWorkouts: "
+//								    + listWorkouts.size()
 							        + "\nElevation"
 							        + TrackService.calcElevation(listContents)
 									+ "\nDistance: "
@@ -217,7 +220,9 @@ public class LiveTrackingFragment extends SherlockFragment {
 			}
 			view.setTag(2);
 			mView.findViewById(R.id.workout_layout).setVisibility(View.GONE);
-			mView.findViewById(R.id.mapview).setVisibility(View.VISIBLE);
+			MapView mapView = (MapView) mView.findViewById(R.id.mapview);
+			mapView.setVisibility(View.VISIBLE);
+			mapView.setBuiltInZoomControls(true);
 			gps.stopUsingGPS();
 			populateWorkoutWithData();
 			db.clearCoordinates();
