@@ -128,17 +128,17 @@ public class LiveTrackingFragment extends SherlockFragment {
 			switch(ac.getId())
 			{
 				case 1:		//Dauer
-					valueView.setText(TrackService.calcDuration(listContents));
+//					valueView.setText(TrackService.calcDuration(listContents));
 					break;
 				case 2:		//Distanz
 					valueView.setText(String.valueOf(TrackService.calcDistance(listContents)));
 					break;
-				case 3:		//Seehöhe	
+				case 3:		//Seehï¿½he	
 					break;
-				case 4:		//Höhenmeter aufwärts
+				case 4:		//Hï¿½henmeter aufwï¿½rts
 					valueView.setText(String.valueOf(TrackService.calcElevation(listContents)));
 					break;
-				case 5:		//Höhenmeter abwärts
+				case 5:		//Hï¿½henmeter abwï¿½rts
 					valueView.setText(String.valueOf(TrackService.calcDescent(listContents)));
 					break;
 				case 6:		//Kalorien
@@ -263,7 +263,7 @@ public class LiveTrackingFragment extends SherlockFragment {
 			MapView mapView = (MapView) mView.findViewById(R.id.mapview);
 			mapView.setVisibility(View.VISIBLE);
 			mapView.setBuiltInZoomControls(true);
-			Drawable marker=getResources().getDrawable(android.R.drawable.btn_default);
+			Drawable marker=getResources().getDrawable(android.R.drawable.star_big_on);
 	        int markerWidth = marker.getIntrinsicWidth();
 	        int markerHeight = marker.getIntrinsicHeight();
 	        marker.setBounds(0, markerHeight, markerWidth, 0);
