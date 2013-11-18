@@ -11,22 +11,21 @@ import org.osmdroid.ResourceProxy;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 
-import android.app.Fragment;
+import android.app.Activity;
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ExpandableListView;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,6 +44,7 @@ import de.dhbw.tracking.MyItemizedOverlay;
 
 public class LiveTrackingFragment extends SherlockFragment {
 
+	private Context mContext;
 	private GPSTracker gps;
     int i;
     private DataBaseHandler db;
@@ -61,10 +61,14 @@ public class LiveTrackingFragment extends SherlockFragment {
 		View v = inflater.inflate(R.layout.live_tracking_fragment, container,
 				false);
 		
-//		v.findViewById(R.id.mapview).setVisibility(View.GONE);
+		mContext = getActivity();
+		
 		MapView mapView = (MapView) v.findViewById(R.id.mapview);
 		mapView.setVisibility(View.GONE);
-		db = new DataBaseHandler(getActivity());
+		ListView listView = (ListView) v.findViewById(R.id.category_list);
+		listView.setVisibility(View.GONE);
+		
+		db = new DataBaseHandler(mContext);
 
 		Button trackingButton = (Button) v.findViewById(R.id.tracking);
 		trackingButton.setOnClickListener(new OnClickListener() {
@@ -94,45 +98,15 @@ public class LiveTrackingFragment extends SherlockFragment {
 			if (ac == null)
 				continue;
 			
-			int viewId = getResources().getIdentifier("workout_element_"+i, "id", getActivity().getPackageName());
+			int viewId = getResources().getIdentifier("workout_element_"+i, "id", mContext.getPackageName());
 			View listElement = mView.findViewById(viewId);
 			listElement.setOnClickListener(new CustomListOnClickListener());
 			
 			String format = ac.getFormat();
 			TextView valueView = ((TextView) listElement.findViewById(R.id.live_tracking_element_value_text));
-			db = new DataBaseHandler(getActivity());
+			db = new DataBaseHandler(mContext);
 			List <Coordinates> listContents = new ArrayList<Coordinates>();
 			listContents = db.getAllCoordinatePairs();
-			
-			//Werte zuordnen
-			switch(ac.getId())
-			{
-				case 1:		
-//					valueView.setText(TrackService.calcDuration(listContents));
-					break;
-				case 2:		
-					valueView.setText(String.valueOf(TrackService.calcDistance(listContents)));
-					break;
-				case 3:		
-					break;
-				case 4:		
-					valueView.setText(String.valueOf(TrackService.calcElevation(listContents)));
-					break;
-				case 5:		
-					valueView.setText(String.valueOf(TrackService.calcDescent(listContents)));
-					break;
-				case 6:		//Kalorien
-					break;
-				case 7:		//Durchschnittsgeschwindigkeit
-					break;
-				case 8:		//Zeit
-					Calendar c = Calendar.getInstance();
-					SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
-					valueView.setText(sdf.format(c.getTime()));
-					break;
-				default:	//Wird nie erreicht
-					break;
-			}
 			
 			if (format.equals("hh:mm:ss"))
 				valueView.setText("00:00:00");
@@ -150,7 +124,37 @@ public class LiveTrackingFragment extends SherlockFragment {
 					valueView.setText("00:00");
 			}
 			
-			int imageId = getResources().getIdentifier(ac.getImageName(), "drawable", getActivity().getPackageName());
+			//Werte zuordnen
+			switch(ac.getId())
+			{
+				case 1:		//Dauer
+					valueView.setText(TrackService.calcDuration(listContents));
+					break;
+				case 2:		//Distanz
+					valueView.setText(String.valueOf(TrackService.calcDistance(listContents)));
+					break;
+				case 3:		//Seehöhe	
+					break;
+				case 4:		//Höhenmeter aufwärts
+					valueView.setText(String.valueOf(TrackService.calcElevation(listContents)));
+					break;
+				case 5:		//Höhenmeter abwärts
+					valueView.setText(String.valueOf(TrackService.calcDescent(listContents)));
+					break;
+				case 6:		//Kalorien
+					break;
+				case 7:		//Durchschnittsgeschwindigkeit
+					break;
+				case 8:		//Zeit
+					Calendar c = Calendar.getInstance();
+					SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
+					valueView.setText(sdf.format(c.getTime()));
+					break;
+				default:	//Wird nie erreicht
+					break;
+			}
+			
+			int imageId = getResources().getIdentifier(ac.getImageName(), "drawable", mContext.getPackageName());
 			((ImageView) listElement.findViewById(R.id.live_tracking_element_value_icon)).setImageResource(imageId);
 						
 			((TextView) listElement.findViewById(R.id.live_tracking_element_name)).setText(ac.getName() + " (" + ac.getFormat() + ")");
@@ -160,34 +164,64 @@ public class LiveTrackingFragment extends SherlockFragment {
 	
 	private class CustomListOnClickListener implements View.OnClickListener
 	{
+		private List<AnalysisCategory> mCategoryList;
+		private ListView mListView = (ListView) ((Activity) mContext).findViewById(R.id.category_list);;
+		
 		@Override
 		public void onClick(View v) {
 			for (int i=0; i<7; i++)
 			{
-				if (v.getId() == getResources().getIdentifier("workout_element_"+i, "id", getActivity().getPackageName()))
+				if (v.getId() == getResources().getIdentifier("workout_element_"+i, "id", mContext.getPackageName()))
 				{
-					CategoryListFragment mCategoryListFragment = new CategoryListFragment();
+					/*CategoryListFragment mCategoryListFragment = new CategoryListFragment();
 					Bundle args = new Bundle();
 					args.putInt("position", i);
 					
 					mCategoryListFragment.setArguments(args);
-					if (getActivity().getSupportFragmentManager().getBackStackEntryCount() == 0) {
-						getActivity().getSupportFragmentManager().beginTransaction()
+					if (mContext.getSupportFragmentManager().getBackStackEntryCount() == 0) {
+						mContext.getSupportFragmentManager().beginTransaction()
 								.replace(R.id.currentFragment, mCategoryListFragment)
 								.addToBackStack(null).commit();
 					} else {
-						getActivity().getSupportFragmentManager().beginTransaction()
+						mContext.getSupportFragmentManager().beginTransaction()
 								.replace(R.id.currentFragment, mCategoryListFragment).commit();
-					}
+					}*/
+					mCategoryList = db.getAllAnalysisCategories();
+					String[] mStringCategories = new String[mCategoryList.size()];
+					for (int j=0; j<mCategoryList.size(); j++)
+						mStringCategories[j] = mCategoryList.get(j).getName() + " (" + mCategoryList.get(j).getFormat() + ")";
+						
+					mView.findViewById(R.id.workout_layout).setVisibility(View.GONE);
+					mListView.setVisibility(View.VISIBLE);
+					mListView.setAdapter(new ArrayAdapter<String>(mContext, R.layout.list_row, R.id.textView, mStringCategories));
+					mListView.setOnItemClickListener(new CustomCategoryListOnItemClickListener(i));
 				}
 			}
 			
 		}	
+		
+		private class CustomCategoryListOnItemClickListener implements OnItemClickListener
+		{
+			private int categoryPosition;
+			
+			public CustomCategoryListOnItemClickListener(int categoryPosition) {
+				this.categoryPosition = categoryPosition;
+			}
+			
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position,
+					long id) {
+				db.updateCategoryPosition(new CategoryPosition(categoryPosition+1, mCategoryList.get(position).getId()));				
+				mListView.setVisibility(View.GONE);
+				setList();
+				mView.findViewById(R.id.workout_layout).setVisibility(View.VISIBLE);
+			}	
+		}
 	}
 
 	public void changeTrackingState(View view) {
 		if (view.getTag() == null) {
-			gps = new GPSTracker(getActivity(), this);
+			gps = new GPSTracker(mContext, this);
 			view.setTag(1);
 			((TextView) view).setText(getString(R.string.button_workout_stop));
 		} else if ((Integer) view.getTag() == 1) {
@@ -201,7 +235,7 @@ public class LiveTrackingFragment extends SherlockFragment {
 				
 				for (i = 0; i < listContents.size(); i++) {
 					Toast.makeText(
-							getActivity(),
+							mContext,
 							"Your Location is - \nLon: "
 									+ listContents.get(i).get_longitude()
 									+ "\nLat: "
@@ -234,7 +268,7 @@ public class LiveTrackingFragment extends SherlockFragment {
 	        int markerHeight = marker.getIntrinsicHeight();
 	        marker.setBounds(0, markerHeight, markerWidth, 0);
 	         
-	        ResourceProxy resourceProxy = new DefaultResourceProxyImpl(getActivity());
+	        ResourceProxy resourceProxy = new DefaultResourceProxyImpl(mContext);
 	         
 	        myItemizedOverlay = new MyItemizedOverlay(marker, resourceProxy);
 	        mapView.getOverlays().add(myItemizedOverlay);
@@ -268,12 +302,12 @@ public class LiveTrackingFragment extends SherlockFragment {
 	}
 
 	public void getToTracking(SherlockFragment single_evaluation) {
-		getActivity().getSupportFragmentManager().beginTransaction()
+		((FragmentActivity) mContext).getSupportFragmentManager().beginTransaction()
 				.add(R.id.currentFragment, single_evaluation).commit();
 	}
 
 	public void getToTrackingEvaluation() {
-		getActivity()
+		((FragmentActivity) mContext)
 				.getSupportFragmentManager()
 				.beginTransaction()
 			.replace(R.id.currentFragment,
@@ -282,12 +316,12 @@ public class LiveTrackingFragment extends SherlockFragment {
 	}
 
 	public void getToTotalEvaluation(SherlockFragment total_evaluation) {
-		if (getActivity().getSupportFragmentManager().getBackStackEntryCount() == 0) {
-			getActivity().getSupportFragmentManager().beginTransaction()
+		if (((FragmentActivity) mContext).getSupportFragmentManager().getBackStackEntryCount() == 0) {
+			((FragmentActivity) mContext).getSupportFragmentManager().beginTransaction()
 					.replace(R.id.currentFragment, total_evaluation)
 					.addToBackStack(null).commit();
 		} else {
-			getActivity().getSupportFragmentManager().beginTransaction()
+			((FragmentActivity) mContext).getSupportFragmentManager().beginTransaction()
 					.replace(R.id.currentFragment, total_evaluation).commit();
 		}
 	}

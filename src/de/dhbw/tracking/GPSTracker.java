@@ -28,6 +28,7 @@ import android.os.IBinder;
 import android.os.StrictMode;
 import android.provider.Settings;
 import android.util.Log;
+import android.widget.Toast;
 
 public class GPSTracker extends Service implements LocationListener {
 	private final Context mContext;
@@ -130,7 +131,7 @@ public class GPSTracker extends Service implements LocationListener {
 			timestamp = location.getTime();
 			DataBaseHandler db = new DataBaseHandler(mContext);
 			db.addCoordinates(new Coordinates(longitude, latitude, altitude, timestamp));
-		}
+		}		
 		// Update List
 		mLiveTrackingFragment.setList();
 	}
