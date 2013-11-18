@@ -6,9 +6,13 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+import org.osmdroid.DefaultResourceProxyImpl;
+import org.osmdroid.ResourceProxy;
+import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 
 import android.app.Fragment;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,6 +41,7 @@ import de.dhbw.database.DataBaseHandler;
 import de.dhbw.database.Workout;
 import de.dhbw.helpers.TrackService;
 import de.dhbw.tracking.GPSTracker;
+import de.dhbw.tracking.MyItemizedOverlay;
 
 public class LiveTrackingFragment extends SherlockFragment {
 
@@ -44,7 +49,7 @@ public class LiveTrackingFragment extends SherlockFragment {
     int i;
     private DataBaseHandler db;
     private View mView;
-    
+    MyItemizedOverlay myItemizedOverlay;
 	public LiveTrackingFragment() {
 		// Empty constructor required for fragment subclasses
 	}
@@ -223,6 +228,20 @@ public class LiveTrackingFragment extends SherlockFragment {
 			MapView mapView = (MapView) mView.findViewById(R.id.mapview);
 			mapView.setVisibility(View.VISIBLE);
 			mapView.setBuiltInZoomControls(true);
+			Drawable marker=getResources().getDrawable(android.R.drawable.star_big_on);
+	        int markerWidth = marker.getIntrinsicWidth();
+	        int markerHeight = marker.getIntrinsicHeight();
+	        marker.setBounds(0, markerHeight, markerWidth, 0);
+	         
+	        ResourceProxy resourceProxy = new DefaultResourceProxyImpl(getActivity());
+	         
+	        myItemizedOverlay = new MyItemizedOverlay(marker, resourceProxy);
+	        mapView.getOverlays().add(myItemizedOverlay);
+	         
+	        GeoPoint myPoint1 = new GeoPoint(0*1000000, 0*1000000);
+	        myItemizedOverlay.addItem(myPoint1, "myPoint1", "myPoint1");
+	        GeoPoint myPoint2 = new GeoPoint(50*1000000, 50*1000000);
+	        myItemizedOverlay.addItem(myPoint2, "myPoint2", "myPoint2");
 			gps.stopUsingGPS();
 			populateWorkoutWithData();
 			db.clearCoordinates();
