@@ -26,6 +26,12 @@
         android:layout_above="@+id/tracking"
         tilesource="Mapnik" />
     
+    <ListView
+        android:id="@+id/category_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/tracking" />
+    
     <LinearLayout
         android:id="@+id/workout_layout"
         android:layout_width="match_parent"

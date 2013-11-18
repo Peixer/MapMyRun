@@ -555,8 +555,12 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 	    values.put(KEY_CATEGORY_ID, categoryPosition.getCategoryId());
 	    
 	    // updating row
-	    return db.update(TABLE_CATEGORY_POSITIONS, values, KEY_POSITION + " = ?",
+	    int dbUpdate = db.update(TABLE_CATEGORY_POSITIONS, values, KEY_POSITION + " = ?",
 	            new String[] { String.valueOf(categoryPosition.getPosition()) });
+	    
+	    db.close();
+	    
+	    return dbUpdate;
 	}
     
     public List<CategoryPosition> getAllCategoryPositions()
