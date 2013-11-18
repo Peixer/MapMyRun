@@ -16,11 +16,11 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
@@ -128,7 +128,7 @@ public class LiveTrackingFragment extends SherlockFragment {
 			switch(ac.getId())
 			{
 				case 1:		//Dauer
-//					valueView.setText(TrackService.calcDuration(listContents));
+					valueView.setText(TrackService.calcDuration(listContents));
 					break;
 				case 2:		//Distanz
 					valueView.setText(String.valueOf(TrackService.calcDistance(listContents)));

@@ -16,22 +16,24 @@ public class TrackService {
 		int R = 6371;
 		double distance = 0;
 		int i;
-		for (i = 0; i < (listContents.size() - 1); i++) {
-			
-			double dLat = Math.toRadians(listContents.get(i + 1).get_latitude()
-					- listContents.get(i).get_latitude());
-			double dLon = Math.toRadians(listContents.get(i + 1)
-					.get_longitude() - listContents.get(i).get_longitude());
-			double a = Math.sin(dLat / 2)
-					* Math.sin(dLat / 2)
-					+ Math.cos(Math.toRadians(listContents.get(i)
-							.get_latitude()))
-					* Math.cos(Math.toRadians(listContents.get(i + 1)
-							.get_latitude())) * Math.sin(dLon / 2)
-					* Math.sin(dLon / 2);
-			double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-			double d = R * c;
-			distance = distance + d;
+		if (listContents.size()>1){
+			for (i = 0; i < (listContents.size() - 1); i++) {
+				
+				double dLat = Math.toRadians(listContents.get(i + 1).get_latitude()
+						- listContents.get(i).get_latitude());
+				double dLon = Math.toRadians(listContents.get(i + 1)
+						.get_longitude() - listContents.get(i).get_longitude());
+				double a = Math.sin(dLat / 2)
+						* Math.sin(dLat / 2)
+						+ Math.cos(Math.toRadians(listContents.get(i)
+								.get_latitude()))
+								* Math.cos(Math.toRadians(listContents.get(i + 1)
+										.get_latitude())) * Math.sin(dLon / 2)
+										* Math.sin(dLon / 2);
+				double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+				double d = R * c;
+				distance = distance + d;
+			}
 		}
 		return distance;
 	}
@@ -66,28 +68,32 @@ public class TrackService {
 	//calculates duration
 	
 	public static String calcDuration(List<Coordinates> listContents){
-		int numberOfSamples = listContents.size();
-		long firstTimeStamp = listContents.get(0).get_timestamp();
-		long lastTimeStamp = listContents.get(numberOfSamples-1).get_timestamp();
-		long duration = lastTimeStamp - firstTimeStamp;
-		long secondInMillis = 1000;
-		long minuteInMillis = secondInMillis * 60;
-		long hourInMillis = minuteInMillis * 60;
-		long dayInMillis = hourInMillis * 24;
-		long yearInMillis = dayInMillis * 365;
-		
-		long elapsedYears = duration/yearInMillis;
-		duration = duration % yearInMillis;
-		long elapsedDays = duration/dayInMillis;
-		duration = duration % dayInMillis;
-		long elapsedHours = duration/hourInMillis;
-		duration = duration % hourInMillis;
-		long elapsedMinutes = duration/minuteInMillis;
-		duration = duration % minuteInMillis;
-		long elapsedSeconds = duration/secondInMillis;
-		
-		return elapsedHours + " : " + elapsedMinutes + " : " + elapsedSeconds;
-		
+		if (listContents.size() > 1){
+			int numberOfSamples = listContents.size();
+			long firstTimeStamp = listContents.get(0).get_timestamp();
+			long lastTimeStamp = listContents.get(numberOfSamples-1).get_timestamp();
+			long duration = lastTimeStamp - firstTimeStamp;
+			long secondInMillis = 1000;
+			long minuteInMillis = secondInMillis * 60;
+			long hourInMillis = minuteInMillis * 60;
+			long dayInMillis = hourInMillis * 24;
+			long yearInMillis = dayInMillis * 365;
+			
+			long elapsedYears = duration/yearInMillis;
+			duration = duration % yearInMillis;
+			long elapsedDays = duration/dayInMillis;
+			duration = duration % dayInMillis;
+			long elapsedHours = duration/hourInMillis;
+			duration = duration % hourInMillis;
+			long elapsedMinutes = duration/minuteInMillis;
+			duration = duration % minuteInMillis;
+			long elapsedSeconds = duration/secondInMillis;
+			
+			
+			return elapsedHours + " : " + elapsedMinutes + " : " + elapsedSeconds;
+		}else {
+			return null;
+		}
 	}
 	
 	//TODO calculates space
