@@ -224,11 +224,12 @@ public class LiveTrackingFragment extends SherlockFragment {
 				gps.showSettingsAlert();
 			}
 			view.setTag(2);
+			
 			mView.findViewById(R.id.workout_layout).setVisibility(View.GONE);
 			MapView mapView = (MapView) mView.findViewById(R.id.mapview);
 			mapView.setVisibility(View.VISIBLE);
 			mapView.setBuiltInZoomControls(true);
-			Drawable marker=getResources().getDrawable(android.R.drawable.star_big_on);
+			Drawable marker=getResources().getDrawable(android.R.drawable.btn_default);
 	        int markerWidth = marker.getIntrinsicWidth();
 	        int markerHeight = marker.getIntrinsicHeight();
 	        marker.setBounds(0, markerHeight, markerWidth, 0);
@@ -237,11 +238,13 @@ public class LiveTrackingFragment extends SherlockFragment {
 	         
 	        myItemizedOverlay = new MyItemizedOverlay(marker, resourceProxy);
 	        mapView.getOverlays().add(myItemizedOverlay);
-	         
-	        GeoPoint myPoint1 = new GeoPoint(0*1000000, 0*1000000);
-	        myItemizedOverlay.addItem(myPoint1, "myPoint1", "myPoint1");
-	        GeoPoint myPoint2 = new GeoPoint(50*1000000, 50*1000000);
-	        myItemizedOverlay.addItem(myPoint2, "myPoint2", "myPoint2");
+			List <Coordinates> listContents = new ArrayList<Coordinates>();
+			listContents = db.getAllCoordinatePairs();
+			for (Coordinates i:listContents){
+				GeoPoint myPoint1 = new GeoPoint(i.get_latitude(), i.get_longitude());
+				myItemizedOverlay.addItem(myPoint1, "myPoint1", "myPoint1");
+			}
+			
 			gps.stopUsingGPS();
 			populateWorkoutWithData();
 			db.clearCoordinates();
