@@ -23,9 +23,19 @@ public class EvaluationPagerAdapter extends FragmentPagerAdapter {
 		return TITLES.length;
 	}
 
-	@Override
-	public SherlockFragment getItem(int position) {
-		return EvaluationFragment.newInstance(position);
-	}
+	  @Override
+      public SherlockFragment getItem(int position) {
+          switch (position) {
+          case 0:
+              return new EvaluationDiagrammFragment();
+          case 1:
+              return new EvaluationStagesFragment();
+          case 2:
+              return new EvaluationSummaryFragment();
+
+          default:
+              return null;
+          }
+      }
 }
 

@@ -10,8 +10,6 @@ import android.view.ViewGroup;
 import com.astuetz.viewpager.extensions.PagerSlidingTabStrip;
 
 import de.dhbw.container.R;
-import de.dhbw.container.R.id;
-import de.dhbw.container.R.layout;
 
 public class EvaluationViewPager extends Fragment {
 
