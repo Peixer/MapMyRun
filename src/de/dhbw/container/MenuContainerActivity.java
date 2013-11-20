@@ -23,6 +23,7 @@ public class MenuContainerActivity extends SherlockFragmentActivity {
 	DrawerLayout mDrawerLayout;
 	ListView mDrawerList;
 	ActionBarDrawerToggle mDrawerToggle;
+	SherlockFragment tracking_from_menu;
 
 	// private CharSequence mDrawerTitle;
 	// private CharSequence mTitle;
@@ -136,6 +137,12 @@ public class MenuContainerActivity extends SherlockFragmentActivity {
 			selectItem(position);
 		}
 	}
+	
+	@Override
+    public void onBackPressed() {
+		((LiveTrackingFragment) tracking_from_menu).onBackPressed();
+    	//super.onBackPressed();
+    }
 
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
@@ -156,7 +163,7 @@ public class MenuContainerActivity extends SherlockFragmentActivity {
 		switch (position) {
 
 		case 0:
-			SherlockFragment tracking_from_menu = new LiveTrackingFragment();
+			tracking_from_menu = new LiveTrackingFragment();
 
 			if (getSupportFragmentManager().getBackStackEntryCount() != 0) {
 				getSupportFragmentManager().popBackStack();

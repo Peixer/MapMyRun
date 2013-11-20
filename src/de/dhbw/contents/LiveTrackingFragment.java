@@ -17,15 +17,18 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -50,6 +53,11 @@ public class LiveTrackingFragment extends SherlockFragment {
     private DataBaseHandler db;
     private View mView;
     MyItemizedOverlay myItemizedOverlay;
+    private LinearLayout mWorkoutLayout;
+    private MapView mMapView;
+    private ListView mListView;
+    private Button trackingButton;
+    
 	public LiveTrackingFragment() {
 		// Empty constructor required for fragment subclasses
 	}
@@ -63,14 +71,16 @@ public class LiveTrackingFragment extends SherlockFragment {
 		
 		mContext = getActivity();
 		
-		MapView mapView = (MapView) v.findViewById(R.id.mapview);
-		mapView.setVisibility(View.GONE);
-		ListView listView = (ListView) v.findViewById(R.id.category_list);
-		listView.setVisibility(View.GONE);
+		mWorkoutLayout = (LinearLayout) v.findViewById(R.id.workout_layout);
+		mWorkoutLayout.setVisibility(View.VISIBLE);
+		mMapView = (MapView) v.findViewById(R.id.mapview);
+		mMapView.setVisibility(View.GONE);
+		mListView = (ListView) v.findViewById(R.id.category_list);
+		mListView.setVisibility(View.GONE);
 		
 		db = new DataBaseHandler(mContext);
 
-		Button trackingButton = (Button) v.findViewById(R.id.tracking);
+		trackingButton = (Button) v.findViewById(R.id.tracking);
 		trackingButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
@@ -81,10 +91,19 @@ public class LiveTrackingFragment extends SherlockFragment {
 		return v;
 	}
 	
+	public void onBackPressed()
+	{
+		if (mListView.getVisibility() == View.VISIBLE)
+		{
+			mListView.setVisibility(View.GONE);
+			mWorkoutLayout.setVisibility(View.VISIBLE);
+		}
+	}
+	
 	@Override
 	public void onResume() {
 		// Set List
-		mView = getView();
+		mView = getView();	
 		setList();
 		super.onResume();
 	}
