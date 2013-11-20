@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import android.widget.Toast;
 
 public class DataBaseHandler extends SQLiteOpenHelper{
 
@@ -24,7 +25,7 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 
 	// All Static variables
     // Database Version
-    private static final int DATABASE_VERSION = 17;
+    private static final int DATABASE_VERSION = 19;
  
     // Database Name
     private static final String DATABASE_NAME = "workoutsManager";
@@ -358,6 +359,20 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 	    db.close(); // Closing database connection
     }
     
+    public int setAchieved(int id) {
+    	SQLiteDatabase db = this.getWritableDatabase();
+	  
+	    ContentValues values = new ContentValues();
+	    values.put(KEY_ACHIEVED, 1);
+	    
+	    // updating row
+	    int dbUpdate = db.update(TABLE_ACHIEVEMENTS, values, KEY_ID + " = ?",
+	            new String[] { String.valueOf(id) });
+	    db.close();
+	    
+	    return dbUpdate;
+		}
+    
     // Get number of achievements
     public int getAchievementCount() {
         String countQuery = "SELECT * FROM " + TABLE_ACHIEVEMENTS;
@@ -372,8 +387,16 @@ public class DataBaseHandler extends SQLiteOpenHelper{
     
  // Get number of achievements by unit
     public int getAchievementCount(String unit) {
-        String countQuery = "SELECT * FROM " + TABLE_ACHIEVEMENTS + " WHERE " + KEY_REQUIREMENT_UNIT + "='" + unit + "'";
-        SQLiteDatabase db = getReadableDatabase();
+        return getAchievementCount(unit, false);
+	}
+    
+    public int getAchievementCount(String unit, boolean achieved) {
+    	String countQuery;
+    	if (achieved)
+	        countQuery = "SELECT * FROM " + TABLE_ACHIEVEMENTS + " WHERE " + KEY_REQUIREMENT_UNIT + "='" + unit + "' AND ACHIEVED = '1'";
+    	else
+    		countQuery = "SELECT * FROM " + TABLE_ACHIEVEMENTS + " WHERE " + KEY_REQUIREMENT_UNIT + "='" + unit + "'";
+    	SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery(countQuery, null);
         int count = cursor.getCount();
         cursor.close();
@@ -390,8 +413,6 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 
 	    if (cursor != null)
 	        cursor.moveToFirst();
-	    
-	    Log.d("Database", "ID: " + id + ", CursorCount: " + cursor.getCount());
 	 
 	    Achievement achievement = new Achievement(
 	    		Integer.parseInt(cursor.getString(cursor.getColumnIndex(KEY_ID))),
@@ -441,10 +462,18 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 	
 	// Getting All Achievements
 	public List <Achievement> getAchievementsByUnit(String unit) {
+		return getAchievementsByUnit(unit, false);
+	}
+	
+	// Getting All Achievements
+	public List <Achievement> getAchievementsByUnit(String unit, Boolean achieved) {
 	    List <Achievement> achievementList = new ArrayList<Achievement>();
 	    // Select All Query
-	    String selectQuery = "SELECT  * FROM " + TABLE_ACHIEVEMENTS + " WHERE " + KEY_REQUIREMENT_UNIT + "='"+unit+"'";
-	 
+	    String selectQuery;
+	    if (achieved)
+	    	selectQuery = "SELECT  * FROM " + TABLE_ACHIEVEMENTS + " WHERE " + KEY_REQUIREMENT_UNIT + "='"+unit+"' AND ACHIEVED = '1'";
+	    else
+	    	selectQuery = "SELECT  * FROM " + TABLE_ACHIEVEMENTS + " WHERE " + KEY_REQUIREMENT_UNIT + "='"+unit+"'";
 	    SQLiteDatabase db = this.getWritableDatabase();
 	    Cursor cursor = db.rawQuery(selectQuery, null);
 	 
@@ -624,14 +653,76 @@ public class DataBaseHandler extends SQLiteOpenHelper{
     		addCategoryPosition(db, new CategoryPosition(i, i));
     }
     
+    public void checkAchievements(Workout aktWorkout, Context mContext)
+    {
+    	List<Achievement> achievementList = getAllAchievements();
+    	for (Achievement achievement : achievementList)
+    	{
+    		if (achievement.isAchieved())
+    			continue;
+    		boolean achieved = false;
+    		if (achievement.getRequiredUnit().equals("skm"))
+    		{
+    			if (aktWorkout.get_distance() > achievement.getRequiredNumber())
+    			{
+    				setAchieved(achievement.getId());
+    				achieved = true;
+    			}
+    		}
+    		else if (achievement.getRequiredUnit().equals("ss"))
+    		{
+    			String[] durationString = aktWorkout.getDuration().split(":");
+    			int duration = Integer.parseInt(durationString[0].trim())*3600 + Integer.parseInt(durationString[1].trim())*60 + Integer.parseInt(durationString[2].trim());
+    			if (duration > achievement.getRequiredNumber())
+    			{
+    				setAchieved(achievement.getId());
+    				achieved = true;
+    			}
+    		}	
+    		else if (achievement.getRequiredUnit().equals("tkm"))
+    		{
+    			int distance = 0;
+    			List<Workout> workOutList = getAllWorkouts();
+    			for (Workout workout : workOutList)
+    				distance += workout.get_distance();
+    			if (distance > achievement.getRequiredNumber())
+    			{
+    				setAchieved(achievement.getId());
+    				achieved = true;
+    			}
+    		}		
+    		else if (achievement.getRequiredUnit().equals("ts"))
+    		{
+    			String[] durationString = aktWorkout.getDuration().split(":");
+    			int duration = Integer.parseInt(durationString[0].trim())*3600 + Integer.parseInt(durationString[1].trim())*60 + Integer.parseInt(durationString[2].trim());
+    			
+    			List<Workout> workOutList = getAllWorkouts();
+    			for (Workout workout : workOutList)
+    			{
+    				durationString = workout.getDuration().split(":");
+    				duration += Integer.parseInt(durationString[0].trim())*3600 + Integer.parseInt(durationString[1].trim())*60 + Integer.parseInt(durationString[2].trim());
+    			}
+    				
+    			if (duration > achievement.getRequiredNumber())
+    			{
+    				setAchieved(achievement.getId());
+    				achieved = true;
+    			}
+    		}
+    		
+    		if (achieved)
+    			Toast.makeText(mContext, "Achievement earned!\n"+achievement.getName()+"\n("+achievement.getDescription()+")", Toast.LENGTH_LONG).show();
+    	}
+    }
+    
     private void initAnalysisCategories (SQLiteDatabase db)
     {
     	//add analysis categories
     	addAnalysisCategory(db, new AnalysisCategory("Dauer", "ic_action_next", "hh:mm:ss"));
     	addAnalysisCategory(db, new AnalysisCategory("Distanz", "ic_action_play", "km"));
-    	addAnalysisCategory(db, new AnalysisCategory("Seehï¿½he", "ic_music_note", "m"));
-    	addAnalysisCategory(db, new AnalysisCategory("Hï¿½henmeter aufwï¿½rts", "ic_action_play", "m"));
-    	addAnalysisCategory(db, new AnalysisCategory("Hï¿½henmeter abwï¿½rts", "ic_action_play", "m"));
+    	addAnalysisCategory(db, new AnalysisCategory("Seehöhe", "ic_music_note", "m"));
+    	addAnalysisCategory(db, new AnalysisCategory("Höhenmeter aufwärts", "ic_action_play", "m"));
+    	addAnalysisCategory(db, new AnalysisCategory("Höhenmeter abwärts", "ic_action_play", "m"));
     	addAnalysisCategory(db, new AnalysisCategory("Kalorien", "ic_action_play", "kcal"));
     	addAnalysisCategory(db, new AnalysisCategory("Durchschnittsgeschwindigkeit", "runner", "kmh"));
     	addAnalysisCategory(db, new AnalysisCategory("Zeit", "ic_trophy", "hh:mm"));
@@ -654,20 +745,20 @@ public class DataBaseHandler extends SQLiteOpenHelper{
         addAchievement(db, new Achievement("Indestructible!", "Laufe insgesamt 10 Stunden", "ic_launcher", "ts", 36000));
         
         // single distance achievements
-        addAchievement(db, new Achievement("So it begins...", "Laufe einen Kilometer am Stï¿½ck", "ic_questionmark", "skm", 1));
-        addAchievement(db, new Achievement("Double the distance!", "Laufe 2 Kilometer am Stï¿½ck", "ic_music_note", "skm", 2));
-        addAchievement(db, new Achievement("High Five!", "Laufe 5 Kilometer am Stï¿½ck", "ic_app", "skm", 5));
-        addAchievement(db, new Achievement("City Run", "Laufe 10 Kilometer am Stï¿½ck", "ic_trophy", "skm", 10));
-        addAchievement(db, new Achievement("Run, Forrest, run!", "Laufe 20 Kilometer am Stï¿½ck", "ic_launcher", "skm", 20));
-        addAchievement(db, new Achievement("You deserve a cookie.", "Laufe 30 Kilometer am Stï¿½ck", "ic_launcher", "skm", 30));
-        addAchievement(db, new Achievement("Almost there...", "Laufe 40 Kilometer am Stï¿½ck", "ic_launcher", "skm", 40));
-        addAchievement(db, new Achievement("Just ran a marathon.", "Laufe 42 Kilometer am Stï¿½ck", "ic_launcher", "skm", 42));
+        addAchievement(db, new Achievement("So it begins...", "Laufe einen Kilometer am Stück", "ic_questionmark", "skm", 1));
+        addAchievement(db, new Achievement("Double the distance!", "Laufe 2 Kilometer am Stück", "ic_music_note", "skm", 2));
+        addAchievement(db, new Achievement("High Five!", "Laufe 5 Kilometer am Stück", "ic_app", "skm", 5));
+        addAchievement(db, new Achievement("City Run", "Laufe 10 Kilometer am Stück", "ic_trophy", "skm", 10));
+        addAchievement(db, new Achievement("Run, Forrest, run!", "Laufe 20 Kilometer am Stück", "ic_launcher", "skm", 20));
+        addAchievement(db, new Achievement("You deserve a cookie.", "Laufe 30 Kilometer am Stück", "ic_launcher", "skm", 30));
+        addAchievement(db, new Achievement("Almost there...", "Laufe 40 Kilometer am Stück", "ic_launcher", "skm", 40));
+        addAchievement(db, new Achievement("Just ran a marathon.", "Laufe 42 Kilometer am Stück", "ic_launcher", "skm", 42));
         
         // single time achievements
-        addAchievement(db, new Achievement("The first experiences", "Laufe 1 Minute am Stï¿½ck", "ic_questionmark", "ss", 60));
-        addAchievement(db, new Achievement("Training", "Laufe 10 Minuten am Stï¿½ck", "ic_music_note", "ss", 600));
-        addAchievement(db, new Achievement("Walker", "Laufe 20 Minuten am Stï¿½ck", "ic_app", "ss", 1200));
-        addAchievement(db, new Achievement("Runner", "Laufe 30 Minuten am Stï¿½ck", "ic_trophy", "ss", 1800));
-        addAchievement(db, new Achievement("You are tired now...or are you?", "Laufe 1 Stunde am Stï¿½ck", "ic_launcher", "ss", 3600));
+        addAchievement(db, new Achievement("The first experiences", "Laufe 1 Minute am Stück", "ic_questionmark", "ss", 60));
+        addAchievement(db, new Achievement("Training", "Laufe 10 Minuten am Stück", "ic_music_note", "ss", 600));
+        addAchievement(db, new Achievement("Walker", "Laufe 20 Minuten am Stück", "ic_app", "ss", 1200));
+        addAchievement(db, new Achievement("Runner", "Laufe 30 Minuten am Stück", "ic_trophy", "ss", 1800));
+        addAchievement(db, new Achievement("You are tired now...or are you?", "Laufe 1 Stunde am Stück", "ic_launcher", "ss", 3600));
     }
 }

@@ -300,8 +300,11 @@ public class LiveTrackingFragment extends SherlockFragment {
 			}
 			
 			gps.stopUsingGPS();
-			populateWorkoutWithData();
+			Workout aktWorkout = populateWorkoutWithData();
+			db.addWorkout(aktWorkout);
 			db.clearCoordinates();
+			
+			db.checkAchievements(aktWorkout, mContext);
 			
 			((TextView) view).setText(getString(R.string.button_workout_analyse));
 		} else if ((Integer) view.getTag() == 2) {
@@ -309,16 +312,16 @@ public class LiveTrackingFragment extends SherlockFragment {
 		}
 	}
 	
-	public void populateWorkoutWithData(){
+	public Workout populateWorkoutWithData(){
 		List <Coordinates> listContents = new ArrayList<Coordinates>();
 		listContents = db.getAllCoordinatePairs();
 		String duration = TrackService.calcDuration(listContents);
-		double pace = 12; // erstmal fix, methode zur Berechnung fehlt noch
+		double pace = 12; // TODO: erstmal fix, methode zur Berechnung fehlt noch
 		double elevation = TrackService.calcElevation(listContents);
 		double descent = TrackService.calcDescent(listContents);
-		double calories_burned = 123;  // erstmal fix, methode zur Berechnung fehlt noch
+		double calories_burned = 123;  // TODO: erstmal fix, methode zur Berechnung fehlt noch
 		double distance = TrackService.calcDistance(listContents);
-	    db.addWorkout(new Workout(duration, pace, elevation, descent, calories_burned, distance));
+		return new Workout(duration, pace, elevation, descent, calories_burned, distance);
 	}
 
 	public void getToTracking(SherlockFragment single_evaluation) {

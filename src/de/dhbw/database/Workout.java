@@ -101,4 +101,14 @@ public class Workout {
     public void setPace(Double pace){
         this._pace = pace;
     }
+    
+    public String toString()
+    {
+    	String string = "";
+    	string += "ID: " + getID();
+    	string += ", Duration: " + getDuration();
+    	string += ", Pace: " + getPace();
+    	string += ", Distance: " + getPace();
+        return string;
+    }
 }

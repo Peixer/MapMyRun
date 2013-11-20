@@ -1,6 +1,5 @@
 package de.dhbw.achievement;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -20,10 +19,7 @@ import de.dhbw.container.R;
 import de.dhbw.database.Achievement;
 import de.dhbw.database.DataBaseHandler;
 
-@SuppressLint("NewApi")
 public class AchievementFragment extends Fragment{
-
-	//private ExpandableListAdapter mAdapter;
 	
 	public AchievementFragment() {
 		
@@ -52,9 +48,16 @@ public class AchievementFragment extends Fragment{
 	
 	public class SavedTabsListAdapter extends BaseExpandableListAdapter {
 		 
-	    private String[] groups = {"Gesamtdistanz", "GesamtZeit", "Einzeldistanz", "Einzelzeit"};
+	    private String[] groups = new String[4];
 	    
 	    private DataBaseHandler db = new DataBaseHandler(getActivity());
+	    
+	    public SavedTabsListAdapter() {
+	    	groups[0] = "Gesamtdistanz (" + db.getAchievementCount("tkm", true) + " von " + db.getAchievementCount("tkm") + ")";
+	    	groups[1] = "GesamtZeit (" + db.getAchievementCount("ts", true) + " von " + db.getAchievementCount("ts") + ")";
+			groups[2] = "Einzeldistanz (" + db.getAchievementCount("skm", true) + " von " + db.getAchievementCount("skm") + ")";
+			groups[3] = "Einzelzeit (" + db.getAchievementCount("ss", true) + " von " + db.getAchievementCount("ss") + ")";
+		}
 	    
 	    private String getUnitByPos(int position)
 	    {
@@ -96,10 +99,9 @@ public class AchievementFragment extends Fragment{
 
 	    @Override
 	    public int getChildrenCount(int i) {
-	        //return children[i].length;
 	    	String unit = getUnitByPos(i);
 	    	if (unit != null)
-	    		return db.getAchievementCount(unit);
+	    		return db.getAchievementCount(unit, true);
 	    	else
 	    		return db.getAchievementCount();	    	
 	    }
@@ -113,7 +115,6 @@ public class AchievementFragment extends Fragment{
 	    public Object getChild(int i, int i1) {
 	    	DataBaseHandler db = new DataBaseHandler(getActivity());
 	    	return db.getAchievementsByUnit(getUnitByPos(i)).get(i1).getName();
-	        //return children[i][i1];
 	    }
 
 	    @Override
@@ -153,11 +154,9 @@ public class AchievementFragment extends Fragment{
 			TextView nameView = (TextView) view.findViewById(R.id.achievement_name);
 			TextView descriptionView = (TextView) view.findViewById(R.id.achievement_description);
 			
-			//ListView listView = getListView();
 			DataBaseHandler db = new DataBaseHandler(getActivity());
-			//Achievement achievement = db.getAchievement(position+1);
+			Achievement achievement = (Achievement) db.getAchievementsByUnit(getUnitByPos(i), true).get(i1);
 			
-			Achievement achievement = (Achievement) db.getAchievementsByUnit(getUnitByPos(i)).get(i1);
 	    	Log.d("ListItem Gruppe "+i+", Item "+i1, achievement.toString());
 			
 			int imageID = getResources().getIdentifier(achievement.getName() , "drawable", getActivity().getPackageName());
@@ -173,8 +172,7 @@ public class AchievementFragment extends Fragment{
 
 	    @Override
 	    public boolean isChildSelectable(int i, int i1) {
-	        //return true;
-	    	return false;
+	    	return false;	//Default: true
 	    }
 	}
 }

@@ -1,5 +1,6 @@
 package de.dhbw.helpers;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 import de.dhbw.database.Coordinates;
@@ -89,10 +90,11 @@ public class TrackService {
 			duration = duration % minuteInMillis;
 			long elapsedSeconds = duration/secondInMillis;
 			
+			DecimalFormat df = new DecimalFormat("00"); //Zweistellige Ausgabe
 			
-			return elapsedHours + " : " + elapsedMinutes + " : " + elapsedSeconds;
+			return df.format(elapsedHours) + ":" + df.format(elapsedMinutes) + ":" + df.format(elapsedSeconds);
 		}else {
-			return null;
+			return "00:00:00";
 		}
 	}
 	
