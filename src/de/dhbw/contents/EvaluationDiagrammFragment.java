@@ -53,7 +53,7 @@ public class EvaluationDiagrammFragment extends SherlockFragment{
 			db = new DataBaseHandler(mContext);
 	        
 	        Number[] days =   { 1  , 2   , 3   , 4   , 5   , 6   , 7 };
-	        Number[] values = { 380, 1433, 1965, 3200, 3651, 3215, 3217 };
+	        Number[] values = { 380, 143, 196, 320, 361, 321, 321 };
 	        
 	        // initialize our XYPlot reference:
 	        plot = (XYPlot) view.findViewById(R.id.mySimpleXYPlot);
@@ -94,8 +94,8 @@ public class EvaluationDiagrammFragment extends SherlockFragment{
 	        
 	        // Turn the above arrays into XYSeries':
 	        XYSeries series1 = new SimpleXYSeries(
-	                Arrays.asList(values),          
-	                SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, 
+	        		Arrays.asList(values),          
+	        		SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, 
 	                "Hoehenmeter");                             // Set the display title of the series
 
 	        // Create a formatter to use for drawing a series using LineAndPointRenderer:
@@ -117,15 +117,15 @@ public class EvaluationDiagrammFragment extends SherlockFragment{
 	        return view;
 	    }
 	    
-	    public Number[] getAltitudeSeries(DataBaseHandler db){
-	    	List <Coordinates> coordinates = db.getAllCoordinatePairs();
-	    	Number [] altitudes = {};
-	    	for (int i = 0; i<coordinates.size(); i++){
-	    		double d = coordinates.get(i).get_altitude();
-	    		altitudes[i] = Math.round(d);
-	    	}
-	    	return altitudes;
-	    }
+//	    public Number[] getAltitudeSeries(DataBaseHandler db){
+//	    	List <Coordinates> coordinates = db.getAllCoordinatePairs();
+//	    	Number [] altitudes = {};
+//	    	for (int i = 0; i<coordinates.size(); i++){
+//	    		double d = coordinates.get(i).get_altitude();
+//	    		altitudes[i] = Math.round(d);
+//	    	}
+//	    	return altitudes;
+//	    }
 	    
 	    
 }
