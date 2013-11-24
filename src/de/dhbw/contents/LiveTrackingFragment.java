@@ -240,6 +240,7 @@ public class LiveTrackingFragment extends SherlockFragment {
 
 	public void changeTrackingState(View view) {
 		if (view.getTag() == null) {
+			db.clearCoordinates();
 			gps = new GPSTracker(mContext, this);
 			view.setTag(1);
 			((TextView) view).setText(getString(R.string.button_workout_stop));
@@ -302,8 +303,6 @@ public class LiveTrackingFragment extends SherlockFragment {
 			gps.stopUsingGPS();
 			Workout aktWorkout = populateWorkoutWithData();
 			db.addWorkout(aktWorkout);
-			db.clearCoordinates();
-			
 			db.checkAchievements(aktWorkout, mContext);
 			
 			((TextView) view).setText(getString(R.string.button_workout_analyse));

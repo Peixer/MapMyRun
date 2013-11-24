@@ -76,7 +76,7 @@ public class EvaluationDiagrammFragment extends SherlockFragment{
 	        plot.getGraphWidget().getRangeOriginLinePaint().setColor(Color.BLACK);
 
 	        // Domain
-	        plot.setDomainStep(XYStepMode.INCREMENT_BY_VAL, values.length);     
+	        plot.setDomainStep(XYStepMode.INCREMENT_BY_VAL, getAltitudeSeries(db).length);     
 	        plot.setDomainValueFormat(new DecimalFormat("0"));
 	        plot.setDomainStepValue(1);
 
@@ -94,7 +94,7 @@ public class EvaluationDiagrammFragment extends SherlockFragment{
 	        
 	        // Turn the above arrays into XYSeries':
 	        XYSeries series1 = new SimpleXYSeries(
-	        		Arrays.asList(values),          
+	        		Arrays.asList(getAltitudeSeries(db)),          
 	        		SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, 
 	                "Hoehenmeter");                             // Set the display title of the series
 
@@ -117,15 +117,15 @@ public class EvaluationDiagrammFragment extends SherlockFragment{
 	        return view;
 	    }
 	    
-//	    public Number[] getAltitudeSeries(DataBaseHandler db){
-//	    	List <Coordinates> coordinates = db.getAllCoordinatePairs();
-//	    	Number [] altitudes = {};
-//	    	for (int i = 0; i<coordinates.size(); i++){
-//	    		double d = coordinates.get(i).get_altitude();
-//	    		altitudes[i] = Math.round(d);
-//	    	}
-//	    	return altitudes;
-//	    }
+	    public Number[] getAltitudeSeries(DataBaseHandler db){
+	    	List <Coordinates> coordinates = db.getAllCoordinatePairs();
+	    	Number [] altitudes = new Number[coordinates.size()];
+	    	for (int i = 0; i<(coordinates.size()-1); i++){
+	    		double d = coordinates.get(i).get_altitude();
+	    		altitudes[i] = Math.round(d);
+	    	}
+	    	return altitudes;
+	    }
 	    
 	    
 }
