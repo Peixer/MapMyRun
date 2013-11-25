@@ -135,7 +135,7 @@ public class LiveTrackingFragment extends SherlockFragment {
 				valueView.setText("0");
 			else if (format.equals("kcal"))
 				valueView.setText("0");
-			else if (format.equals("kmh"))
+			else if (format.equals("km/h"))
 				valueView.setText("0,0");	
 			else if (format.equals("hh:mm"))
 			{
@@ -161,8 +161,10 @@ public class LiveTrackingFragment extends SherlockFragment {
 					valueView.setText(String.valueOf(TrackService.calcDescent(listContents)));
 					break;
 				case 6:		//Kalorien
+					valueView.setText(String.valueOf(TrackService.calcCaloriesBurned(listContents)));
 					break;
 				case 7:		//Durchschnittsgeschwindigkeit
+					valueView.setText(String.valueOf(TrackService.calcPace(listContents)));
 					break;
 				case 8:		//Zeit
 					Calendar c = Calendar.getInstance();
