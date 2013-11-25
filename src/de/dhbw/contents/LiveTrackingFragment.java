@@ -42,6 +42,7 @@ import de.dhbw.database.Coordinates;
 import de.dhbw.database.DataBaseHandler;
 import de.dhbw.database.Workout;
 import de.dhbw.helpers.TrackService;
+import de.dhbw.tracking.DistanceSegment;
 import de.dhbw.tracking.GPSTracker;
 import de.dhbw.tracking.MyItemizedOverlay;
 
@@ -57,6 +58,8 @@ public class LiveTrackingFragment extends SherlockFragment {
     private MapView mMapView;
     private ListView mListView;
     private Button trackingButton;
+    
+    public List<DistanceSegment> mSegmentList = new ArrayList<DistanceSegment>();
     
 	public LiveTrackingFragment() {
 		// Empty constructor required for fragment subclasses
@@ -329,12 +332,17 @@ public class LiveTrackingFragment extends SherlockFragment {
 	}
 
 	public void getToTrackingEvaluation() {
+		Bundle bundle = new Bundle();
+		bundle.putInt("segmentlength", mSegmentList.size());
+		for (int i=0; i<mSegmentList.size(); i++)
+			bundle.putStringArray("segment"+String.valueOf(i), mSegmentList.get(i).toStringArray());
+		EvaluationViewPager evp = new EvaluationViewPager();
+		evp.setArguments(bundle);
 		((FragmentActivity) mContext)
 				.getSupportFragmentManager()
 				.beginTransaction()
 			.replace(R.id.currentFragment,
-						EvaluationViewPager.newInstance(),
-						EvaluationViewPager.TAG).addToBackStack(null).commit();
+						evp, evp.TAG).addToBackStack(null).commit();
 	}
 
 	public void getToTotalEvaluation(SherlockFragment total_evaluation) {

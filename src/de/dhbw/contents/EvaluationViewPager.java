@@ -1,8 +1,12 @@
 package de.dhbw.contents;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,11 +14,13 @@ import android.view.ViewGroup;
 import com.astuetz.viewpager.extensions.PagerSlidingTabStrip;
 
 import de.dhbw.container.R;
+import de.dhbw.tracking.DistanceSegment;
 
 public class EvaluationViewPager extends Fragment {
 
 	public static final String TAG = EvaluationViewPager.class
 			.getSimpleName();
+	private List<DistanceSegment> mSegmentList = new ArrayList<DistanceSegment>();
 
 	public static EvaluationViewPager newInstance() {
 		return new EvaluationViewPager();
@@ -29,6 +35,18 @@ public class EvaluationViewPager extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+		
+		Bundle bundle = this.getArguments();
+		for (int i=0; i < bundle.getInt("segmentlength"); i++)
+		{
+			DistanceSegment tempSegment = new DistanceSegment();
+			tempSegment.fromStringArray(bundle.getStringArray("segment"+String.valueOf(i)));
+			mSegmentList.add(tempSegment);
+		}
+		
+		for (DistanceSegment ds : mSegmentList)
+			Log.d("Test", ds.toString());
+		
 		return inflater.inflate(R.layout.evaluation_pager, container, false);
 	}
 

@@ -1,5 +1,7 @@
 package de.dhbw.container;
 
+import java.util.List;
+
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -16,6 +18,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import de.dhbw.achievement.AchievementFragment;
 import de.dhbw.contents.LiveTrackingFragment;
 import de.dhbw.contents.TotalEvaluationFragment;
+import de.dhbw.tracking.DistanceSegment;
 
 public class MenuContainerActivity extends SherlockFragmentActivity {
 
