@@ -2,13 +2,13 @@ package de.dhbw.database;
 
 public class Workout {
 	 //private variables
-    int _id;
-    String _duration;
-    Double _pace;
-    Double _elevation_downwards;
-    Double _elevation_upwards;
-    Double _calories_burned;
-    Double _distance;
+    private int _id;
+    private String _duration;
+    private Double _pace;
+    private Double _elevation_downwards;
+    private Double _elevation_upwards;
+    private Double _calories_burned;
+    private Double _distance;
     
      
     // Empty constructor
