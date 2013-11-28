@@ -48,8 +48,6 @@ public class EvaluationSummaryFragment extends SherlockFragment{
     	//get the latest Workout 
     	Workout workout = db.getWorkout(numberOfWorkouts-1);
     	
-    	
-    	
         View view = inflater.inflate(R.layout.evaluation_summary_fragment, container, false);
         WorkoutDetail detailDuration = new WorkoutDetail("Dauer", workout.getDuration());
         WorkoutDetail detailDistance = new WorkoutDetail("Distanz", workout.get_distance().toString());
