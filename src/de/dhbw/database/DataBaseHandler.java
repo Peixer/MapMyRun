@@ -1,6 +1,5 @@
 package de.dhbw.database;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -30,7 +29,7 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 
 	// All Static variables
     // Database Version
-    private static final int DATABASE_VERSION = 22;
+    private static final int DATABASE_VERSION = 26;
  
     // Database Name
     private static final String DATABASE_NAME = "workoutsManager";
@@ -54,7 +53,7 @@ public class DataBaseHandler extends SQLiteOpenHelper{
     private static final String KEY_ELEVATION_DOWNWARDS = "elevation_downwards";
     private static final String KEY_ELEVATION_UPWARDS = "elevation_upwards";
     private static final String KEY_CALORIES_BURNED = "calories_burned";
-    private static final String KEY_DISTANCE = "calories_burned";
+    private static final String KEY_DISTANCE = "distance";
     private static final String KEY_DATE = "date";
     //Coordinates
     private static final String KEY_LONGITUDE = "longitude";
@@ -80,7 +79,7 @@ public class DataBaseHandler extends SQLiteOpenHelper{
     		+ KEY_ID + " INTEGER PRIMARY KEY," + KEY_DURATION + " TEXT,"
     		+ KEY_PACE + " REAL," + KEY_ELEVATION_DOWNWARDS + 
     		" REAL," + KEY_ELEVATION_UPWARDS + " REAL,"
-    		+ KEY_CALORIES_BURNED + " REAL" + KEY_DISTANCE + " REAL" + KEY_DATE + " INTEGER" +");";
+    		+ KEY_CALORIES_BURNED + " REAL," + KEY_DISTANCE + " REAL," + KEY_DATE + " INTEGER" + ");";
     //Create Coordinates Table Statement
     String CREATE_COORDINATES_TABLE = "CREATE TABLE " + TABLE_COORDINATES + "("
     		+ KEY_ID + " INTEGER PRIMARY KEY," + KEY_LONGITUDE + " REAL,"
@@ -154,8 +153,7 @@ public class DataBaseHandler extends SQLiteOpenHelper{
     }
      
     // Getting single workout
-    @SuppressWarnings("deprecation")
-	public Workout getWorkout(int id){
+    public Workout getWorkout(int id){
     	SQLiteDatabase db = this.getReadableDatabase();
     	  
 	    Cursor cursor = db.query(TABLE_WORKOUTS, new String[] { KEY_ID,
@@ -178,41 +176,41 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 	            Double.parseDouble(cursor.getString(4)),
 	            Double.parseDouble(cursor.getString(5)),
 	            Double.parseDouble(cursor.getString(6)),
-	            new Date(Integer.parseInt((cursor.getString(7)))));
+	            new Date(Long.parseLong(cursor.getString(7))));
 	    // return workout
 	    return workout;
 		}
      
     // Getting All Workouts
-    	 public List <Workout> getAllWorkouts() {
-    	    List <Workout> workoutList = new ArrayList<Workout>();
-    	    // Select All Query
-    	    String selectQuery = "SELECT  * FROM " + TABLE_WORKOUTS;
-    	 
-    	    SQLiteDatabase db = this.getWritableDatabase();
-    	    Cursor cursor = db.rawQuery(selectQuery, null);
-    	 
-    	    // looping through all rows and adding to list
-    	    if (cursor.moveToFirst()) {
-    	        do {
-    	            Workout workout = new Workout();
-    	            workout.setID(cursor.getInt(cursor.getColumnIndex(KEY_ID)));
-    	            workout.setDuration(cursor.getString(cursor.getColumnIndex(KEY_DURATION)));
-    	            workout.setPace(cursor.getDouble(cursor.getColumnIndex(KEY_PACE)));
-    	            workout.setElevationDownwards(cursor.getDouble(cursor.getColumnIndex(KEY_ELEVATION_DOWNWARDS)));
-    	            workout.setElevationUpwards(cursor.getDouble(cursor.getColumnIndex(KEY_ELEVATION_UPWARDS)));
-    	            workout.setCaloriesBurned(cursor.getDouble(cursor.getColumnIndex(KEY_CALORIES_BURNED)));
-    	            workout.set_distance(cursor.getDouble(cursor.getColumnIndex(KEY_DISTANCE)));
-    	            workout.set_date(new Date((cursor.getInt(cursor.getColumnIndex(KEY_DISTANCE)))));
-    	            // Adding workout to list
-    	            workoutList.add(workout);
-    	        } while (cursor.moveToNext());
-    	    }
-    	    
-    	    db.close();
-    	    // return workout list
-    	    return workoutList;
-		}
+	 public List <Workout> getAllWorkouts() {
+	    List <Workout> workoutList = new ArrayList<Workout>();
+	    // Select All Query
+	    String selectQuery = "SELECT  * FROM " + TABLE_WORKOUTS;
+	 
+	    SQLiteDatabase db = this.getWritableDatabase();
+	    Cursor cursor = db.rawQuery(selectQuery, null);
+	 
+	    // looping through all rows and adding to list
+	    if (cursor.moveToFirst()) {
+	        do {
+	            Workout workout = new Workout();
+	            workout.setID(cursor.getInt(cursor.getColumnIndex(KEY_ID)));
+	            workout.setDuration(cursor.getString(cursor.getColumnIndex(KEY_DURATION)));
+	            workout.setPace(cursor.getDouble(cursor.getColumnIndex(KEY_PACE)));
+	            workout.setElevationDownwards(cursor.getDouble(cursor.getColumnIndex(KEY_ELEVATION_DOWNWARDS)));
+	            workout.setElevationUpwards(cursor.getDouble(cursor.getColumnIndex(KEY_ELEVATION_UPWARDS)));
+	            workout.setCaloriesBurned(cursor.getDouble(cursor.getColumnIndex(KEY_CALORIES_BURNED)));
+	            workout.set_distance(cursor.getDouble(cursor.getColumnIndex(KEY_DISTANCE)));
+	            workout.set_date(new Date((cursor.getLong(cursor.getColumnIndex(KEY_DATE)))));
+	            // Adding workout to list
+	            workoutList.add(workout);
+	        } while (cursor.moveToNext());
+	    }
+	    
+	    db.close();
+	    // return workout list
+	    return workoutList;
+	}
      
     // Getting workouts Count
     public int getWorkoutsCount() {
