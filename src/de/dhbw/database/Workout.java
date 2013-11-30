@@ -1,5 +1,7 @@
 package de.dhbw.database;
 
+import java.util.Date;
+
 public class Workout {
 	 //private variables
     private int _id;
@@ -9,6 +11,7 @@ public class Workout {
     private Double _elevation_upwards;
     private Double _calories_burned;
     private Double _distance;
+    private Date _date;
     
      
     // Empty constructor
@@ -31,6 +34,23 @@ public class Workout {
         this._calories_burned = calories_burned;
         this._distance = distance;
     }
+    public Workout(int id, 
+		       String duration, 
+		       Double pace, 
+		       Double elevation_downwards, 
+		       Double elevation_upwards, 
+		       Double calories_burned, 
+			   Double distance,
+			   Date date){
+		this._id = id;
+		this._duration = duration;
+		this._pace = pace;
+		this._elevation_downwards = elevation_downwards;
+		this._elevation_upwards = elevation_upwards;
+		this._calories_burned = calories_burned;
+		this._distance = distance;
+		this._date = date;
+    }
 
 	public Workout(String duration, Double pace,
 			Double elevation_downwards, Double elevation_upwards,
@@ -42,7 +62,25 @@ public class Workout {
 		this._calories_burned = calories_burned;
 		this._distance = distance;
 	}
+	
+	public Workout(String duration, Double pace,
+			Double elevation_downwards, Double elevation_upwards,
+			Double calories_burned, Double distance, Date date) {
+		this._duration = duration;
+		this._pace = pace;
+		this._elevation_downwards = elevation_downwards;
+		this._elevation_upwards = elevation_upwards;
+		this._calories_burned = calories_burned;
+		this._distance = distance;
+		this._date = date;
+	}
      
+	public Date get_date() {
+		return _date;
+	}
+	public void set_date(Date _date) {
+		this._date = _date;
+	}
     public Double get_distance() {
 		return _distance;
 	}
