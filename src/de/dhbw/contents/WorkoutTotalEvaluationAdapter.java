@@ -1,10 +1,8 @@
 package de.dhbw.contents;
 
 import java.text.SimpleDateFormat;
-
 import java.util.List;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +15,7 @@ import de.dhbw.database.Workout;
 public class WorkoutTotalEvaluationAdapter extends ArrayAdapter <Workout>{
 	private Context mContext;
 	private List <Workout> workouts;
-	
+	SimpleDateFormat df = new SimpleDateFormat("yyyy-mm-dd");
 	public WorkoutTotalEvaluationAdapter(Context context, int resource, List <Workout> workouts) {
 		super(context, resource, workouts);
 		this.mContext = context;
@@ -45,9 +43,9 @@ public class WorkoutTotalEvaluationAdapter extends ArrayAdapter <Workout>{
                      TextView textDistance = (TextView) v.findViewById(R.id.distance);
                      TextView textDuration = (TextView) v.findViewById(R.id.duration);
                      if (textDatum != null) {
-                    	 textDatum.setText(w.get_date().toString());                            }
+                    	 textDatum.setText(df.format(w.get_date()));                            }
                      if(textDistance != null){
-                    	 textDistance.setText(w.get_distance().toString());
+                    	 textDistance.setText(w.get_distance().toString() + " " + "km");
                      }
                      if(textDuration != null){
                     	 textDuration.setText(w.getDuration());

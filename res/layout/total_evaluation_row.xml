@@ -16,9 +16,9 @@
     
     
      <TextView android:id="@+id/date"
-         android:layout_width="wrap_content"
-         android:layout_height="30dp"
-         android:layout_margin="20dp"/>
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_margin="20dp"/>
      
      <ImageView
 		android:id="@+id/road_icon"
@@ -30,8 +30,9 @@
      
  
      <TextView android:id="@+id/distance"
-         android:layout_width="wrap_content"
-         android:layout_height="60dp" />
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_margin="20dp" />
      
      <ImageView
 		android:id="@+id/clock_icon"
@@ -42,8 +43,9 @@
 		android:src="@drawable/clock"/>
      
       <TextView android:id="@+id/duration"
-         android:layout_width="wrap_content"
-         android:layout_height="30dp" />
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_margin="20dp" />
      
  
 </LinearLayout>

@@ -50,11 +50,11 @@ public class EvaluationSummaryFragment extends SherlockFragment{
     	
         View view = inflater.inflate(R.layout.evaluation_summary_fragment, container, false);
         WorkoutDetail detailDuration = new WorkoutDetail("Dauer", workout.getDuration());
-        WorkoutDetail detailDistance = new WorkoutDetail("Distanz", workout.get_distance().toString());
-        WorkoutDetail detailPace = new WorkoutDetail("Geschwindigkeit", workout.getPace().toString());
+        WorkoutDetail detailDistance = new WorkoutDetail("Distanz (km)", workout.get_distance().toString());
+        WorkoutDetail detailPace = new WorkoutDetail("Geschwindigkeit (km/h)", workout.getPace().toString());
         WorkoutDetail detailElevation = new WorkoutDetail("Hoehenmeter aufwaerts", workout.getElevationUpwards().toString());
         WorkoutDetail detailDescent = new WorkoutDetail("Hoehenmeter abwaerts", workout.getElevationDownwards().toString());
-        WorkoutDetail detailCaloriesBurned = new WorkoutDetail("Kalorien", workout.getCaloriesBurned().toString());
+        WorkoutDetail detailCaloriesBurned = new WorkoutDetail("Verbrannte Kalorien", workout.getCaloriesBurned().toString());
         workoutDetails.add(detailDuration);
         workoutDetails.add(detailDistance);
         workoutDetails.add(detailPace);
