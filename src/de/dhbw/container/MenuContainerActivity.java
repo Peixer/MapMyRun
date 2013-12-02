@@ -12,7 +12,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
+
 import de.dhbw.achievement.AchievementFragment;
 import de.dhbw.contents.LiveTrackingFragment;
 import de.dhbw.contents.TotalEvaluationFragment;
@@ -22,13 +25,23 @@ public class MenuContainerActivity extends SherlockFragmentActivity {
 
 	DrawerLayout mDrawerLayout;
 	ListView mDrawerList;
+
 	ActionBarDrawerToggle mDrawerToggle;
 	SherlockFragment tracking_from_menu;
+	private boolean isLocked = false;
 
 	// private CharSequence mDrawerTitle;
 	// private CharSequence mTitle;
 	private String[] mNavigationTitles;
 
+	public boolean isLocked() {
+		return isLocked;
+	}
+	
+	public void setLocked(boolean isLocked) {
+		this.isLocked = isLocked;
+	}
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -87,6 +100,21 @@ public class MenuContainerActivity extends SherlockFragmentActivity {
 		MenuInflater inflater = getSupportMenuInflater();
 		inflater.inflate(R.menu.container, menu);
 		return super.onCreateOptionsMenu(menu);
+	}
+	
+	
+	@Override
+	public boolean onPrepareOptionsMenu(final Menu menu) {
+	    MenuItem menuItem = menu.findItem(R.id.action_achievements);
+
+	    if (isLocked == true) {
+	    	menuItem.setEnabled(false);
+	    } 
+	    else {
+	    	menuItem.setEnabled(true);
+	    }
+
+	    return super.onPrepareOptionsMenu(menu);
 	}
 
 	@Override
