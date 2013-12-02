@@ -29,6 +29,7 @@ public class Achievement {
 		setImageName(imageName);
 		setRequiredUnit(requiredUnit);
 		setRequiredNumber(requiredNumber);
+		setAchieved(false);
 	}
 	
 	public Achievement(String name, String description, String imageName, String requiredUnit, int requiredNumber) {
@@ -38,6 +39,7 @@ public class Achievement {
 		setImageName(imageName);
 		setRequiredUnit(requiredUnit);
 		setRequiredNumber(requiredNumber);
+		setAchieved(false);
 	}
 	
 	public Achievement(String name, String description, String imageName, String requiredUnit, int requiredNumber, boolean achieved) {
@@ -47,6 +49,7 @@ public class Achievement {
 		setImageName(imageName);
 		setRequiredUnit(requiredUnit);
 		setRequiredNumber(requiredNumber);
+		setAchieved(achieved);
 	}
 
 	public String toString()

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.View;
@@ -27,6 +28,7 @@ public class MenuContainerActivity extends SherlockFragmentActivity {
 	ListView mDrawerList;
 	ActionBarDrawerToggle mDrawerToggle;
 	SherlockFragment tracking_from_menu;
+	Fragment achievementFragment;
 
 	// private CharSequence mDrawerTitle;
 	// private CharSequence mTitle;
@@ -119,8 +121,9 @@ public class MenuContainerActivity extends SherlockFragmentActivity {
 			break;
 
 		case R.id.action_achievements:
+			achievementFragment = new AchievementFragment();
 			getSupportFragmentManager().beginTransaction()
-					.replace(R.id.currentFragment, new AchievementFragment())
+					.replace(R.id.currentFragment, achievementFragment)
 					.commit();
 			break;
 

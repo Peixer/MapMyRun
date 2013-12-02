@@ -144,11 +144,11 @@ public class GPSTracker extends Service implements LocationListener {
 			
 			List<Coordinates> coordinatePairs = db.getAllCoordinatePairs();
 			double distance = TrackService.calcDistance(coordinatePairs);
-			if (distance > distanceBorder)
+			if (distance >= distanceBorder)
 			{
 				String distanceString = String.valueOf(distance);
 				String duration = TrackService.calcDuration(coordinatePairs);
-				String speed = "ErsatzSpeed";
+				String speed = String.valueOf(location.getSpeed());
 				mLiveTrackingFragment.mSegmentList.add(new DistanceSegment(distanceString, duration, speed));
 				distanceBorder++;
 			}
