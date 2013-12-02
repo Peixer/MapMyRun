@@ -109,9 +109,11 @@ public class MenuContainerActivity extends SherlockFragmentActivity {
 
 	    if (isLocked == true) {
 	    	menuItem.setEnabled(false);
+	    	mDrawerList.setEnabled(false);
 	    } 
 	    else {
 	    	menuItem.setEnabled(true);
+	    	mDrawerList.setEnabled(true);
 	    }
 
 	    return super.onPrepareOptionsMenu(menu);
