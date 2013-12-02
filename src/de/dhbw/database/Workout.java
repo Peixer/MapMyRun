@@ -74,6 +74,12 @@ public class Workout {
 		this._distance = distance;
 		this._date = date;
 	}
+	
+	public Workout(String duration, Double distance, Date date) {
+		this._duration = duration;
+		this._distance = distance;
+		this._date = date;
+	}
      
 	public Date get_date() {
 		return _date;

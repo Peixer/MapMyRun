@@ -18,7 +18,7 @@ import de.dhbw.database.Workout;
 public class EvaluationSummaryFragment extends SherlockFragment{
 	
 	private ListView lv;
-	private WokoutAdapter adapter;
+	private WorkoutDetailAdapter adapter;
 	private ArrayList <WorkoutDetail> workoutDetails = new ArrayList<WorkoutDetail>();
 	private DataBaseHandler db;
 	private Context mContext;
@@ -63,7 +63,7 @@ public class EvaluationSummaryFragment extends SherlockFragment{
         workoutDetails.add(detailCaloriesBurned);
         
         lv = (ListView) view.findViewById(R.id.evaluation);
-        adapter = new WokoutAdapter(mContext, R.id.evaluation, workoutDetails);
+        adapter = new WorkoutDetailAdapter(mContext, R.id.evaluation, workoutDetails);
         lv.setAdapter(adapter);
         return view;
     }
