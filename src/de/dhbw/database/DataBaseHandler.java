@@ -29,7 +29,7 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 
 	// All Static variables
     // Database Version
-    private static final int DATABASE_VERSION = 26;
+    private static final int DATABASE_VERSION = 27;
  
     // Database Name
     private static final String DATABASE_NAME = "workoutsManager";

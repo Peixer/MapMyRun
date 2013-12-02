@@ -337,15 +337,4 @@ public class LiveTrackingFragment extends SherlockFragment {
 						EvaluationViewPager.TAG).addToBackStack(null).commit();
 	}
 
-	public void getToTotalEvaluation(SherlockFragment total_evaluation) {
-		if (((FragmentActivity) mContext).getSupportFragmentManager().getBackStackEntryCount() == 0) {
-			((FragmentActivity) mContext).getSupportFragmentManager().beginTransaction()
-					.replace(R.id.currentFragment, total_evaluation)
-					.addToBackStack(null).commit();
-		} else {
-			((FragmentActivity) mContext).getSupportFragmentManager().beginTransaction()
-					.replace(R.id.currentFragment, total_evaluation).commit();
-		}
-	}
-
 }

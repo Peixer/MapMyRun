@@ -116,6 +116,9 @@ public class MenuContainerActivity extends SherlockFragmentActivity {
 			break;
 
 		case R.id.action_achievements:
+			if (getSupportFragmentManager().getBackStackEntryCount() != 0) {
+				getSupportFragmentManager().popBackStack();
+			}
 			getSupportFragmentManager().beginTransaction()
 					.replace(R.id.currentFragment, new AchievementFragment())
 					.commit();
@@ -172,6 +175,9 @@ public class MenuContainerActivity extends SherlockFragmentActivity {
 					.replace(R.id.currentFragment, tracking_from_menu).commit();
 			break;
 		case 1:
+			if (getSupportFragmentManager().getBackStackEntryCount() != 0) {
+				getSupportFragmentManager().popBackStack();
+			}
 			getSupportFragmentManager()
 					.beginTransaction()
 					.replace(R.id.currentFragment,
