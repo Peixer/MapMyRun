@@ -13,7 +13,6 @@ import android.widget.TextView;
 import com.actionbarsherlock.app.SherlockFragment;
 
 import de.dhbw.container.R;
-import de.dhbw.container.R.drawable;
 
 public class EvaluationFragment extends SherlockFragment{
 
@@ -39,7 +38,7 @@ public class EvaluationFragment extends SherlockFragment{
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		
-		// TODO: Verschiedene Grafiken einfügen
+		// TODO: Verschiedene Grafiken einfuegen
 		switch(position)
 		{
 			case 0:

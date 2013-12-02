@@ -1,9 +1,5 @@
 package de.dhbw.contents;
-import de.dhbw.database.*;
-
-import java.lang.reflect.Array;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -27,6 +23,8 @@ import com.androidplot.xy.XYSeries;
 import com.androidplot.xy.XYStepMode;
 
 import de.dhbw.container.R;
+import de.dhbw.database.Coordinates;
+import de.dhbw.database.DataBaseHandler;
 
 public class EvaluationDiagrammFragment extends SherlockFragment{
 		private Context mContext;
@@ -51,9 +49,6 @@ public class EvaluationDiagrammFragment extends SherlockFragment{
 	        View view = inflater.inflate(R.layout.evaluation_diagramm_fragment, container, false);
 			mContext = getActivity();
 			db = new DataBaseHandler(mContext);
-	        
-	        Number[] days =   { 1  , 2   , 3   , 4   , 5   , 6   , 7 };
-	        Number[] values = { 380, 143, 196, 320, 361, 321, 321 };
 	        
 	        // initialize our XYPlot reference:
 	        plot = (XYPlot) view.findViewById(R.id.mySimpleXYPlot);

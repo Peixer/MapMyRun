@@ -3,6 +3,7 @@ package de.dhbw.contents;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -16,12 +17,9 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -138,7 +136,7 @@ public class LiveTrackingFragment extends SherlockFragment {
 				valueView.setText("0");
 			else if (format.equals("kcal"))
 				valueView.setText("0");
-			else if (format.equals("kmh"))
+			else if (format.equals("km/h"))
 				valueView.setText("0,0");	
 			else if (format.equals("hh:mm"))
 			{
@@ -155,17 +153,19 @@ public class LiveTrackingFragment extends SherlockFragment {
 				case 2:		//Distanz
 					valueView.setText(String.valueOf(TrackService.calcDistance(listContents)));
 					break;
-				case 3:		//Seeh�he	
+				case 3:		//Seehoehe
 					break;
-				case 4:		//H�henmeter aufw�rts
+				case 4:		//Hoehenmeter aufwaerts
 					valueView.setText(String.valueOf(TrackService.calcElevation(listContents)));
 					break;
-				case 5:		//H�henmeter abw�rts
+				case 5:		//Hoehenmeter abwaerts
 					valueView.setText(String.valueOf(TrackService.calcDescent(listContents)));
 					break;
 				case 6:		//Kalorien
+					valueView.setText(String.valueOf(TrackService.calcCaloriesBurned(listContents)));
 					break;
 				case 7:		//Durchschnittsgeschwindigkeit
+					valueView.setText(String.valueOf(TrackService.calcPace(listContents)));
 					break;
 				case 8:		//Zeit
 					Calendar c = Calendar.getInstance();
@@ -318,12 +318,12 @@ public class LiveTrackingFragment extends SherlockFragment {
 		List <Coordinates> listContents = new ArrayList<Coordinates>();
 		listContents = db.getAllCoordinatePairs();
 		String duration = TrackService.calcDuration(listContents);
-		double pace = 12; // TODO: erstmal fix, methode zur Berechnung fehlt noch
+		double pace = TrackService.calcPace(listContents);
 		double elevation = TrackService.calcElevation(listContents);
 		double descent = TrackService.calcDescent(listContents);
-		double calories_burned = 123;  // TODO: erstmal fix, methode zur Berechnung fehlt noch
+		double calories_burned = TrackService.calcCaloriesBurned(listContents);
 		double distance = TrackService.calcDistance(listContents);
-		return new Workout(duration, pace, elevation, descent, calories_burned, distance);
+		return new Workout(duration, pace, elevation, descent, calories_burned, distance, new Date());
 	}
 
 	public void getToTracking(SherlockFragment single_evaluation) {

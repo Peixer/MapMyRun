@@ -1,8 +1,11 @@
 package de.dhbw.database;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -12,8 +15,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import android.widget.Toast;
 
+@SuppressLint("SimpleDateFormat")
 public class DataBaseHandler extends SQLiteOpenHelper{
-
+	   SimpleDateFormat df = new SimpleDateFormat("yyyyy-mm-dd");
 	   public DataBaseHandler(Context context, String name, CursorFactory factory,
 			int version) {
 		super(context, name, factory, version);
@@ -25,7 +29,7 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 
 	// All Static variables
     // Database Version
-    private static final int DATABASE_VERSION = 19;
+    private static final int DATABASE_VERSION = 26;
  
     // Database Name
     private static final String DATABASE_NAME = "workoutsManager";
@@ -49,7 +53,8 @@ public class DataBaseHandler extends SQLiteOpenHelper{
     private static final String KEY_ELEVATION_DOWNWARDS = "elevation_downwards";
     private static final String KEY_ELEVATION_UPWARDS = "elevation_upwards";
     private static final String KEY_CALORIES_BURNED = "calories_burned";
-    private static final String KEY_DISTANCE = "calories_burned";
+    private static final String KEY_DISTANCE = "distance";
+    private static final String KEY_DATE = "date";
     //Coordinates
     private static final String KEY_LONGITUDE = "longitude";
     private static final String KEY_LATITUDE = "latitude";
@@ -74,7 +79,7 @@ public class DataBaseHandler extends SQLiteOpenHelper{
     		+ KEY_ID + " INTEGER PRIMARY KEY," + KEY_DURATION + " TEXT,"
     		+ KEY_PACE + " REAL," + KEY_ELEVATION_DOWNWARDS + 
     		" REAL," + KEY_ELEVATION_UPWARDS + " REAL,"
-    		+ KEY_CALORIES_BURNED + " REAL" + KEY_DISTANCE + " REAL" + ");";
+    		+ KEY_CALORIES_BURNED + " REAL," + KEY_DISTANCE + " REAL," + KEY_DATE + " INTEGER" + ");";
     //Create Coordinates Table Statement
     String CREATE_COORDINATES_TABLE = "CREATE TABLE " + TABLE_COORDINATES + "("
     		+ KEY_ID + " INTEGER PRIMARY KEY," + KEY_LONGITUDE + " REAL,"
@@ -98,10 +103,10 @@ public class DataBaseHandler extends SQLiteOpenHelper{
         db.execSQL(CREATE_WORKOUTS_TABLE);
         db.execSQL(CREATE_COORDINATES_TABLE);
         Log.d("Workout Query", CREATE_WORKOUTS_TABLE);
-        
+        Log.d("Coordinates Query", CREATE_COORDINATES_TABLE);
         db.execSQL(CREATE_ACHIEVEMENT_TABLE);
         initAchievements(db);
-        
+        Log.d("Achievement Query", CREATE_ACHIEVEMENT_TABLE);
         db.execSQL(CREATE_ANALYSIS_CATEGORY_TABLE);
         initAnalysisCategories(db);
         
@@ -109,11 +114,6 @@ public class DataBaseHandler extends SQLiteOpenHelper{
         initCategoryPositions(db);
     }
     
-//    @Override
-//    public void onOpen(SQLiteDatabase db){
-//        db.execSQL("DROP TABLE IF EXISTS " + TABLE_WORKOUTS);
-//        db.execSQL(CREATE_WORKOUTS_TABLE);
-//    }
     
     public void clearCoordinates(){
       SQLiteDatabase db = this.getWritableDatabase();
@@ -139,7 +139,6 @@ public class DataBaseHandler extends SQLiteOpenHelper{
     public void addWorkout(Workout workout) {
     	
     	SQLiteDatabase db = this.getWritableDatabase();
-	 
     	ContentValues values = new ContentValues();
 	    values.put(KEY_DURATION, workout.getDuration()); 
 	    values.put(KEY_PACE, workout.getPace()); 
@@ -147,23 +146,24 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 	    values.put(KEY_ELEVATION_UPWARDS, workout.getElevationUpwards()); 
 	    values.put(KEY_CALORIES_BURNED, workout.getCaloriesBurned()); 
 	    values.put(KEY_DISTANCE, workout.get_distance()); 
-	    
+	    values.put(KEY_DATE, workout.get_date().getTime());
 	    // Inserting Row
 	    db.insert(TABLE_WORKOUTS, null, values);
 	    db.close(); // Closing database connection
     }
      
     // Getting single workout
-    public Workout getWorkout(int id) {
+    public Workout getWorkout(int id){
     	SQLiteDatabase db = this.getReadableDatabase();
     	  
 	    Cursor cursor = db.query(TABLE_WORKOUTS, new String[] { KEY_ID,
-	    		KEY_DURATION,
+	    		KEY_DURATION, 
 	    		KEY_PACE,
 	    		KEY_ELEVATION_DOWNWARDS,
 	    		KEY_ELEVATION_UPWARDS, 
 	    		KEY_CALORIES_BURNED,
-	    		KEY_DISTANCE}, KEY_ID + "=?",
+	    		KEY_DISTANCE,
+	    		KEY_DATE}, KEY_ID + "=?",
 	            new String[] { String.valueOf(id) }, null, null, null, null);
 	    if (cursor != null)
 	        cursor.moveToFirst();
@@ -175,41 +175,42 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 	            Double.parseDouble(cursor.getString(3)), 
 	            Double.parseDouble(cursor.getString(4)),
 	            Double.parseDouble(cursor.getString(5)),
-	            Double.parseDouble(cursor.getString(6)));
+	            Double.parseDouble(cursor.getString(6)),
+	            new Date(Long.parseLong(cursor.getString(7))));
 	    // return workout
 	    return workout;
 		}
      
     // Getting All Workouts
-    	 public List <Workout> getAllWorkouts() {
-    	    List <Workout> workoutList = new ArrayList<Workout>();
-    	    // Select All Query
-    	    String selectQuery = "SELECT  * FROM " + TABLE_WORKOUTS;
-    	 
-    	    SQLiteDatabase db = this.getWritableDatabase();
-    	    Cursor cursor = db.rawQuery(selectQuery, null);
-    	 
-    	    // looping through all rows and adding to list
-    	    if (cursor.moveToFirst()) {
-    	        do {
-    	            Workout workout = new Workout();
-    	            workout.setID(cursor.getInt(cursor.getColumnIndex(KEY_ID)));
-    	            workout.setDuration(cursor.getString(cursor.getColumnIndex(KEY_DURATION)));
-    	            workout.setPace(cursor.getDouble(cursor.getColumnIndex(KEY_PACE)));
-    	            workout.setElevationDownwards(cursor.getDouble(cursor.getColumnIndex(KEY_ELEVATION_DOWNWARDS)));
-    	            workout.setElevationUpwards(cursor.getDouble(cursor.getColumnIndex(KEY_ELEVATION_UPWARDS)));
-    	            workout.setCaloriesBurned(cursor.getDouble(cursor.getColumnIndex(KEY_CALORIES_BURNED)));
-    	            workout.set_distance(cursor.getDouble(cursor.getColumnIndex(KEY_DISTANCE)));
-    	            
-    	            // Adding workout to list
-    	            workoutList.add(workout);
-    	        } while (cursor.moveToNext());
-    	    }
-    	    
-    	    db.close();
-    	    // return workout list
-    	    return workoutList;
-		}
+	 public List <Workout> getAllWorkouts() {
+	    List <Workout> workoutList = new ArrayList<Workout>();
+	    // Select All Query
+	    String selectQuery = "SELECT  * FROM " + TABLE_WORKOUTS;
+	 
+	    SQLiteDatabase db = this.getWritableDatabase();
+	    Cursor cursor = db.rawQuery(selectQuery, null);
+	 
+	    // looping through all rows and adding to list
+	    if (cursor.moveToFirst()) {
+	        do {
+	            Workout workout = new Workout();
+	            workout.setID(cursor.getInt(cursor.getColumnIndex(KEY_ID)));
+	            workout.setDuration(cursor.getString(cursor.getColumnIndex(KEY_DURATION)));
+	            workout.setPace(cursor.getDouble(cursor.getColumnIndex(KEY_PACE)));
+	            workout.setElevationDownwards(cursor.getDouble(cursor.getColumnIndex(KEY_ELEVATION_DOWNWARDS)));
+	            workout.setElevationUpwards(cursor.getDouble(cursor.getColumnIndex(KEY_ELEVATION_UPWARDS)));
+	            workout.setCaloriesBurned(cursor.getDouble(cursor.getColumnIndex(KEY_CALORIES_BURNED)));
+	            workout.set_distance(cursor.getDouble(cursor.getColumnIndex(KEY_DISTANCE)));
+	            workout.set_date(new Date((cursor.getLong(cursor.getColumnIndex(KEY_DATE)))));
+	            // Adding workout to list
+	            workoutList.add(workout);
+	        } while (cursor.moveToNext());
+	    }
+	    
+	    db.close();
+	    // return workout list
+	    return workoutList;
+	}
      
     // Getting workouts Count
     public int getWorkoutsCount() {
@@ -234,6 +235,7 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 	    values.put(KEY_ELEVATION_UPWARDS, workout.getElevationUpwards());
 	    values.put(KEY_CALORIES_BURNED, workout.getCaloriesBurned());
 	    values.put(KEY_DISTANCE, workout.get_distance());
+	    values.put(KEY_DATE, workout.get_date().getTime());
 	    
 	    // updating row
 	    int dbUpdate = db.update(TABLE_WORKOUTS, values, KEY_ID + " = ?",
@@ -720,9 +722,9 @@ public class DataBaseHandler extends SQLiteOpenHelper{
     	//add analysis categories
     	addAnalysisCategory(db, new AnalysisCategory("Dauer", "ic_action_next", "hh:mm:ss"));
     	addAnalysisCategory(db, new AnalysisCategory("Distanz", "ic_action_play", "km"));
-    	addAnalysisCategory(db, new AnalysisCategory("Seehöhe", "ic_music_note", "m"));
-    	addAnalysisCategory(db, new AnalysisCategory("Höhenmeter aufwärts", "ic_action_play", "m"));
-    	addAnalysisCategory(db, new AnalysisCategory("Höhenmeter abwärts", "ic_action_play", "m"));
+    	addAnalysisCategory(db, new AnalysisCategory("Seehï¿½he", "ic_music_note", "m"));
+    	addAnalysisCategory(db, new AnalysisCategory("Hï¿½henmeter aufwï¿½rts", "ic_action_play", "m"));
+    	addAnalysisCategory(db, new AnalysisCategory("Hï¿½henmeter abwï¿½rts", "ic_action_play", "m"));
     	addAnalysisCategory(db, new AnalysisCategory("Kalorien", "ic_action_play", "kcal"));
     	addAnalysisCategory(db, new AnalysisCategory("Durchschnittsgeschwindigkeit", "runner", "kmh"));
     	addAnalysisCategory(db, new AnalysisCategory("Zeit", "ic_trophy", "hh:mm"));
@@ -745,20 +747,20 @@ public class DataBaseHandler extends SQLiteOpenHelper{
         addAchievement(db, new Achievement("Indestructible!", "Laufe insgesamt 10 Stunden", "ic_launcher", "ts", 36000));
         
         // single distance achievements
-        addAchievement(db, new Achievement("So it begins...", "Laufe einen Kilometer am Stück", "ic_questionmark", "skm", 1));
-        addAchievement(db, new Achievement("Double the distance!", "Laufe 2 Kilometer am Stück", "ic_music_note", "skm", 2));
-        addAchievement(db, new Achievement("High Five!", "Laufe 5 Kilometer am Stück", "ic_app", "skm", 5));
-        addAchievement(db, new Achievement("City Run", "Laufe 10 Kilometer am Stück", "ic_trophy", "skm", 10));
-        addAchievement(db, new Achievement("Run, Forrest, run!", "Laufe 20 Kilometer am Stück", "ic_launcher", "skm", 20));
-        addAchievement(db, new Achievement("You deserve a cookie.", "Laufe 30 Kilometer am Stück", "ic_launcher", "skm", 30));
-        addAchievement(db, new Achievement("Almost there...", "Laufe 40 Kilometer am Stück", "ic_launcher", "skm", 40));
-        addAchievement(db, new Achievement("Just ran a marathon.", "Laufe 42 Kilometer am Stück", "ic_launcher", "skm", 42));
+        addAchievement(db, new Achievement("So it begins...", "Laufe einen Kilometer am Stï¿½ck", "ic_questionmark", "skm", 1));
+        addAchievement(db, new Achievement("Double the distance!", "Laufe 2 Kilometer am Stï¿½ck", "ic_music_note", "skm", 2));
+        addAchievement(db, new Achievement("High Five!", "Laufe 5 Kilometer am Stï¿½ck", "ic_app", "skm", 5));
+        addAchievement(db, new Achievement("City Run", "Laufe 10 Kilometer am Stï¿½ck", "ic_trophy", "skm", 10));
+        addAchievement(db, new Achievement("Run, Forrest, run!", "Laufe 20 Kilometer am Stï¿½ck", "ic_launcher", "skm", 20));
+        addAchievement(db, new Achievement("You deserve a cookie.", "Laufe 30 Kilometer am Stï¿½ck", "ic_launcher", "skm", 30));
+        addAchievement(db, new Achievement("Almost there...", "Laufe 40 Kilometer am Stï¿½ck", "ic_launcher", "skm", 40));
+        addAchievement(db, new Achievement("Just ran a marathon.", "Laufe 42 Kilometer am Stï¿½ck", "ic_launcher", "skm", 42));
         
         // single time achievements
-        addAchievement(db, new Achievement("The first experiences", "Laufe 1 Minute am Stück", "ic_questionmark", "ss", 60));
-        addAchievement(db, new Achievement("Training", "Laufe 10 Minuten am Stück", "ic_music_note", "ss", 600));
-        addAchievement(db, new Achievement("Walker", "Laufe 20 Minuten am Stück", "ic_app", "ss", 1200));
-        addAchievement(db, new Achievement("Runner", "Laufe 30 Minuten am Stück", "ic_trophy", "ss", 1800));
-        addAchievement(db, new Achievement("You are tired now...or are you?", "Laufe 1 Stunde am Stück", "ic_launcher", "ss", 3600));
+        addAchievement(db, new Achievement("The first experiences", "Laufe 1 Minute am Stï¿½ck", "ic_questionmark", "ss", 60));
+        addAchievement(db, new Achievement("Training", "Laufe 10 Minuten am Stï¿½ck", "ic_music_note", "ss", 600));
+        addAchievement(db, new Achievement("Walker", "Laufe 20 Minuten am Stï¿½ck", "ic_app", "ss", 1200));
+        addAchievement(db, new Achievement("Runner", "Laufe 30 Minuten am Stï¿½ck", "ic_trophy", "ss", 1800));
+        addAchievement(db, new Achievement("You are tired now...or are you?", "Laufe 1 Stunde am Stï¿½ck", "ic_launcher", "ss", 3600));
     }
 }
