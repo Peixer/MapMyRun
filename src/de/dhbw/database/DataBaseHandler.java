@@ -452,6 +452,10 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 		            achievement.setImageName(cursor.getString(cursor.getColumnIndex(KEY_IMAGENAME)));
 		            achievement.setRequiredUnit(cursor.getString(cursor.getColumnIndex(KEY_REQUIREMENT_UNIT)));
 		            achievement.setRequiredNumber(cursor.getInt(cursor.getColumnIndex(KEY_REQUIREMENT_NUMBER)));
+		            if (cursor.getInt(cursor.getColumnIndex(KEY_ACHIEVED)) == 0)
+		            	achievement.setAchieved(false);
+		            else
+		            	achievement.setAchieved(true);
 		            // Adding achievement to list
 		            achievementList.add(achievement);
 	        } while (cursor.moveToNext());

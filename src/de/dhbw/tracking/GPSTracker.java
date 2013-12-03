@@ -2,6 +2,8 @@ package de.dhbw.tracking;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -36,6 +38,7 @@ public class GPSTracker extends Service implements LocationListener {
 	
 	//LiveTrackingFragment (needed for updating list values)
 	private LiveTrackingFragment mLiveTrackingFragment;
+	private List<DistanceSegment> mSegmentList = new ArrayList<DistanceSegment>();
 	
 	// flag for GPS status
 	boolean isGPSEnabled = false;
@@ -52,21 +55,27 @@ public class GPSTracker extends Service implements LocationListener {
 	long timestamp;//timestamp of tracking samples
 
 	// The minimum distance to change Updates in meters
-	private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 1; // 1 meter
+	private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10; // 10 meter
 
 	// The minimum time between updates in milliseconds
-	private static final long MIN_TIME_BW_UPDATES = 1000; //1 sec
+	private static final long MIN_TIME_BW_UPDATES = 1000*30; //30 sec
 
 	// Declaring a Location Manager
 	protected LocationManager locationManager;
+	
+	// Barriere für Meilenstein-Kilometer-Berechnung
+	private int distanceBorder = 0;	
+	private final static int DEFAULT_DISTANCE_BORDER = 0;
 
 	public GPSTracker(Context context) {
 		this.mContext = context;
+		this.distanceBorder = DEFAULT_DISTANCE_BORDER;
 		getLocation();
 	}
 	
 	public GPSTracker(Context context, LiveTrackingFragment mLiveTrackingFragment) {
 		this.mContext = context;
+		this.distanceBorder = DEFAULT_DISTANCE_BORDER;
 		setLiveTrackingFragment(mLiveTrackingFragment);
 		getLocation();
 	}
@@ -132,6 +141,17 @@ public class GPSTracker extends Service implements LocationListener {
 			timestamp = location.getTime();
 			DataBaseHandler db = new DataBaseHandler(mContext);
 			db.addCoordinates(new Coordinates(longitude, latitude, altitude, timestamp));
+			
+			List<Coordinates> coordinatePairs = db.getAllCoordinatePairs();
+			double distance = TrackService.calcDistance(coordinatePairs);
+			if (distance >= distanceBorder)
+			{
+				String distanceString = String.valueOf(distance);
+				String duration = TrackService.calcDuration(coordinatePairs);
+				String speed = String.valueOf(location.getSpeed());
+				mLiveTrackingFragment.mSegmentList.add(new DistanceSegment(distanceString, duration, speed));
+				distanceBorder++;
+			}
 		}		
 		// Update List
 		mLiveTrackingFragment.setList();
@@ -228,6 +248,7 @@ public class GPSTracker extends Service implements LocationListener {
         if(locationManager != null){
             locationManager.removeUpdates(GPSTracker.this);
         }      
+        distanceBorder = DEFAULT_DISTANCE_BORDER;
     }
     
     public static double getElevationFromGoogleMaps(double longitude, double latitude) {
