@@ -33,6 +33,7 @@ import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
 
+import de.dhbw.container.MenuContainerActivity;
 import de.dhbw.container.R;
 import de.dhbw.database.AnalysisCategory;
 import de.dhbw.database.CategoryPosition;
@@ -242,11 +243,17 @@ public class LiveTrackingFragment extends SherlockFragment {
 	}
 
 	public void changeTrackingState(View view) {
+		MenuContainerActivity ac = (MenuContainerActivity) getActivity();
 		if (view.getTag() == null) {
 			db.clearCoordinates();
 			gps = new GPSTracker(mContext, this);
 			view.setTag(1);
 			((TextView) view).setText(getString(R.string.button_workout_stop));
+			
+			//Lock navigation to achievements during tracking
+			ac.setLocked(true);
+			ac.invalidateOptionsMenu();
+			
 		} else if ((Integer) view.getTag() == 1) {
 			if (gps.canGetLocation()) {
 				
@@ -311,6 +318,8 @@ public class LiveTrackingFragment extends SherlockFragment {
 			((TextView) view).setText(getString(R.string.button_workout_analyse));
 		} else if ((Integer) view.getTag() == 2) {
 			getToTrackingEvaluation();
+			ac.setLocked(false);
+			ac.invalidateOptionsMenu();
 		}
 	}
 	
@@ -343,17 +352,6 @@ public class LiveTrackingFragment extends SherlockFragment {
 				.beginTransaction()
 			.replace(R.id.currentFragment,
 						evp, evp.TAG).addToBackStack(null).commit();
-	}
-
-	public void getToTotalEvaluation(SherlockFragment total_evaluation) {
-		if (((FragmentActivity) mContext).getSupportFragmentManager().getBackStackEntryCount() == 0) {
-			((FragmentActivity) mContext).getSupportFragmentManager().beginTransaction()
-					.replace(R.id.currentFragment, total_evaluation)
-					.addToBackStack(null).commit();
-		} else {
-			((FragmentActivity) mContext).getSupportFragmentManager().beginTransaction()
-					.replace(R.id.currentFragment, total_evaluation).commit();
-		}
 	}
 
 }

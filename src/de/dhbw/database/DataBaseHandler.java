@@ -17,7 +17,7 @@ import android.widget.Toast;
 
 @SuppressLint("SimpleDateFormat")
 public class DataBaseHandler extends SQLiteOpenHelper{
-	   SimpleDateFormat df = new SimpleDateFormat("yyyyy-mm-dd");
+	   SimpleDateFormat df = new SimpleDateFormat("yyyy-mm");
 	   public DataBaseHandler(Context context, String name, CursorFactory factory,
 			int version) {
 		super(context, name, factory, version);
@@ -211,7 +211,8 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 	    // return workout list
 	    return workoutList;
 	}
-     
+	 
+	 
     // Getting workouts Count
     public int getWorkoutsCount() {
         String countQuery = "SELECT  * FROM " + TABLE_WORKOUTS;
@@ -222,6 +223,7 @@ public class DataBaseHandler extends SQLiteOpenHelper{
         db.close();
         return count;
 		}
+   
     
     
     // Updating single workout

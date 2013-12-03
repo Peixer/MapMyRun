@@ -15,7 +15,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
+
 import de.dhbw.achievement.AchievementFragment;
 import de.dhbw.contents.LiveTrackingFragment;
 import de.dhbw.contents.TotalEvaluationFragment;
@@ -26,14 +29,24 @@ public class MenuContainerActivity extends SherlockFragmentActivity {
 
 	DrawerLayout mDrawerLayout;
 	ListView mDrawerList;
+
 	ActionBarDrawerToggle mDrawerToggle;
 	SherlockFragment tracking_from_menu;
-	Fragment achievementFragment;
+
+	private boolean isLocked = false;
 
 	// private CharSequence mDrawerTitle;
 	// private CharSequence mTitle;
 	private String[] mNavigationTitles;
 
+	public boolean isLocked() {
+		return isLocked;
+	}
+	
+	public void setLocked(boolean isLocked) {
+		this.isLocked = isLocked;
+	}
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -93,6 +106,23 @@ public class MenuContainerActivity extends SherlockFragmentActivity {
 		inflater.inflate(R.menu.container, menu);
 		return super.onCreateOptionsMenu(menu);
 	}
+	
+	
+	@Override
+	public boolean onPrepareOptionsMenu(final Menu menu) {
+	    MenuItem menuItem = menu.findItem(R.id.action_achievements);
+
+	    if (isLocked == true) {
+	    	menuItem.setEnabled(false);
+	    	mDrawerList.setEnabled(false);
+	    } 
+	    else {
+	    	menuItem.setEnabled(true);
+	    	mDrawerList.setEnabled(true);
+	    }
+
+	    return super.onPrepareOptionsMenu(menu);
+	}
 
 	@Override
 	public boolean onOptionsItemSelected(
@@ -121,9 +151,13 @@ public class MenuContainerActivity extends SherlockFragmentActivity {
 			break;
 
 		case R.id.action_achievements:
-			achievementFragment = new AchievementFragment();
+
+			if (getSupportFragmentManager().getBackStackEntryCount() != 0) {
+				getSupportFragmentManager().popBackStack();
+			}
+			
 			getSupportFragmentManager().beginTransaction()
-					.replace(R.id.currentFragment, achievementFragment)
+					.replace(R.id.currentFragment, new AchievementFragment())
 					.commit();
 			break;
 
@@ -178,6 +212,9 @@ public class MenuContainerActivity extends SherlockFragmentActivity {
 					.replace(R.id.currentFragment, tracking_from_menu).commit();
 			break;
 		case 1:
+			if (getSupportFragmentManager().getBackStackEntryCount() != 0) {
+				getSupportFragmentManager().popBackStack();
+			}
 			getSupportFragmentManager()
 					.beginTransaction()
 					.replace(R.id.currentFragment,
