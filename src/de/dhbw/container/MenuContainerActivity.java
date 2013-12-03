@@ -1,9 +1,12 @@
 package de.dhbw.container;
 
+import java.util.List;
+
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.View;
@@ -19,6 +22,7 @@ import com.actionbarsherlock.view.MenuItem;
 import de.dhbw.achievement.AchievementFragment;
 import de.dhbw.contents.LiveTrackingFragment;
 import de.dhbw.contents.TotalEvaluationFragment;
+import de.dhbw.tracking.DistanceSegment;
 
 public class MenuContainerActivity extends SherlockFragmentActivity {
 
@@ -28,6 +32,7 @@ public class MenuContainerActivity extends SherlockFragmentActivity {
 
 	ActionBarDrawerToggle mDrawerToggle;
 	SherlockFragment tracking_from_menu;
+
 	private boolean isLocked = false;
 
 	// private CharSequence mDrawerTitle;
@@ -146,9 +151,11 @@ public class MenuContainerActivity extends SherlockFragmentActivity {
 			break;
 
 		case R.id.action_achievements:
+
 			if (getSupportFragmentManager().getBackStackEntryCount() != 0) {
 				getSupportFragmentManager().popBackStack();
 			}
+			
 			getSupportFragmentManager().beginTransaction()
 					.replace(R.id.currentFragment, new AchievementFragment())
 					.commit();
