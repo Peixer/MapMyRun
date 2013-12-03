@@ -77,7 +77,7 @@ public class EvaluationStagesFragment extends SherlockFragment{
     		((TextView) view.findViewById(R.id.stages_duration)).setText(element[1]);
     		((TextView) view.findViewById(R.id.stages_speed)).setText(element[2]);
     		
-    		view.setBackgroundResource(R.drawable.background_border);
+    		view.setBackgroundResource(R.drawable.live_timing_background);
     		
     		return view;
     		//return super.getView(position, convertView, parent);

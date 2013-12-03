@@ -10,8 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="45dp" 
         android:gravity="center"
-        android:paddingLeft="?android:attr/expandableListPreferredItemPaddingLeft"      
-        android:textColor="#BBBBBB"
+        android:paddingLeft="?android:attr/expandableListPreferredItemPaddingLeft"
         android:textSize="18sp" />
 <!--  
 	android:layout_marginBottom="100dp"

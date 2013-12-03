@@ -20,14 +20,14 @@
     			android:layout_height="0dp"
     			android:layout_weight="1"
     			android:gravity="center"
-    			android:background="@drawable/background_border"
+    			android:background="@drawable/live_timing_background"
     			android:text="Schn. Abschnitt"/>
     	    <TextView 
     	        android:layout_width="match_parent"
     			android:layout_height="0dp"
     			android:layout_weight="1"
     			android:gravity="center"
-    			android:background="@drawable/background_border"
+    			android:background="@drawable/live_timing_background"
     			android:text="00:00:00"/>
     	</LinearLayout>
     	<LinearLayout 
@@ -40,14 +40,14 @@
     			android:layout_height="0dp"
     			android:layout_weight="1"
     			android:gravity="center"
-    			android:background="@drawable/background_border"
+    			android:background="@drawable/live_timing_background"
     			android:text="Langs. Abschnitt"/>
     	    <TextView 
     	        android:layout_width="match_parent"
     			android:layout_height="0dp"
     			android:layout_weight="1"
     			android:gravity="center"
-    			android:background="@drawable/background_border"
+    			android:background="@drawable/live_timing_background"
     			android:text="00:00:00"/>
     	</LinearLayout>
     </LinearLayout>
