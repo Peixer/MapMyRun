@@ -29,7 +29,7 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 
 	// All Static variables
     // Database Version
-    private static final int DATABASE_VERSION = 27;
+    private static final int DATABASE_VERSION = 28;
  
     // Database Name
     private static final String DATABASE_NAME = "workoutsManager";
@@ -729,11 +729,11 @@ public class DataBaseHandler extends SQLiteOpenHelper{
     	addAnalysisCategory(db, new AnalysisCategory("Dauer", "clock", "hh:mm:ss"));
     	addAnalysisCategory(db, new AnalysisCategory("Distanz", "road", "km"));
     	addAnalysisCategory(db, new AnalysisCategory("Seehoehe", "ic_music_note", "m"));
-    	addAnalysisCategory(db, new AnalysisCategory("Hoehenmeter aufwaerts", "ic_action_play", "m"));
-    	addAnalysisCategory(db, new AnalysisCategory("Hoehenmeter abwaerts", "ic_action_play", "m"));
-    	addAnalysisCategory(db, new AnalysisCategory("Kalorien", "ic_action_play", "kcal"));
-    	addAnalysisCategory(db, new AnalysisCategory("Durchschnittsgeschwindigkeit", "runner", "kmh"));
-    	addAnalysisCategory(db, new AnalysisCategory("Zeit", "ic_trophy", "hh:mm"));
+    	addAnalysisCategory(db, new AnalysisCategory("Hoehenmeter aufwaerts", "elevation", "m"));
+    	addAnalysisCategory(db, new AnalysisCategory("Hoehenmeter abwaerts", "elevation", "m"));
+    	addAnalysisCategory(db, new AnalysisCategory("Kalorien", "calories_burned", "kcal"));
+    	addAnalysisCategory(db, new AnalysisCategory("Durchschnittsgeschwindigkeit", "speed", "kmh"));
+    	addAnalysisCategory(db, new AnalysisCategory("Zeit", "clock", "hh:mm"));
     }
     
     private void initAchievements(SQLiteDatabase db)
