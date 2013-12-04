@@ -154,21 +154,21 @@ public class LiveTrackingFragment extends SherlockFragment {
 				case 2:		//Distanz
 					valueView.setText(String.valueOf(TrackService.calcDistance(listContents)));
 					break;
-				case 3:		//Seehoehe
-					break;
-				case 4:		//Hoehenmeter aufwaerts
+//				case 3:		//Seehoehe
+//					break;
+				case 3:		//Hoehenmeter aufwaerts
 					valueView.setText(String.valueOf(TrackService.calcElevation(listContents)));
 					break;
-				case 5:		//Hoehenmeter abwaerts
+				case 4:		//Hoehenmeter abwaerts
 					valueView.setText(String.valueOf(TrackService.calcDescent(listContents)));
 					break;
-				case 6:		//Kalorien
+				case 5:		//Kalorien
 					valueView.setText(String.valueOf(TrackService.calcCaloriesBurned(listContents)));
 					break;
-				case 7:		//Durchschnittsgeschwindigkeit
+				case 6:		//Durchschnittsgeschwindigkeit
 					valueView.setText(String.valueOf(TrackService.calcPace(listContents)));
 					break;
-				case 8:		//Zeit
+				case 7:		//Zeit
 					Calendar c = Calendar.getInstance();
 					SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
 					valueView.setText(sdf.format(c.getTime()));
@@ -196,19 +196,6 @@ public class LiveTrackingFragment extends SherlockFragment {
 			{
 				if (v.getId() == getResources().getIdentifier("workout_element_"+i, "id", mContext.getPackageName()))
 				{
-					/*CategoryListFragment mCategoryListFragment = new CategoryListFragment();
-					Bundle args = new Bundle();
-					args.putInt("position", i);
-					
-					mCategoryListFragment.setArguments(args);
-					if (mContext.getSupportFragmentManager().getBackStackEntryCount() == 0) {
-						mContext.getSupportFragmentManager().beginTransaction()
-								.replace(R.id.currentFragment, mCategoryListFragment)
-								.addToBackStack(null).commit();
-					} else {
-						mContext.getSupportFragmentManager().beginTransaction()
-								.replace(R.id.currentFragment, mCategoryListFragment).commit();
-					}*/
 					mCategoryList = db.getAllAnalysisCategories();
 					String[] mStringCategories = new String[mCategoryList.size()];
 					for (int j=0; j<mCategoryList.size(); j++)
