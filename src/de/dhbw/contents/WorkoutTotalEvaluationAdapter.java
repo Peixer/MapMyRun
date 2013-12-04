@@ -15,7 +15,7 @@ import de.dhbw.database.Workout;
 public class WorkoutTotalEvaluationAdapter extends ArrayAdapter <Workout>{
 	private Context mContext;
 	private List <Workout> workouts;
-	SimpleDateFormat df = new SimpleDateFormat("yyyy-mm-dd");
+	SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 	public WorkoutTotalEvaluationAdapter(Context context, int resource, List <Workout> workouts) {
 		super(context, resource, workouts);
 		this.mContext = context;
