@@ -29,7 +29,7 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 
 	// All Static variables
     // Database Version
-    private static final int DATABASE_VERSION = 31;
+    private static final int DATABASE_VERSION = 32;
  
     // Database Name
     private static final String DATABASE_NAME = "workoutsManager";
@@ -728,11 +728,10 @@ public class DataBaseHandler extends SQLiteOpenHelper{
     	//add analysis categories
     	addAnalysisCategory(db, new AnalysisCategory("Dauer", "clock", "hh:mm:ss"));
     	addAnalysisCategory(db, new AnalysisCategory("Distanz", "road", "km"));
-//    	addAnalysisCategory(db, new AnalysisCategory("Seehoehe", "ic_music_note", "m"));
     	addAnalysisCategory(db, new AnalysisCategory("Hoehenmeter aufwaerts", "elevation", "m"));
     	addAnalysisCategory(db, new AnalysisCategory("Hoehenmeter abwaerts", "elevation", "m"));
     	addAnalysisCategory(db, new AnalysisCategory("Kalorien", "calories_burned", "kcal"));
-    	addAnalysisCategory(db, new AnalysisCategory("Durchschnittsgeschwindigkeit", "speed", "kmh"));
+    	addAnalysisCategory(db, new AnalysisCategory("Durchschnittsgeschwindigkeit", "speed_2", "kmh"));
     	addAnalysisCategory(db, new AnalysisCategory("Zeit", "clock", "hh:mm"));
     }
     
