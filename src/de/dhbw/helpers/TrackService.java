@@ -135,7 +135,7 @@ public class TrackService {
 	public static double calcCaloriesBurned(List<Coordinates> listContents){
 	 //an average weight of 75 kg is assumed
 	 double caloriesBurned = calcDistance(listContents)*75;
-	 return caloriesBurned;
+	 return roundNumber(caloriesBurned, 3);
 	}
 	
 	

@@ -154,8 +154,6 @@ public class LiveTrackingFragment extends SherlockFragment {
 				case 2:		//Distanz
 					valueView.setText(String.valueOf(TrackService.calcDistance(listContents)));
 					break;
-//				case 3:		//Seehoehe
-//					break;
 				case 3:		//Hoehenmeter aufwaerts
 					valueView.setText(String.valueOf(TrackService.calcElevation(listContents)));
 					break;
