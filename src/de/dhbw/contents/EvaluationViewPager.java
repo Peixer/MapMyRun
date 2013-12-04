@@ -23,6 +23,7 @@ public class EvaluationViewPager extends Fragment {
 	public static final String TAG = EvaluationViewPager.class
 			.getSimpleName();
 	private List<DistanceSegment> mSegmentList = new ArrayList<DistanceSegment>();
+	
 
 	public static EvaluationViewPager newInstance() {
 		return new EvaluationViewPager();
@@ -60,6 +61,10 @@ public class EvaluationViewPager extends Fragment {
 				.findViewById(R.id.tabs);
 		ViewPager pager = (ViewPager) view.findViewById(R.id.pager);
 		EvaluationPagerAdapter adapter = new EvaluationPagerAdapter(getChildFragmentManager());
+		
+		//prevent duplicating fragments when swiping back and forth between them
+		pager.setOffscreenPageLimit(3);
+		
 		pager.setAdapter(adapter);
 		tabs.setViewPager(pager);
 
