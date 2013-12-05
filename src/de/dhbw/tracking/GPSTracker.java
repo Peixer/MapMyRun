@@ -36,34 +36,44 @@ import android.widget.Toast;
 public class GPSTracker extends Service implements LocationListener {
 	private final Context mContext;
 	
-	//LiveTrackingFragment (needed for updating list values)
+	//LiveTrackingFragment um Listenwerte zu aktualisieren
 	private LiveTrackingFragment mLiveTrackingFragment;
 	private List<DistanceSegment> mSegmentList = new ArrayList<DistanceSegment>();
 	
-	// flag for GPS status
-	boolean isGPSEnabled = false;
+	// Flag fuer GPS Status
+	private boolean isGPSEnabled = false;
 
-	// flag for network status
-	boolean isNetworkEnabled = false;
+	// Flag fuer Netzwerkstatus
+	private boolean isNetworkEnabled = false;
 
-	boolean canGetLocation = false;
+	private boolean canGetLocation = false;
+	
+	//Standort
+	private Location location; 
+	
+	//Hoehengrad
+	private double latitude; 
+	
+	//Breitengrad
+	private double longitude; 
+	
+	
+	//Seehoehe
+	private double altitude; 
+	
+	//Zeitstempel für Trackingpunkte
+	private long timestamp;
 
-	Location location; // location
-	double latitude; // latitude
-	double longitude; // longitude
-	double altitude; //altitude
-	long timestamp;//timestamp of tracking samples
+	// Die minimale Entfernung um Trackingdaten zu aktualisiern
+	private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 1; // 1 Meter
 
-	// The minimum distance to change Updates in meters
-	private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10; // 10 meter
+	//Die minimale vergangene Zeit um Trackingdaten zu aktualisieren
+	private static final long MIN_TIME_BW_UPDATES = 1000*25; //25 Sekunden
 
-	// The minimum time between updates in milliseconds
-	private static final long MIN_TIME_BW_UPDATES = 1000*30; //30 sec
-
-	// Declaring a Location Manager
+	// Location Manager
 	protected LocationManager locationManager;
 	
-	// Barriere f�r Meilenstein-Kilometer-Berechnung
+	// Barriere fuer Meilenstein-Kilometer-Berechnung
 	private int distanceBorder = 0;	
 	private final static int DEFAULT_DISTANCE_BORDER = 0;
 
@@ -80,24 +90,26 @@ public class GPSTracker extends Service implements LocationListener {
 		getLocation();
 	}
 	
+	
+	//aktuellen Standort ermitteln
 	public Location getLocation() {
         try {
             locationManager = (LocationManager) mContext
                     .getSystemService(LOCATION_SERVICE);
  
-            // getting GPS status
+            // GPS Status abfragen
             isGPSEnabled = locationManager
                     .isProviderEnabled(LocationManager.GPS_PROVIDER);
  
-            // getting network status
+            // Netzwerkstatus abfragen
             isNetworkEnabled = locationManager
                     .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
  
             if (!isGPSEnabled && !isNetworkEnabled) {
-                // no network provider is enabled
+                // kein Netzwerkprovider
             } else {
                 this.canGetLocation = true;
-                // First get location from Network Provider
+                // Standort bevorzugt ueber Netwerk ermitteln
                 if (isNetworkEnabled) {
                     locationManager.requestLocationUpdates(
                             LocationManager.NETWORK_PROVIDER,
@@ -109,7 +121,7 @@ public class GPSTracker extends Service implements LocationListener {
                                 .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
                     }
                 }
-                // if GPS Enabled get lat/long using GPS Services
+                // falls GPS aktiviert Hoehen- und Breitengrad ermitteln
                 if (isGPSEnabled) {
                     if (location == null) {
                         locationManager.requestLocationUpdates(
@@ -140,9 +152,14 @@ public class GPSTracker extends Service implements LocationListener {
 			altitude = getElevationFromGoogleMaps(longitude, latitude);
 			timestamp = location.getTime();
 			DataBaseHandler db = new DataBaseHandler(mContext);
+			
+			//neue Koordinaten speichern
 			db.addCoordinates(new Coordinates(longitude, latitude, altitude, timestamp));
 			
 			List<Coordinates> coordinatePairs = db.getAllCoordinatePairs();
+			
+			
+			//TODO comment
 			double distance = TrackService.calcDistance(coordinatePairs);
 			if (distance >= distanceBorder)
 			{
@@ -153,7 +170,7 @@ public class GPSTracker extends Service implements LocationListener {
 				distanceBorder++;
 			}
 		}		
-		// Update List
+		// Live Tracking Liste aktualisieren
 		mLiveTrackingFragment.setList();
 	}
  
@@ -175,7 +192,7 @@ public class GPSTracker extends Service implements LocationListener {
     }
     
     /**
-     * Function to get latitude
+     * liefert Hoehengrad
      * */
     public double getLatitude(){
         if(location != null){
@@ -187,7 +204,7 @@ public class GPSTracker extends Service implements LocationListener {
     }
      
     /**
-     * Function to get longitude
+     * liefert Breitengrad
      * */
     public double getLongitude(){
         if(location != null){
@@ -198,7 +215,7 @@ public class GPSTracker extends Service implements LocationListener {
         return longitude;
     }
     /**
-     * Function to check if best network provider
+     * Prueft besten Netzwerkprovider
      * @return boolean
      * */
     public boolean canGetLocation() {
@@ -206,21 +223,18 @@ public class GPSTracker extends Service implements LocationListener {
     }
      
     /**
-     * Function to show settings alert dialog
+     * Warnung ueber Einstellungen
      * */
     public void showSettingsAlert(){
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
       
-        // Setting Dialog Title
+        // Warnungtitel
         alertDialog.setTitle("GPS is settings");
   
-        // Setting Dialog Message
+        // Warnungsnachricht
         alertDialog.setMessage("GPS is not enabled. Do you want to go to settings menu?");
-  
-        // Setting Icon to Dialog
-        //alertDialog.setIcon(R.drawable.delete);
-  
-        // On pressing Settings button
+        
+        // Wenn Einstellungen gedrückt
         alertDialog.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog,int which) {
                 Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
@@ -228,14 +242,14 @@ public class GPSTracker extends Service implements LocationListener {
             }
         });
   
-        // on pressing cancel button
+        // Wenn Cancel gedrueckt
         alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
             dialog.cancel();
             }
         });
   
-        // Showing Alert Message
+        // Warnungstext einblenden
         alertDialog.show();
     }
     
@@ -251,6 +265,8 @@ public class GPSTracker extends Service implements LocationListener {
         distanceBorder = DEFAULT_DISTANCE_BORDER;
     }
     
+    
+    //Seehoehe ueber Googledienst ermitteln
     public static double getElevationFromGoogleMaps(double longitude, double latitude) {
     	StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 
