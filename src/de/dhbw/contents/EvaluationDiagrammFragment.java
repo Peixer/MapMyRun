@@ -49,10 +49,43 @@ public class EvaluationDiagrammFragment extends SherlockFragment{
 	        View view = inflater.inflate(R.layout.evaluation_diagramm_fragment, container, false);
 			mContext = getActivity();
 			db = new DataBaseHandler(mContext);
+			//Diagramm erstellen
+			plot = (XYPlot) view.findViewById(R.id.mySimpleXYPlot);
+			
+			//XY Koordinatenachsen formatieren
+			formatXYBorderDisplay(plot);
+			
+			// X Werte (Anzahl Seehoehenmessungen) konfiguriren 
+			configXSeries(plot);
+			
+			//Y Werte (Seehoehe) konfigurieren
+			configYSeries(plot);
+
+	        //Legende entfernen
+			removeLegend(plot);
 	        
-	        // initialize our XYPlot reference:
-	        plot = (XYPlot) view.findViewById(R.id.mySimpleXYPlot);
+	        // Werte fuer X und Y Achsen festlegen
+	        XYSeries altitudeSeries = defineXYValues();
 	        
+	        // Diagramm mit Daten befuellen
+	        plot.addSeries(altitudeSeries, formatDiagramm());
+
+	        return view;
+	    }
+	    
+	    //liefert Seehoehendaten als Liste zur Anzeige als Y Werte im Diagramm
+	    public Number[] getAltitudeSeries(DataBaseHandler db){
+	    	List <Coordinates> coordinates = db.getAllCoordinatePairs();
+	    	Number [] altitudes = new Number[coordinates.size()];
+	    	for (int i = 0; i<(coordinates.size()-1); i++){
+	    		double d = coordinates.get(i).get_altitude();
+	    		altitudes[i] = Math.round(d);
+	    	}
+	    	return altitudes;
+	    }
+	    
+	    //XY Koordinatenachsen formatieren
+	    public void formatXYBorderDisplay(XYPlot plot){
 	        plot.setBorderStyle(Plot.BorderStyle.NONE, null, null);
 	        plot.setPlotMargins(0, 0, 0, 0);
 	        plot.setPlotPadding(0, 0, 0, 0);
@@ -69,58 +102,52 @@ public class EvaluationDiagrammFragment extends SherlockFragment{
 	        plot.getGraphWidget().getDomainOriginLabelPaint().setColor(Color.BLACK);
 	        plot.getGraphWidget().getDomainOriginLinePaint().setColor(Color.BLACK);
 	        plot.getGraphWidget().getRangeOriginLinePaint().setColor(Color.BLACK);
-
-	        // Domain
+	    }
+	    
+	    
+	    // X Werte (Anzahl Seehoehenmessungen) konfiguriren 
+	    public void configXSeries(XYPlot plot){
 	        plot.setDomainStep(XYStepMode.INCREMENT_BY_VAL, getAltitudeSeries(db).length);     
 	        plot.setDomainValueFormat(new DecimalFormat("0"));
 	        plot.setDomainStepValue(1);
-
-	        //Range
+	    }
+	    
+	    //Y Werte (Seehoehe) konfigurieren
+	    public void configYSeries(XYPlot plot){
 	        plot.setRangeBoundaries(0, 1000, BoundaryMode.FIXED);
 	        plot.setRangeStepValue(10);
-	        //mySimpleXYPlot.setRangeStep(XYStepMode.SUBDIVIDE, values.length);
 	        plot.setRangeValueFormat(new DecimalFormat("0"));
-
-	        //Remove legend
-	        plot.getLayoutManager().remove(plot.getDomainLabelWidget());
+	    }
+	    
+	    //Legende entfernen
+	    public void removeLegend(XYPlot plot){
+	    	plot.getLayoutManager().remove(plot.getDomainLabelWidget());
 	        plot.getLayoutManager().remove(plot.getRangeLabelWidget());
-	        plot.getLayoutManager().remove(plot.getTitleWidget());
-	        
-	        
-	        // Turn the above arrays into XYSeries':
-	        XYSeries series1 = new SimpleXYSeries(
-	        		Arrays.asList(getAltitudeSeries(db)),          
-	        		SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, 
-	                "Hoehenmeter");                             // Set the display title of the series
-
-	        // Create a formatter to use for drawing a series using LineAndPointRenderer:
-	        LineAndPointFormatter series1Format = new LineAndPointFormatter(
-	                Color.rgb(0, 200, 0),                   // line color
-	                Color.rgb(0, 100, 0),                   // point color
-	                Color.GREEN, null);                      // fill color 
-
-	        // setup our line fill paint to be a slightly transparent gradient:
+	        plot.getLayoutManager().remove(plot.getTitleWidget());	
+	    }
+	    
+	    // Werte fuer X und Y Achsen festlegen
+		public XYSeries defineXYValues() {
+			XYSeries altitudeSeries = new SimpleXYSeries(
+					Arrays.asList(getAltitudeSeries(db)),
+					SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, "Hoehenmeter"); // Seehohe als Titel
+			return altitudeSeries;
+		}
+		
+		//Diagrammlinien und -füllfarben festelgen
+		public LineAndPointFormatter formatDiagramm(){
+			LineAndPointFormatter series1Format = new LineAndPointFormatter(
+		               Color.rgb(0, 200, 0),                   // Lienienfarbe
+		               Color.rgb(0, 100, 0),                   // Punktfarbe
+		               Color.GREEN, null);                      // Füllungsfarbe
+	
+	        // Fuellungsfarbe leicht transparent 
 	        Paint lineFill = new Paint();
 	        lineFill.setAlpha(200);
 	        lineFill.setShader(new LinearGradient(0, 0, 0, 250, Color.WHITE, Color.GREEN, Shader.TileMode.MIRROR));
-
+	
 	        series1Format.setFillPaint(lineFill);
-
-	        // add a new series' to the xyplot:
-	        plot.addSeries(series1, series1Format);
-
-	        return view;
-	    }
-	    
-	    public Number[] getAltitudeSeries(DataBaseHandler db){
-	    	List <Coordinates> coordinates = db.getAllCoordinatePairs();
-	    	Number [] altitudes = new Number[coordinates.size()];
-	    	for (int i = 0; i<(coordinates.size()-1); i++){
-	    		double d = coordinates.get(i).get_altitude();
-	    		altitudes[i] = Math.round(d);
-	    	}
-	    	return altitudes;
-	    }
-	    
+	        return series1Format;
+		}
 	    
 }
