@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import de.dhbw.container.R;
-import de.dhbw.database.classes.Workout;
+import de.dhbw.database.Workout;
 
 public class WorkoutTotalEvaluationAdapter extends ArrayAdapter <Workout>{
 	private Context mContext;

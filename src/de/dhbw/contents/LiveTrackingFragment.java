@@ -35,11 +35,11 @@ import com.actionbarsherlock.app.SherlockFragment;
 
 import de.dhbw.container.MenuContainerActivity;
 import de.dhbw.container.R;
+import de.dhbw.database.AnalysisCategory;
+import de.dhbw.database.CategoryPosition;
+import de.dhbw.database.Coordinates;
 import de.dhbw.database.DataBaseHandler;
-import de.dhbw.database.classes.AnalysisCategory;
-import de.dhbw.database.classes.CategoryPosition;
-import de.dhbw.database.classes.Coordinates;
-import de.dhbw.database.classes.Workout;
+import de.dhbw.database.Workout;
 import de.dhbw.helpers.TrackService;
 import de.dhbw.tracking.DistanceSegment;
 import de.dhbw.tracking.GPSTracker;

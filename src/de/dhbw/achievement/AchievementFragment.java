@@ -16,8 +16,8 @@ import android.widget.TextView;
 
 
 import de.dhbw.container.R;
+import de.dhbw.database.Achievement;
 import de.dhbw.database.DataBaseHandler;
-import de.dhbw.database.classes.Achievement;
 
 public class AchievementFragment extends Fragment{
 	
@@ -159,7 +159,7 @@ public class AchievementFragment extends Fragment{
 			
 	    	Log.d("ListItem Gruppe "+i+", Item "+i1, achievement.toString());
 			
-			int imageID = getResources().getIdentifier(achievement.getName() , "drawable", getActivity().getPackageName());
+			int imageID = getResources().getIdentifier(achievement.getImageName() , "drawable", getActivity().getPackageName());
 			if (imageID == 0)
 				imageView.setImageResource(R.drawable.ic_questionmark);
 			else

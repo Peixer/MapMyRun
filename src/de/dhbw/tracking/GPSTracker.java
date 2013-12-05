@@ -15,8 +15,8 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 
 import de.dhbw.contents.LiveTrackingFragment;
+import de.dhbw.database.Coordinates;
 import de.dhbw.database.DataBaseHandler;
-import de.dhbw.database.classes.Coordinates;
 import de.dhbw.helpers.TrackService;
 import android.app.AlertDialog;
 import android.app.Service;

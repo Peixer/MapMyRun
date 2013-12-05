@@ -3,7 +3,7 @@ package de.dhbw.helpers;
 import java.text.DecimalFormat;
 import java.util.List;
 
-import de.dhbw.database.classes.Coordinates;
+import de.dhbw.database.Coordinates;
 
 public class TrackService {
 

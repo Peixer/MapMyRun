@@ -5,11 +5,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import de.dhbw.database.classes.Achievement;
-import de.dhbw.database.classes.AnalysisCategory;
-import de.dhbw.database.classes.CategoryPosition;
-import de.dhbw.database.classes.Coordinates;
-import de.dhbw.database.classes.Workout;
 
 import android.annotation.SuppressLint;
 import android.content.ContentValues;

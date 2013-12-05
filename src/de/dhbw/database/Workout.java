@@ -1,4 +1,4 @@
-package de.dhbw.database.classes;
+package de.dhbw.database;
 
 import java.util.Date;
 

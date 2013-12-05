@@ -23,8 +23,8 @@ import com.androidplot.xy.XYSeries;
 import com.androidplot.xy.XYStepMode;
 
 import de.dhbw.container.R;
+import de.dhbw.database.Coordinates;
 import de.dhbw.database.DataBaseHandler;
-import de.dhbw.database.classes.Coordinates;
 
 public class EvaluationDiagrammFragment extends SherlockFragment{
 		private Context mContext;

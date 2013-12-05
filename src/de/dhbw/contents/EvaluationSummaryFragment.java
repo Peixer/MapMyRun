@@ -13,7 +13,7 @@ import com.actionbarsherlock.app.SherlockFragment;
 
 import de.dhbw.container.R;
 import de.dhbw.database.DataBaseHandler;
-import de.dhbw.database.classes.Workout;
+import de.dhbw.database.Workout;
 
 public class EvaluationSummaryFragment extends SherlockFragment{
 	
