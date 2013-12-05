@@ -347,7 +347,7 @@ public class LiveTrackingFragment extends SherlockFragment {
 		double descent = TrackService.calcDescent(listContents);
 		double calories_burned = TrackService.calcCaloriesBurned(listContents);
 		double distance = TrackService.calcDistance(listContents);
-		return new Workout(duration, pace, elevation, descent, calories_burned, distance, new Date());
+		return new Workout(duration, pace, descent, elevation, calories_burned, distance, new Date());
 	}
 
 	public void getToTracking(SherlockFragment single_evaluation) {
