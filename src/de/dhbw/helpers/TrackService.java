@@ -127,10 +127,10 @@ public class TrackService {
 			double minuteInMillis = secondInMillis * 60;
 			double hourInMillis = minuteInMillis * 60;
 			
-			//in Stunden
+			//vergangene Zeit in Stunden
 			elapsedHours = duration/hourInMillis;
 		}
-	   //in Km
+	   //zurueckgelegte Km
 	   double distance = calcDistance(listContents);	
 	   
 	   //Durchschnittsgeschwindigkeit in km/h
