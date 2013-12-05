@@ -106,10 +106,11 @@ public class GPSTracker extends Service implements LocationListener {
                     .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
  
             if (!isGPSEnabled && !isNetworkEnabled) {
-                // kein Netzwerkprovider
+                // kein Netzwerkprovider, kein GPS Empfang, Warnungsmeldung ausgeben
+            	showSettingsAlert();
             } else {
                 this.canGetLocation = true;
-                // Standort bevorzugt ueber Netwerk ermitteln
+                // Standort bevorzugt ueber Netzwerk ermitteln
                 if (isNetworkEnabled) {
                     locationManager.requestLocationUpdates(
                             LocationManager.NETWORK_PROVIDER,
@@ -121,7 +122,7 @@ public class GPSTracker extends Service implements LocationListener {
                                 .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
                     }
                 }
-                // falls GPS aktiviert Hoehen- und Breitengrad ermitteln
+                // Standortermittlung uber GPS statt Netzwerk
                 if (isGPSEnabled) {
                     if (location == null) {
                         locationManager.requestLocationUpdates(
@@ -229,10 +230,10 @@ public class GPSTracker extends Service implements LocationListener {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
       
         // Warnungtitel
-        alertDialog.setTitle("GPS is settings");
+        alertDialog.setTitle("GPS Einstellungen");
   
         // Warnungsnachricht
-        alertDialog.setMessage("GPS is not enabled. Do you want to go to settings menu?");
+        alertDialog.setMessage("GPS ist nicht aktiviert. Moechten Sie zu den Einstellungen wechseln?");
         
         // Wenn Einstellungen gedrückt
         alertDialog.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
@@ -243,7 +244,7 @@ public class GPSTracker extends Service implements LocationListener {
         });
   
         // Wenn Cancel gedrueckt
-        alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        alertDialog.setNegativeButton("Abbrechen", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
             dialog.cancel();
             }
@@ -255,8 +256,8 @@ public class GPSTracker extends Service implements LocationListener {
     
     
     /**
-     * Stop using GPS listener
-     * Calling this function will stop using GPS in the app
+     * Tracking anhalten
+     * 
      * */
     public void stopUsingGPS(){
         if(locationManager != null){
@@ -269,7 +270,6 @@ public class GPSTracker extends Service implements LocationListener {
     //Seehoehe ueber Googledienst ermitteln
     public static double getElevationFromGoogleMaps(double longitude, double latitude) {
     	StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-
     	StrictMode.setThreadPolicy(policy); 
         double result = Double.NaN;
         HttpClient httpClient = new DefaultHttpClient();
