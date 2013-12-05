@@ -135,6 +135,38 @@ public class LiveTrackingFragment extends SherlockFragment {
 
 	}
 	
+	public void populateCategories(AnalysisCategory ac, TextView valueView, List <Coordinates> listContents){
+		//Tracking Kategorien Werte zuordnen
+		switch(ac.getId())
+		{
+			case 1:		//Dauer
+				valueView.setText(TrackService.calcDuration(listContents));
+				break;
+			case 2:		//Distanz
+				valueView.setText(String.valueOf(TrackService.calcDistance(listContents)));
+				break;
+			case 3:		//Hoehenmeter aufwaerts
+				valueView.setText(String.valueOf(TrackService.calcElevation(listContents)));
+				break;
+			case 4:		//Hoehenmeter abwaerts
+				valueView.setText(String.valueOf(TrackService.calcDescent(listContents)));
+				break;
+			case 5:		//Verbrannte Kalorien
+				valueView.setText(String.valueOf(TrackService.calcCaloriesBurned(listContents)));
+				break;
+			case 6:		//Durchschnittsgeschwindigkeit
+				valueView.setText(String.valueOf(TrackService.calcPace(listContents)));
+				break;
+			case 7:		//Zeit
+				Calendar c = Calendar.getInstance();
+				SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
+				valueView.setText(sdf.format(c.getTime()));
+				break;
+			default:	//Wird nie erreicht
+				break;
+		}
+	}
+	
 	//TODO comment
 	public void setList()
 	{
@@ -148,45 +180,12 @@ public class LiveTrackingFragment extends SherlockFragment {
 			int viewId = getResources().getIdentifier("workout_element_"+i, "id", mContext.getPackageName());
 			View listElement = mView.findViewById(viewId);
 			listElement.setOnClickListener(new CustomListOnClickListener());
-			
 			TextView valueView = ((TextView) listElement.findViewById(R.id.live_tracking_element_value_text));
 			db = new DataBaseHandler(mContext);
 			List <Coordinates> listContents = new ArrayList<Coordinates>();
 			listContents = db.getAllCoordinatePairs();
-			
 			formatCategoryHeadline(ac, valueView);
-
-			
-			//Tracking Kategorien Werte zuordnen
-			switch(ac.getId())
-			{
-				case 1:		//Dauer
-					valueView.setText(TrackService.calcDuration(listContents));
-					break;
-				case 2:		//Distanz
-					valueView.setText(String.valueOf(TrackService.calcDistance(listContents)));
-					break;
-				case 3:		//Hoehenmeter aufwaerts
-					valueView.setText(String.valueOf(TrackService.calcElevation(listContents)));
-					break;
-				case 4:		//Hoehenmeter abwaerts
-					valueView.setText(String.valueOf(TrackService.calcDescent(listContents)));
-					break;
-				case 5:		//Verbrannte Kalorien
-					valueView.setText(String.valueOf(TrackService.calcCaloriesBurned(listContents)));
-					break;
-				case 6:		//Durchschnittsgeschwindigkeit
-					valueView.setText(String.valueOf(TrackService.calcPace(listContents)));
-					break;
-				case 7:		//Zeit
-					Calendar c = Calendar.getInstance();
-					SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
-					valueView.setText(sdf.format(c.getTime()));
-					break;
-				default:	//Wird nie erreicht
-					break;
-			}
-			
+			populateCategories(ac, valueView, listContents);
 			//Zu Karegorien icons laden
 			int imageId = getResources().getIdentifier(ac.getImageName(), "drawable", mContext.getPackageName());
 			((ImageView) listElement.findViewById(R.id.live_tracking_element_value_icon)).setImageResource(imageId);
@@ -195,6 +194,8 @@ public class LiveTrackingFragment extends SherlockFragment {
 		
 		}
 	}
+	
+	
 	//TODO comment
 	private class CustomListOnClickListener implements View.OnClickListener
 	{
