@@ -133,22 +133,28 @@ public class MenuContainerActivity extends SherlockFragmentActivity {
 			// Call default music player
 			case R.id.action_music_player: 
 	
-				Intent intent = new Intent();
-				intent.setAction("android.intent.action.MAIN");
-				intent.addCategory("android.intent.category.APP_MUSIC");
-				startActivity(intent);
+				if (!isLocked) 
+				{
+					Intent intent = new Intent();
+					intent.setAction("android.intent.action.MAIN");
+					intent.addCategory("android.intent.category.APP_MUSIC");
+					startActivity(intent);
+				}
 				break;
 	
 			//Achievement-Button
 			case R.id.action_achievements:
 	
-				if (getSupportFragmentManager().getBackStackEntryCount() != 0) {
-					getSupportFragmentManager().popBackStack();
+				if (!isLocked) 
+				{
+					if (getSupportFragmentManager().getBackStackEntryCount() != 0) {
+						getSupportFragmentManager().popBackStack();
+					}
+					
+					getSupportFragmentManager().beginTransaction()
+							.replace(R.id.currentFragment, new AchievementFragment())
+							.commit();
 				}
-				
-				getSupportFragmentManager().beginTransaction()
-						.replace(R.id.currentFragment, new AchievementFragment())
-						.commit();
 				break;
 	
 			default:

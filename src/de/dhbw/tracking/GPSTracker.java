@@ -64,7 +64,7 @@ public class GPSTracker extends Service implements LocationListener {
 	protected LocationManager locationManager;
 	
 	// Barriere für Meilenstein-Kilometer-Berechnung
-	private int distanceBorder = 0;	
+	private int distanceBorder = 1;	
 	private final static int DEFAULT_DISTANCE_BORDER = 0;
 
 	public GPSTracker(Context context) {

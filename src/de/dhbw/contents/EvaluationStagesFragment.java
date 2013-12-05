@@ -44,13 +44,38 @@ public class EvaluationStagesFragment extends SherlockFragment{
             Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.evaluation_stages_fragment, container, false);
         
+        String fastest;
+        String slowest;
+        
+        if (mDistanceSegmentList.size() > 0)
+        {
+	        fastest = mDistanceSegmentList.get(0).getDuration();
+	        slowest = mDistanceSegmentList.get(0).getDuration();
+        }
+        else
+        {
+        	fastest = "00:00:00";
+        	slowest = "00:00:00";
+        }
+        
         List<String> listElements = new ArrayList<String>();
-        listElements.add("Distance!Duration!Speed");
+        listElements.add("Distanz (km)!Dauer\n(hh:mm:ss)!Speed\n(km/h)");
         for (DistanceSegment ds : mDistanceSegmentList)
+        {
+        	if (ds.getDuration().compareTo(fastest) > 0)
+        		fastest = ds.getDuration();
+        	if (ds.getDuration().compareTo(slowest) < 0)
+        		slowest = ds.getDuration();
         	listElements.add(ds.getDistance() + "!" + ds.getDuration() + "!" + ds.getSpeed());
+        }
+        
+        ((TextView) view.findViewById(R.id.stages_fast)).setText(fastest);
+        ((TextView) view.findViewById(R.id.stages_fast)).setText(fastest);
         
         ListView listView = (ListView) view.findViewById(R.id.stages_list);
         listView.setAdapter(new CustomListAdapter(getActivity(), R.layout.evaluation_stages_fragment, listElements));
+        
+        
         
         return view;
     }
