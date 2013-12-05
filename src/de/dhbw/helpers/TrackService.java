@@ -7,12 +7,13 @@ import de.dhbw.database.Coordinates;
 
 public class TrackService {
 
+	//leerer Konstruktor
 	public TrackService() {
 
 	}
 
 	
-	//calculates the distance of the tracked route
+	//Distanz berechnen
 	public static double calcDistance(List<Coordinates> listContents) {
 		int R = 6371;
 		double distance = 0;
@@ -39,19 +40,19 @@ public class TrackService {
 		return roundNumber(distance, 3);
 	}
 	
-	
+	//Ergebnisse abrunden mit Variablen Nachkommastellen
 	public static double roundNumber(double distance, int stellen){
 		double factor = Math.pow(10, stellen); 
 		double gerundeteZahl = Math.round(distance * factor) / factor;
 		return gerundeteZahl;
 	}
 	
-	//calculates the sum of total elevations
-	
+	//Summe Hoehenmeter aufwaerts
 	public static double calcElevation(List<Coordinates> listContents){
 		double ascend = 0;
 		int i;
 		for (i = 0; i < (listContents.size()-1); i++) {
+			//falls aktuelle Seehoehe groesser als Seehoehe davor
 			if (listContents.get(i+1).get_altitude() > listContents.get(i).get_altitude()){
 				ascend = ascend + (listContents.get(i+1).get_altitude() - listContents.get(i).get_altitude());
 			}
@@ -59,12 +60,12 @@ public class TrackService {
 		return roundNumber(ascend, 3);
 	}
 	
-	//calculates the sum of total descent
-	
+	//Summe Hoehenmeter abwaerts
 	public static double calcDescent(List<Coordinates> listContents){
 		double descent = 0;
 		int i;
 		for (i = 0; i < (listContents.size()-1); i++) {
+			//falls aktuelle Seehoehe kleiner als Seehoehe davor
 			if (listContents.get(i+1).get_altitude() < listContents.get(i).get_altitude()){
 				descent = descent + (listContents.get(i).get_altitude() - listContents.get(i+1).get_altitude());
 			}
@@ -72,39 +73,47 @@ public class TrackService {
 		return roundNumber(descent, 3);
 	}
 	
-	//calculates duration
-	
+	//Dauer berechnen 
 	public static String calcDuration(List<Coordinates> listContents){
 		if (listContents.size() > 1){
 			int numberOfSamples = listContents.size();
 			long firstTimeStamp = listContents.get(0).get_timestamp();
 			long lastTimeStamp = listContents.get(numberOfSamples-1).get_timestamp();
-			long duration = lastTimeStamp - firstTimeStamp;
-			long secondInMillis = 1000;
-			long minuteInMillis = secondInMillis * 60;
-			long hourInMillis = minuteInMillis * 60;
-			long dayInMillis = hourInMillis * 24;
-			long yearInMillis = dayInMillis * 365;
 			
-			long elapsedYears = duration/yearInMillis;
-			duration = duration % yearInMillis;
-			long elapsedDays = duration/dayInMillis;
-			duration = duration % dayInMillis;
+			//Dauer als Differenz zwischen erstem und letzen Zeitstempel in Millisekunden
+			long duration = lastTimeStamp - firstTimeStamp;
+			
+			//Millisekunden in Sekunden 
+			long secondInMillis = 1000;
+			
+			//Sekunden in Minuten 
+			long minuteInMillis = secondInMillis * 60;
+			
+			//Minuten in Stunden 
+			long hourInMillis = minuteInMillis * 60;
+			
+			//Vergangene Stunden
 			long elapsedHours = duration/hourInMillis;
 			duration = duration % hourInMillis;
 			long elapsedMinutes = duration/minuteInMillis;
+			
+			//Vergangene Minuten
 			duration = duration % minuteInMillis;
+			
+			//Vergangene Sekunden
 			long elapsedSeconds = duration/secondInMillis;
 			
 			DecimalFormat df = new DecimalFormat("00"); //Zweistellige Ausgabe
 			
+			
+			//Formatierte Zeitausgabe
 			return df.format(elapsedHours) + ":" + df.format(elapsedMinutes) + ":" + df.format(elapsedSeconds);
 		}else {
 			return "00:00:00";
 		}
 	}
 	
-	//calculates pace
+	//Durchschnittsgeschwindigkeit berechnen
 	public static double calcPace(List<Coordinates> listContents){
 		
 	 double elapsedHours = 0;
@@ -118,22 +127,22 @@ public class TrackService {
 			double minuteInMillis = secondInMillis * 60;
 			double hourInMillis = minuteInMillis * 60;
 			
-			//in hours
+			//in Stunden
 			elapsedHours = duration/hourInMillis;
 		}
-	   //in km
+	   //in Km
 	   double distance = calcDistance(listContents);	
 	   
-	   //pace in km/h
+	   //Durchschnittsgeschwindigkeit in km/h
 	   return roundNumber((distance/elapsedHours), 3);
 	}
 	
 	
 	
 	
-	//calculates calories burned	
+	//Verbrannte Kalorien berechnen 	
 	public static double calcCaloriesBurned(List<Coordinates> listContents){
-	 //an average weight of 75 kg is assumed
+	 //Annahme eines durchschnittlichen Gewichts von 75 kg
 	 double caloriesBurned = calcDistance(listContents)*75;
 	 return roundNumber(caloriesBurned, 3);
 	}
