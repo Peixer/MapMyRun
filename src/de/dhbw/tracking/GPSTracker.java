@@ -55,10 +55,10 @@ public class GPSTracker extends Service implements LocationListener {
 	long timestamp;//timestamp of tracking samples
 
 	// The minimum distance to change Updates in meters
-	private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10; // 10 meter
+	private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 1; // 1 meter
 
 	// The minimum time between updates in milliseconds
-	private static final long MIN_TIME_BW_UPDATES = 1000*30; //30 sec
+	private static final long MIN_TIME_BW_UPDATES = 1000*25; //25 sec
 
 	// Declaring a Location Manager
 	protected LocationManager locationManager;
@@ -148,7 +148,7 @@ public class GPSTracker extends Service implements LocationListener {
 			{
 				String distanceString = String.valueOf(distance);
 				String duration = TrackService.calcDuration(coordinatePairs);
-				String speed = String.valueOf(location.getSpeed());
+				String speed = String.valueOf(TrackService.calcPace(coordinatePairs));
 				mLiveTrackingFragment.mSegmentList.add(new DistanceSegment(distanceString, duration, speed));
 				distanceBorder++;
 			}

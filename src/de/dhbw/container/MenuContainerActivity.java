@@ -20,8 +20,8 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 
 import de.dhbw.achievement.AchievementFragment;
+import de.dhbw.auswertung.TotalEvaluationFragment;
 import de.dhbw.contents.LiveTrackingFragment;
-import de.dhbw.contents.TotalEvaluationFragment;
 import de.dhbw.tracking.DistanceSegment;
 
 public class MenuContainerActivity extends SherlockFragmentActivity {

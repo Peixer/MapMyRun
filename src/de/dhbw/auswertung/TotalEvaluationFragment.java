@@ -1,4 +1,4 @@
-package de.dhbw.contents;
+package de.dhbw.auswertung;
 
 import java.util.ArrayList;
 import java.util.List;
