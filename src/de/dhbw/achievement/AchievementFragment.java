@@ -16,8 +16,8 @@ import android.widget.TextView;
 
 
 import de.dhbw.container.R;
-import de.dhbw.database.Achievement;
 import de.dhbw.database.DataBaseHandler;
+import de.dhbw.database.classes.Achievement;
 
 public class AchievementFragment extends Fragment{
 	

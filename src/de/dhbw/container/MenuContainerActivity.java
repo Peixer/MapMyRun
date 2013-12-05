@@ -1,12 +1,9 @@
 package de.dhbw.container;
 
-import java.util.List;
-
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.View;
@@ -22,7 +19,6 @@ import com.actionbarsherlock.view.MenuItem;
 import de.dhbw.achievement.AchievementFragment;
 import de.dhbw.auswertung.TotalEvaluationFragment;
 import de.dhbw.contents.LiveTrackingFragment;
-import de.dhbw.tracking.DistanceSegment;
 
 public class MenuContainerActivity extends SherlockFragmentActivity {
 
@@ -102,6 +98,7 @@ public class MenuContainerActivity extends SherlockFragmentActivity {
 
 	@Override
 	public boolean onCreateOptionsMenu(com.actionbarsherlock.view.Menu menu) {
+		// inflate menu (icons 'music player' and 'achievements' in action bar)
 		MenuInflater inflater = getSupportMenuInflater();
 		inflater.inflate(R.menu.container, menu);
 		return super.onCreateOptionsMenu(menu);
@@ -110,16 +107,11 @@ public class MenuContainerActivity extends SherlockFragmentActivity {
 	
 	@Override
 	public boolean onPrepareOptionsMenu(final Menu menu) {
+		
 	    MenuItem menuItem = menu.findItem(R.id.action_achievements);
 
-	    if (isLocked == true) {
-	    	menuItem.setEnabled(false);
-	    	mDrawerList.setEnabled(false);
-	    } 
-	    else {
-	    	menuItem.setEnabled(true);
-	    	mDrawerList.setEnabled(true);
-	    }
+    	menuItem.setEnabled(true);
+    	mDrawerList.setEnabled(true);
 
 	    return super.onPrepareOptionsMenu(menu);
 	}
@@ -128,41 +120,39 @@ public class MenuContainerActivity extends SherlockFragmentActivity {
 	public boolean onOptionsItemSelected(
 			com.actionbarsherlock.view.MenuItem item) {
 
-		switch (item.getItemId()) {
-		case android.R.id.home:
-			if (mDrawerLayout.isDrawerOpen(mDrawerList))
-				mDrawerLayout.closeDrawer(mDrawerList);
-			else
-				mDrawerLayout.openDrawer(mDrawerList);
-			break;
-
-		case R.id.action_music_player: // Call default music player
-
-			/*
-			 * Deprecated code for music player call Intent intent = new
-			 * Intent(MediaStore.INTENT_ACTION_MUSIC_PLAYER);
-			 * startActivity(intent);
-			 */
-
-			Intent intent = new Intent();
-			intent.setAction("android.intent.action.MAIN");
-			intent.addCategory("android.intent.category.APP_MUSIC");
-			startActivity(intent);
-			break;
-
-		case R.id.action_achievements:
-
-			if (getSupportFragmentManager().getBackStackEntryCount() != 0) {
-				getSupportFragmentManager().popBackStack();
-			}
-			
-			getSupportFragmentManager().beginTransaction()
-					.replace(R.id.currentFragment, new AchievementFragment())
-					.commit();
-			break;
-
-		default:
-			;
+		switch (item.getItemId()) 
+		{
+			case android.R.id.home:
+				if (mDrawerLayout.isDrawerOpen(mDrawerList))
+					mDrawerLayout.closeDrawer(mDrawerList);
+				else
+					if (!isLocked)	//only open drawer when it isn't locked (while tracking)
+						mDrawerLayout.openDrawer(mDrawerList);
+				break;
+				
+			// Call default music player
+			case R.id.action_music_player: 
+	
+				Intent intent = new Intent();
+				intent.setAction("android.intent.action.MAIN");
+				intent.addCategory("android.intent.category.APP_MUSIC");
+				startActivity(intent);
+				break;
+	
+			//Achievement-Button
+			case R.id.action_achievements:
+	
+				if (getSupportFragmentManager().getBackStackEntryCount() != 0) {
+					getSupportFragmentManager().popBackStack();
+				}
+				
+				getSupportFragmentManager().beginTransaction()
+						.replace(R.id.currentFragment, new AchievementFragment())
+						.commit();
+				break;
+	
+			default:
+				;
 		}
 
 		return super.onOptionsItemSelected(item);
@@ -178,6 +168,7 @@ public class MenuContainerActivity extends SherlockFragmentActivity {
 		}
 	}
 	
+	//Block back-button because it would end app in most cases
 	@Override
     public void onBackPressed() {
 		((LiveTrackingFragment) tracking_from_menu).onBackPressed();
@@ -202,6 +193,7 @@ public class MenuContainerActivity extends SherlockFragmentActivity {
 
 		switch (position) {
 
+		// LiveTracking-Fragment
 		case 0:
 			tracking_from_menu = new LiveTrackingFragment();
 
@@ -211,6 +203,8 @@ public class MenuContainerActivity extends SherlockFragmentActivity {
 			getSupportFragmentManager().beginTransaction()
 					.replace(R.id.currentFragment, tracking_from_menu).commit();
 			break;
+			
+		// Auswertungs-Fragment
 		case 1:
 			if (getSupportFragmentManager().getBackStackEntryCount() != 0) {
 				getSupportFragmentManager().popBackStack();

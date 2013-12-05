@@ -1,5 +1,5 @@
 
-package de.dhbw.database;
+package de.dhbw.database.classes;
 
 public class Coordinates {
 	 //private variables
