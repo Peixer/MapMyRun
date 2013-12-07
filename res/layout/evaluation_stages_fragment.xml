@@ -23,12 +23,12 @@
     			android:background="@drawable/live_timing_background"
     			android:text="Schn. Abschnitt"/>
     	    <TextView 
+    	        android:id="@+id/stages_fast"
     	        android:layout_width="match_parent"
     			android:layout_height="0dp"
     			android:layout_weight="1"
     			android:gravity="center"
-    			android:background="@drawable/live_timing_background"
-    			android:text="00:00:00"/>
+    			android:background="@drawable/live_timing_background"/>
     	</LinearLayout>
     	<LinearLayout 
     	    android:layout_width="0dp"
@@ -43,12 +43,12 @@
     			android:background="@drawable/live_timing_background"
     			android:text="Langs. Abschnitt"/>
     	    <TextView 
+    	        android:id="@+id/stages_slow"
     	        android:layout_width="match_parent"
     			android:layout_height="0dp"
     			android:layout_weight="1"
     			android:gravity="center"
-    			android:background="@drawable/live_timing_background"
-    			android:text="00:00:00"/>
+    			android:background="@drawable/live_timing_background"/>
     	</LinearLayout>
     </LinearLayout>
  

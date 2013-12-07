@@ -207,19 +207,49 @@ public class LiveTrackingFragment extends SherlockFragment {
 			{
 				if (v.getId() == getResources().getIdentifier("workout_element_"+i, "id", mContext.getPackageName()))
 				{
+					List<String> listElements = new ArrayList<String>();
 					mCategoryList = db.getAllAnalysisCategories();
-					String[] mStringCategories = new String[mCategoryList.size()];
-					for (int j=0; j<mCategoryList.size(); j++)
-						mStringCategories[j] = mCategoryList.get(j).getName() + " (" + mCategoryList.get(j).getFormat() + ")";
+					for (AnalysisCategory category : mCategoryList)
+						listElements.add(String.valueOf(category.getId()));
 						
 					mView.findViewById(R.id.workout_layout).setVisibility(View.GONE);
-					mListView.setVisibility(View.VISIBLE);
-					mListView.setAdapter(new ArrayAdapter<String>(mContext, R.layout.list_row, R.id.textView, mStringCategories));
+					
+					mListView.setAdapter(new CustomListAdapter(mContext, R.layout.list_row, listElements));
 					mListView.setOnItemClickListener(new CustomCategoryListOnItemClickListener(i));
+					
+					mListView.setVisibility(View.VISIBLE);
 				}
+			}			
+		}	
+		
+		private class CustomListAdapter extends ArrayAdapter<String> {
+
+			private List<String> objects;
+			
+			public CustomListAdapter(Context context, int resource,
+					List<String> objects) {
+				super(context, resource, objects);
+				this.objects = objects;
 			}
 			
-		}	
+			@Override
+			public View getView(int position, View convertView, ViewGroup parent) {
+				
+				LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+				View view = inflater.inflate(R.layout.list_row, null);
+				
+				AnalysisCategory category = db.getAnalysisCategoryById(Integer.parseInt(objects.get(position)));
+				
+				((TextView) view.findViewById(R.id.textView)).setText(category.getName() + " (" + category.getFormat() + ")");
+				int imageId = getResources().getIdentifier(category.getImageName(), "drawable", mContext.getPackageName());
+				((ImageView) view.findViewById(R.id.icon)).setImageResource(imageId);
+				
+				return view;
+				//return super.getView(position, convertView, parent);
+			}
+			
+			
+		}
 		
 		//TODO comment
 		private class CustomCategoryListOnItemClickListener implements OnItemClickListener
@@ -336,7 +366,7 @@ public class LiveTrackingFragment extends SherlockFragment {
 		double descent = TrackService.calcDescent(listContents);
 		double calories_burned = TrackService.calcCaloriesBurned(listContents);
 		double distance = TrackService.calcDistance(listContents);
-		return new Workout(duration, pace, elevation, descent, calories_burned, distance, new Date());
+		return new Workout(duration, pace, descent, elevation, calories_burned, distance, new Date());
 	}
 
 	public void getToTracking(SherlockFragment single_evaluation) {

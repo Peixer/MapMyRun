@@ -54,7 +54,7 @@ public class AchievementFragment extends Fragment{
 	    
 	    public SavedTabsListAdapter() {
 	    	groups[0] = "Gesamtdistanz (" + db.getAchievementCount("tkm", true) + " von " + db.getAchievementCount("tkm") + ")";
-	    	groups[1] = "GesamtZeit (" + db.getAchievementCount("ts", true) + " von " + db.getAchievementCount("ts") + ")";
+	    	groups[1] = "Gesamtzeit (" + db.getAchievementCount("ts", true) + " von " + db.getAchievementCount("ts") + ")";
 			groups[2] = "Einzeldistanz (" + db.getAchievementCount("skm", true) + " von " + db.getAchievementCount("skm") + ")";
 			groups[3] = "Einzelzeit (" + db.getAchievementCount("ss", true) + " von " + db.getAchievementCount("ss") + ")";
 		}
@@ -159,7 +159,7 @@ public class AchievementFragment extends Fragment{
 			
 	    	Log.d("ListItem Gruppe "+i+", Item "+i1, achievement.toString());
 			
-			int imageID = getResources().getIdentifier(achievement.getName() , "drawable", getActivity().getPackageName());
+			int imageID = getResources().getIdentifier(achievement.getImageName() , "drawable", getActivity().getPackageName());
 			if (imageID == 0)
 				imageView.setImageResource(R.drawable.ic_questionmark);
 			else
