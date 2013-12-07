@@ -20,6 +20,8 @@ import de.dhbw.tracking.DistanceSegment;
 
 public class EvaluationViewPager extends Fragment {
 
+	
+	//TODO comment
 	public static final String TAG = EvaluationViewPager.class
 			.getSimpleName();
 	private List<DistanceSegment> mSegmentList = new ArrayList<DistanceSegment>();
@@ -35,6 +37,7 @@ public class EvaluationViewPager extends Fragment {
 		setRetainInstance(true);
 	}
 
+	//TODO comment
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -62,7 +65,7 @@ public class EvaluationViewPager extends Fragment {
 		ViewPager pager = (ViewPager) view.findViewById(R.id.pager);
 		EvaluationPagerAdapter adapter = new EvaluationPagerAdapter(getChildFragmentManager());
 		
-		//prevent duplicating fragments when swiping back and forth between them
+		//Verhindert das Fragmente vervielfacht werden beim hin und herwechseln (swipen)
 		pager.setOffscreenPageLimit(3);
 		
 		pager.setAdapter(adapter);
@@ -75,7 +78,7 @@ public class EvaluationViewPager extends Fragment {
 		public EvaluationPagerAdapter(android.support.v4.app.FragmentManager fm) {
 			super(fm);
 		}
-
+		//Überschriften 
 		private final String[] TITLES = {"Diagramme","Zwischentabelle","Hauptansicht"};
 
 		@Override
@@ -88,6 +91,7 @@ public class EvaluationViewPager extends Fragment {
 			return TITLES.length;
 		}
 
+		//Navigation zwischen Fragmente
 		@Override
 	    public SherlockFragment getItem(int position) {
 	        switch (position) {

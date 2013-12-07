@@ -19,6 +19,8 @@ public class EvaluationSummaryFragment extends SherlockFragment{
 	
 	private ListView lv;
 	private WorkoutDetailAdapter adapter;
+	
+	//Liste zur Initialisierung der (Workoutsdetail-)Adapters
 	private ArrayList <WorkoutDetail> workoutDetails = new ArrayList<WorkoutDetail>();
 	private DataBaseHandler db;
 	private Context mContext;
@@ -42,19 +44,28 @@ public class EvaluationSummaryFragment extends SherlockFragment{
     	mContext = getActivity();
     	db = new DataBaseHandler(mContext);
     	
-    	//get the number of all Workouts in the database
+    	//Workoutanzahl aus DB abrufen
     	numberOfWorkouts = db.getWorkoutsCount();
     	
-    	//get the latest Workout 
+    	//Letztes Workout abrufen
     	Workout workout = db.getWorkout(numberOfWorkouts);
     	
         View view = inflater.inflate(R.layout.evaluation_summary_fragment, container, false);
+        
+        //Detailsauswertung Dauer
         WorkoutDetail detailDuration = new WorkoutDetail("Dauer", workout.getDuration());
+        //Detailsauswertung Distanz
         WorkoutDetail detailDistance = new WorkoutDetail("Distanz (km)", workout.get_distance().toString());
+        //Detailsauswertung Geschwindigkeit
         WorkoutDetail detailPace = new WorkoutDetail("Geschwindigkeit (km/h)", workout.getPace().toString());
+        //Detailsauswertung Hoehenmeter aufwaerts
         WorkoutDetail detailElevation = new WorkoutDetail("Hoehenmeter aufwaerts", workout.getElevationUpwards().toString());
+        //Detailsauswertung Hoehenmeter aufwaerts
         WorkoutDetail detailDescent = new WorkoutDetail("Hoehenmeter abwaerts", workout.getElevationDownwards().toString());
+        //Detailsauswertung verbrannte Kalorien
         WorkoutDetail detailCaloriesBurned = new WorkoutDetail("Verbrannte Kalorien", workout.getCaloriesBurned().toString());
+        
+        //Liste zur Initialisierung des Workoutsadapters mit Daten befuellen
         workoutDetails.add(detailDuration);
         workoutDetails.add(detailDistance);
         workoutDetails.add(detailPace);
@@ -62,8 +73,13 @@ public class EvaluationSummaryFragment extends SherlockFragment{
         workoutDetails.add(detailDescent);
         workoutDetails.add(detailCaloriesBurned);
         
+        //ListView laden
         lv = (ListView) view.findViewById(R.id.evaluation);
+        
+        //(Detailauswertung-)Adapter initialisieren
         adapter = new WorkoutDetailAdapter(mContext, R.id.evaluation, workoutDetails);
+        
+        //ListView mit Daten befüllen
         lv.setAdapter(adapter);
         return view;
     }
