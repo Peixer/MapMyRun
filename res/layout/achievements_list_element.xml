@@ -13,8 +13,7 @@
         android:layout_marginLeft="5dp"
         android:layout_marginRight="15dp"
         android:layout_marginTop="5dp"
-        android:layout_weight="1"
-        android:contentDescription="@string/achievements_icon_default" />
+        android:layout_weight="1" />
 
     <LinearLayout
         android:id="@+id/achievement_list_seperator"

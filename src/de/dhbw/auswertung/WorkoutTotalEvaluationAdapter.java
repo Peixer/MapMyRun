@@ -1,4 +1,4 @@
-package de.dhbw.contents;
+package de.dhbw.auswertung;
 
 import java.text.SimpleDateFormat;
 import java.util.List;

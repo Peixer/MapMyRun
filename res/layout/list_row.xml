@@ -9,8 +9,7 @@
 		android:contentDescription="@string/icon_default"
 		android:layout_width="30dp"
 		android:layout_height="30dp"
-		android:layout_margin="5dp"
-		android:src="@drawable/ic_questionmark"/>
+		android:layout_margin="5dp"/>
 	<TextView
 		android:id="@+id/textView"
 		android:layout_width="wrap_content"

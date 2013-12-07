@@ -64,17 +64,21 @@ public class GPSTracker extends Service implements LocationListener {
 	//Zeitstempel für Trackingpunkte
 	private long timestamp;
 
+
 	// Die minimale Entfernung um Trackingdaten zu aktualisiern
 	private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 1; // 1 Meter
 
 	//Die minimale vergangene Zeit um Trackingdaten zu aktualisieren
 	private static final long MIN_TIME_BW_UPDATES = 1000*25; //25 Sekunden
 
+
 	// Location Manager
 	protected LocationManager locationManager;
 	
+
 	// Barriere fuer Meilenstein-Kilometer-Berechnung
-	private int distanceBorder = 0;	
+	private int distanceBorder = 1;	
+
 	private final static int DEFAULT_DISTANCE_BORDER = 0;
 
 	public GPSTracker(Context context) {
@@ -166,7 +170,7 @@ public class GPSTracker extends Service implements LocationListener {
 			{
 				String distanceString = String.valueOf(distance);
 				String duration = TrackService.calcDuration(coordinatePairs);
-				String speed = String.valueOf(location.getSpeed());
+				String speed = String.valueOf(TrackService.calcPace(coordinatePairs));
 				mLiveTrackingFragment.mSegmentList.add(new DistanceSegment(distanceString, duration, speed));
 				distanceBorder++;
 			}
