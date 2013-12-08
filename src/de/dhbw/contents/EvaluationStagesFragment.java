@@ -62,9 +62,9 @@ public class EvaluationStagesFragment extends SherlockFragment{
         listElements.add("Distanz (km)!Dauer\n(hh:mm:ss)!Speed\n(km/h)");
         for (DistanceSegment ds : mDistanceSegmentList)
         {
-        	if (ds.getDuration().compareTo(fastest) > 0)
+        	if (ds.getDuration().compareTo(fastest) > 0 && !ds.getDuration().isEmpty())
         		fastest = ds.getDuration();
-        	if (ds.getDuration().compareTo(slowest) < 0)
+        	if (ds.getDuration().compareTo(slowest) < 0 && !ds.getDuration().isEmpty())
         		slowest = ds.getDuration();
         	listElements.add(ds.getDistance() + "!" + ds.getDuration() + "!" + ds.getSpeed());
         }

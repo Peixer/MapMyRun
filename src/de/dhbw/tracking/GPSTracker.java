@@ -2,6 +2,7 @@ package de.dhbw.tracking;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,9 +78,9 @@ public class GPSTracker extends Service implements LocationListener {
 	
 
 	// Barriere fuer Meilenstein-Kilometer-Berechnung
-	private int distanceBorder = 1;	
+	private int distanceBorder;	
 
-	private final static int DEFAULT_DISTANCE_BORDER = 0;
+	private final static int DEFAULT_DISTANCE_BORDER = 1;
 
 	public GPSTracker(Context context) {
 		this.mContext = context;
@@ -158,18 +159,21 @@ public class GPSTracker extends Service implements LocationListener {
 			timestamp = location.getTime();
 			DataBaseHandler db = new DataBaseHandler(mContext);
 			
+			int oldDuration = durationToSeconds(TrackService.calcDuration(db.getAllCoordinatePairs()));
+			
 			//neue Koordinaten speichern
 			db.addCoordinates(new Coordinates(longitude, latitude, altitude, timestamp));
 			
 			List<Coordinates> coordinatePairs = db.getAllCoordinatePairs();
 			
+			int newDuration = durationToSeconds(TrackService.calcDuration(coordinatePairs));
 			
 			//TODO comment
 			double distance = TrackService.calcDistance(coordinatePairs);
 			if (distance >= distanceBorder)
 			{
 				String distanceString = String.valueOf(distance);
-				String duration = TrackService.calcDuration(coordinatePairs);
+				String duration = secondsToString(newDuration - oldDuration);
 				String speed = String.valueOf(TrackService.calcPace(coordinatePairs));
 				mLiveTrackingFragment.mSegmentList.add(new DistanceSegment(distanceString, duration, speed));
 				distanceBorder++;
@@ -177,6 +181,25 @@ public class GPSTracker extends Service implements LocationListener {
 		}		
 		// Live Tracking Liste aktualisieren
 		mLiveTrackingFragment.setList();
+	}
+	
+	public String secondsToString(int seconds) {	
+		String duration = "";
+		DecimalFormat df = new DecimalFormat("00");
+		int realSeconds = seconds;
+		duration += String.valueOf(df.format((int)realSeconds/3600)) + ":";
+		realSeconds -= ((int)realSeconds/3600)*3600;
+		duration += String.valueOf(df.format((int)realSeconds/60)) + ":";
+		realSeconds -= ((int)realSeconds/60)*60;
+		duration += String.valueOf(df.format((int)realSeconds));
+		return duration;
+	}
+	
+	public int durationToSeconds(String duration) {		
+		int seconds = 0;
+		String[] durationArray = duration.split(":");
+		seconds += Integer.valueOf(durationArray[2]) + Integer.valueOf(durationArray[1])*60 + Integer.valueOf(durationArray[0])*3600;
+		return seconds;
 	}
  
     @Override
