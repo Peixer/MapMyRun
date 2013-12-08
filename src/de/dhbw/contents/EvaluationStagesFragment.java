@@ -70,7 +70,7 @@ public class EvaluationStagesFragment extends SherlockFragment{
         }
         
         ((TextView) view.findViewById(R.id.stages_fast)).setText(fastest);
-        ((TextView) view.findViewById(R.id.stages_fast)).setText(fastest);
+        ((TextView) view.findViewById(R.id.stages_slow)).setText(slowest);
         
         ListView listView = (ListView) view.findViewById(R.id.stages_list);
         listView.setAdapter(new CustomListAdapter(getActivity(), R.layout.evaluation_stages_fragment, listElements));
