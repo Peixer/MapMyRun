@@ -94,7 +94,8 @@ public class LiveTrackingFragment extends SherlockFragment {
 		return v;
 	}
 	
-	//TODO comment
+	//Sperre Zurück-Taste, da diese in den meisten Fällen die App beendet
+	//Ausnahme: Wenn in Auswahlliste der kategorien, blende wieder Live-Tracking ein
 	public void onBackPressed()
 	{
 		if (mListView.getVisibility() == View.VISIBLE)
@@ -104,16 +105,15 @@ public class LiveTrackingFragment extends SherlockFragment {
 		}
 	}
 	
-	//TODO comment
 	@Override
 	public void onResume() {
-		// Set List
+		//Setze Liste bei Fortsetzen des Fragments
 		mView = getView();	
 		setList();
 		super.onResume();
 	}
 	
-	//TODO comment
+	//Setze Default-Werte für die einzelnen Kategorien
 	public void formatCategoryHeadline(AnalysisCategory ac, TextView valueView ){
 		String format = ac.getFormat();
 		
@@ -167,7 +167,7 @@ public class LiveTrackingFragment extends SherlockFragment {
 		}
 	}
 	
-	//TODO comment
+	//Lese Liste des letzten zusammengestellten Listen-Layouts aus der Datenbank und übernehme das Layout
 	public void setList()
 	{
 		
@@ -186,17 +186,17 @@ public class LiveTrackingFragment extends SherlockFragment {
 			listContents = db.getAllCoordinatePairs();
 			formatCategoryHeadline(ac, valueView);
 			populateCategories(ac, valueView, listContents);
-			//Zu Karegorien icons laden
+			//Zu Kategorien Icons laden
 			int imageId = getResources().getIdentifier(ac.getImageName(), "drawable", mContext.getPackageName());
 			((ImageView) listElement.findViewById(R.id.live_tracking_element_value_icon)).setImageResource(imageId);
-			//Zu Kategorien Ueberschriften laden		
+			//Zu Kategorien Überschriften laden		
 			((TextView) listElement.findViewById(R.id.live_tracking_element_name)).setText(ac.getName() + " (" + ac.getFormat() + ")");
 		
 		}
 	}
 	
 	
-	//TODO comment
+	//OnClickListener; Falls auf ein Element geklickt wurde, rufe Liste zur Auswahl einer Kategorie (z.B. Dauer, Kalorien etc) aus
 	private class CustomListOnClickListener implements View.OnClickListener
 	{
 		private List<AnalysisCategory> mCategoryList;
@@ -223,6 +223,7 @@ public class LiveTrackingFragment extends SherlockFragment {
 			}			
 		}	
 		
+		//Setze Liste der verfügbaren Kategorien
 		private class CustomListAdapter extends ArrayAdapter<String> {
 
 			private List<String> objects;
@@ -252,7 +253,7 @@ public class LiveTrackingFragment extends SherlockFragment {
 			
 		}
 		
-		//TODO comment
+		//OnClickListener; Schreibe ausgewählte Kategorie in die Datenbank, lade neues Layout und zeige Live-Tracking an
 		private class CustomCategoryListOnItemClickListener implements OnItemClickListener
 		{
 			private int categoryPosition;
@@ -377,9 +378,10 @@ public class LiveTrackingFragment extends SherlockFragment {
 
 	
 	//Zur Detailauswertung
+	@SuppressWarnings("static-access")
 	public void getToTrackingEvaluation() {
 		
-		//TODO comment
+		//Speichere Länge der Liste der Segmente
 		Bundle bundle = new Bundle();
 		bundle.putInt("segmentlength", mSegmentList.size());
 		for (int i=0; i<mSegmentList.size(); i++)

@@ -20,8 +20,6 @@ import de.dhbw.tracking.DistanceSegment;
 
 public class EvaluationViewPager extends Fragment {
 
-	
-	//TODO comment
 	public static final String TAG = EvaluationViewPager.class
 			.getSimpleName();
 	private List<DistanceSegment> mSegmentList = new ArrayList<DistanceSegment>();
@@ -37,11 +35,11 @@ public class EvaluationViewPager extends Fragment {
 		setRetainInstance(true);
 	}
 
-	//TODO comment
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		
+		//Empfange Segmentdaten vom LiveTrackingFragment
 		Bundle bundle = this.getArguments();
 		for (int i=0; i < bundle.getInt("segmentlength"); i++)
 		{
@@ -78,7 +76,7 @@ public class EvaluationViewPager extends Fragment {
 		public EvaluationPagerAdapter(android.support.v4.app.FragmentManager fm) {
 			super(fm);
 		}
-		//Ãœberschriften 
+		//Überschriften 
 		private final String[] TITLES = {"Diagramme","Zwischentabelle","Hauptansicht"};
 
 		@Override
@@ -91,7 +89,7 @@ public class EvaluationViewPager extends Fragment {
 			return TITLES.length;
 		}
 
-		//Navigation zwischen Fragmente
+		//Navigation zwischen Fragmenten
 		@Override
 	    public SherlockFragment getItem(int position) {
 	        switch (position) {

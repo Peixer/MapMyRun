@@ -129,20 +129,20 @@ public class MenuContainerActivity extends SherlockFragmentActivity {
 
 		switch (item.getItemId()) 
 		{
-			//MenÃ¼liste
+			//Menüliste
 			case android.R.id.home:
-				//falls MenÃ¼ schon geÃ¶ffnet zumachen
+				//falls Menü schon geöffnet zumachen
 				if (mDrawerLayout.isDrawerOpen(mDrawerList))
 					mDrawerLayout.closeDrawer(mDrawerList);
 				else
-					if (!isLocked)	//MenÃ¼ nur Ã¶ffnen falls nicht gesperrt (wÃ¤hrend eines Live-Tracking)
+					if (!isLocked)	//Menü nur öffnen falls nicht gesperrt (während eines Live-Tracking)
 						mDrawerLayout.openDrawer(mDrawerList);
 				break;
 				
 			//Musik icon
 			case R.id.action_music_player: 
 	
-				//TODO comment
+				//Sperre Musik-Icon während des Trackings
 				if (!isLocked) 
 				{
 					//
@@ -194,14 +194,14 @@ public class MenuContainerActivity extends SherlockFragmentActivity {
     	//super.onBackPressed();
     }
 
-	//TODO comment
+	//Auto-Created method
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
 		super.onPostCreate(savedInstanceState);
 		mDrawerToggle.syncState();
 	}
 
-	//TODO comment
+	//Auto-Created method
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);

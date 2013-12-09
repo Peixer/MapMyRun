@@ -2,6 +2,8 @@ package de.dhbw.database;
 
 public class AnalysisCategory {
 
+	//Constructors
+	
 	public AnalysisCategory() {
 		// TODO Auto-generated constructor stub
 	}
@@ -20,10 +22,14 @@ public class AnalysisCategory {
 		setFormat(format);
 	}
 	
+	//Members
+	
 	private int id;
 	private String name;
 	private String imageName;
 	private String format;
+	
+	//Methods
 	
 	public String toString()
 	{

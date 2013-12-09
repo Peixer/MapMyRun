@@ -641,10 +641,9 @@ public class DataBaseHandler extends SQLiteOpenHelper{
  	    return categoryId;
  	}
  	
-    //TODO comment
+    //Initialisiere Positionen der Kategorien in der Liste
     private void initCategoryPositions (SQLiteDatabase db)
-    {
-    	//add category positions
+    {    	
     	for (int i=1; i<8; i++)
     		addCategoryPosition(db, new CategoryPosition(i, i));
     }
