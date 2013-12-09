@@ -159,19 +159,19 @@ public class GPSTracker extends Service implements LocationListener {
 			timestamp = location.getTime();
 			DataBaseHandler db = new DataBaseHandler(mContext);
 			
-			int oldDuration = durationToSeconds(TrackService.calcDuration(db.getAllCoordinatePairs()));
-			
 			//neue Koordinaten speichern
 			db.addCoordinates(new Coordinates(longitude, latitude, altitude, timestamp));
 			
 			List<Coordinates> coordinatePairs = db.getAllCoordinatePairs();
 			
-			int newDuration = durationToSeconds(TrackService.calcDuration(coordinatePairs));
-			
 			//TODO comment
 			double distance = TrackService.calcDistance(coordinatePairs);
 			if (distance >= distanceBorder)
 			{
+				int oldDuration = 0;
+				if (mLiveTrackingFragment.mSegmentList.size() >= 1)
+					oldDuration = durationToSeconds(mLiveTrackingFragment.mSegmentList.get(mLiveTrackingFragment.mSegmentList.size()).getDuration());
+				int newDuration = durationToSeconds(TrackService.calcDuration(coordinatePairs));
 				String distanceString = String.valueOf(distance);
 				String duration = secondsToString(newDuration - oldDuration);
 				String speed = String.valueOf(TrackService.calcPace(coordinatePairs));
