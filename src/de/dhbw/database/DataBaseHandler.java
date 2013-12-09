@@ -28,25 +28,24 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 	}
 
-	// All Static variables
-    // Database Version
+	//Datenbankversion
     private static final int DATABASE_VERSION = 33;
  
-    // Database Name
+    // Datenbankname
     private static final String DATABASE_NAME = "workoutsManager";
  
-    // Workouts table name
+    // Workouts Tabellenname
     private static final String TABLE_WORKOUTS = "workouts";
-    //Coordinates table name
+    //Coordinates Tabellenname
     private static final String TABLE_COORDINATES = "coordinates";
-    // Achievement table name
+    // Achievement Tabellenname
     private static final String TABLE_ACHIEVEMENTS = "achievements";
-    // AnalysisCategory table name
+    // AnalysisCategory Tabellenname
     private static final String TABLE_ANALYSIS_CATEGORY = "analysiscategory";
-    // CategoryPositions table name
+    // CategoryPositions Tabellenname
     private static final String TABLE_CATEGORY_POSITIONS = "categorypositions";
  
-    //common column names
+    //Gemeinsame Spaltennamen
     private static final String KEY_ID = "id";
 	//Workouts
     private static final String KEY_DURATION = "duration";
@@ -74,31 +73,31 @@ public class DataBaseHandler extends SQLiteOpenHelper{
     private static final String KEY_POSITION = "position";
     private static final String KEY_CATEGORY_ID = "categoryid";
     
-    //Create Table Statements
-    //Create Workouts Table Statement
+    //SQL Statements zum Tabellen Anlegen
+    //Erstellt Workout Tabelle
     String CREATE_WORKOUTS_TABLE = "CREATE TABLE " + TABLE_WORKOUTS + "("
     		+ KEY_ID + " INTEGER PRIMARY KEY," + KEY_DURATION + " TEXT,"
     		+ KEY_PACE + " REAL," + KEY_ELEVATION_DOWNWARDS + 
     		" REAL," + KEY_ELEVATION_UPWARDS + " REAL,"
     		+ KEY_CALORIES_BURNED + " REAL," + KEY_DISTANCE + " REAL," + KEY_DATE + " INTEGER" + ");";
-    //Create Coordinates Table Statement
+    //Erstellt Koordinatentabelle
     String CREATE_COORDINATES_TABLE = "CREATE TABLE " + TABLE_COORDINATES + "("
     		+ KEY_ID + " INTEGER PRIMARY KEY," + KEY_LONGITUDE + " REAL,"
     		+ KEY_LATITUDE + " REAL," + KEY_ALTITUDE + " REAL," + KEY_TIMESTAMP + " REAL" +");";
-    //Create Achievements Table Statement
+    //Erstellt Achievements Tabelle
     String CREATE_ACHIEVEMENT_TABLE = "CREATE TABLE " + TABLE_ACHIEVEMENTS + "("
     		+ KEY_ID + " INTEGER PRIMARY KEY," + KEY_NAME + " TEXT," + KEY_DESCRIPTION + " TEXT,"
     		+ KEY_IMAGENAME + " TEXT," + KEY_REQUIREMENT_NUMBER + " INTEGER," + KEY_REQUIREMENT_UNIT
     		+" TEXT," + KEY_ACHIEVED + " INTEGER" + ");";
-    //Create AnalysisCategroy Table Statement
+    //Erstellt AnalysisCategroy Tabelle
     String CREATE_ANALYSIS_CATEGORY_TABLE = "CREATE TABLE " + TABLE_ANALYSIS_CATEGORY + "("
     		+ KEY_ID + " INTEGER PRIMARY KEY," + KEY_NAME + " TEXT," + KEY_IMAGENAME + " TEXT,"
     		+ KEY_FORMAT + " TEXT" + ");";
-  //Create CategoryPositions Table Statement
+    //Erstellt CategoryPositions Tabelle
     String CREATE_CATEGORY_POSITIONS_TABLE = "CREATE TABLE " + TABLE_CATEGORY_POSITIONS + "("
     		+ KEY_POSITION + " INTEGER PRIMARY KEY," + KEY_CATEGORY_ID + " INTEGER" + ");";
     
-    // Generating Tables
+    // Legt Tabellen an
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_WORKOUTS_TABLE);
@@ -121,7 +120,7 @@ public class DataBaseHandler extends SQLiteOpenHelper{
       db.delete("COORDINATES", null, null);
     }
     
-    // Upgrading database
+    // Datenbankversion hochzaehlen
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Drop older table if existed
@@ -136,7 +135,7 @@ public class DataBaseHandler extends SQLiteOpenHelper{
     
     
     
- // Adding new workout
+    //Neues Workout erstellen
     public void addWorkout(Workout workout) {
     	
     	SQLiteDatabase db = this.getWritableDatabase();
@@ -148,12 +147,12 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 	    values.put(KEY_CALORIES_BURNED, workout.getCaloriesBurned()); 
 	    values.put(KEY_DISTANCE, workout.get_distance()); 
 	    values.put(KEY_DATE, workout.get_date().getTime());
-	    // Inserting Row
+	    // Neue Zeile einfügen
 	    db.insert(TABLE_WORKOUTS, null, values);
-	    db.close(); // Closing database connection
+	    db.close(); // Datenbankverbindung schließen
     }
      
-    // Getting single workout
+    // Gibt einzelne Workouts zurück
     public Workout getWorkout(int id){
     	SQLiteDatabase db = this.getReadableDatabase();
     	  
@@ -178,20 +177,18 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 	            Double.parseDouble(cursor.getString(5)),
 	            Double.parseDouble(cursor.getString(6)),
 	            new Date(Long.parseLong(cursor.getString(7))));
-	    // return workout
 	    return workout;
 		}
      
-    // Getting All Workouts
+    // Alle Workouts zurückgeben
 	 public List <Workout> getAllWorkouts() {
 	    List <Workout> workoutList = new ArrayList<Workout>();
-	    // Select All Query
+	    // Alle Abfragen Query
 	    String selectQuery = "SELECT  * FROM " + TABLE_WORKOUTS;
 	 
 	    SQLiteDatabase db = this.getWritableDatabase();
 	    Cursor cursor = db.rawQuery(selectQuery, null);
 	 
-	    // looping through all rows and adding to list
 	    if (cursor.moveToFirst()) {
 	        do {
 	            Workout workout = new Workout();
@@ -203,18 +200,18 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 	            workout.setCaloriesBurned(cursor.getDouble(cursor.getColumnIndex(KEY_CALORIES_BURNED)));
 	            workout.set_distance(cursor.getDouble(cursor.getColumnIndex(KEY_DISTANCE)));
 	            workout.set_date(new Date((cursor.getLong(cursor.getColumnIndex(KEY_DATE)))));
-	            // Adding workout to list
+	            // Workout zur Liste hinzufügen
 	            workoutList.add(workout);
 	        } while (cursor.moveToNext());
 	    }
 	    
 	    db.close();
-	    // return workout list
+	    // Alle Workouts zur Liste zurückgeben
 	    return workoutList;
 	}
 	 
 	 
-    // Getting workouts Count
+    // Gibt die Anzahl von Workouts in der Datenbank zurück 
     public int getWorkoutsCount() {
         String countQuery = "SELECT  * FROM " + TABLE_WORKOUTS;
         SQLiteDatabase db = this.getReadableDatabase();
@@ -227,7 +224,7 @@ public class DataBaseHandler extends SQLiteOpenHelper{
    
     
     
-    // Updating single workout
+    // Aktualisiert einzelne Workouts
     public int updateWorkout(Workout workout) {
     	SQLiteDatabase db = this.getWritableDatabase();
 	  
@@ -240,7 +237,7 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 	    values.put(KEY_DISTANCE, workout.get_distance());
 	    values.put(KEY_DATE, workout.get_date().getTime());
 	    
-	    // updating row
+	    // Aktualisiert Zeile
 	    int dbUpdate = db.update(TABLE_WORKOUTS, values, KEY_ID + " = ?",
 	            new String[] { String.valueOf(workout.getID()) });
 	    db.close();
@@ -248,7 +245,7 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 	    return dbUpdate;
 		}
      
-    // Deleting single contact
+    // Löscht einzelne Workouts
     public void deleteWorkout(Workout workout) {
     	SQLiteDatabase db = this.getWritableDatabase();
 	    db.delete(TABLE_WORKOUTS, KEY_ID + " = ?",
@@ -256,14 +253,14 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 	    db.close();
     }   
     
-    // add a pair of coordinates
+    // Fügt Koordinatenpaare in die Datenbank ein
     public void addCoordinates(SQLiteDatabase db, Coordinates coordinate) {
     	ContentValues values = new ContentValues();
 	    values.put(KEY_LONGITUDE, coordinate.get_longitude());
 	    values.put(KEY_LATITUDE, coordinate.get_latitude());
 	    values.put(KEY_ALTITUDE, coordinate.get_altitude());
 	    values.put(KEY_TIMESTAMP, coordinate.get_timestamp());
-	    // Inserting Row
+	    // Fügt Zeile ein
 	    db.insert(TABLE_COORDINATES, null, values);
     }
     
@@ -273,7 +270,7 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 	    db.close();
     }
     
-    // Get number of coordinate pairs
+    // Gibt die Anzahl aller Koordinatenpaare zurück
     public int getCoordinatePairsCount() {
         String countQuery = "SELECT * FROM " + TABLE_COORDINATES;
         SQLiteDatabase db = getReadableDatabase();
@@ -286,7 +283,7 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 	}
   
     
-    // Get pair of coordinates from id
+    // Gibt einzelne Koordinatenpaare zurück
     public Coordinates getCoordinatePair(int id) {
     	SQLiteDatabase db = this.getReadableDatabase();
     	  
@@ -306,8 +303,6 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 	            Double.parseDouble(cursor.getString(2)),
 	            Double.parseDouble(cursor.getString(3)),
 	            Long.parseLong(cursor.getString(4)));
-	    // return pair of coordinates
-	    
 	    cursor.close();
 	    db.close();
 	    
@@ -315,16 +310,15 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 		}
     
     
-    // Getting All Pair of Coordinates
+    	// Gibt alle Koordinatenpaare zurück
     	 public List <Coordinates> getAllCoordinatePairs() {
     	    List <Coordinates> coordinateList = new ArrayList<Coordinates>();
-    	    // Select All Query
     	    String selectQuery = "SELECT  * FROM " + TABLE_COORDINATES;
     	 
     	    SQLiteDatabase db = this.getWritableDatabase();
     	    Cursor cursor = db.rawQuery(selectQuery, null);
     	 
-    	    // looping through all rows and adding to list
+    	    //Geht alle Zeilen durch und fügt einzelne Koordinatenpaare in die Liste ein
     	    if (cursor.moveToFirst()) {
     	        do {
     	            Coordinates coordinates = new Coordinates();
@@ -333,7 +327,6 @@ public class DataBaseHandler extends SQLiteOpenHelper{
     	            coordinates.set_latitude(cursor.getDouble(cursor.getColumnIndex(KEY_LATITUDE)));
     	            coordinates.set_altitude(cursor.getDouble(cursor.getColumnIndex(KEY_ALTITUDE)));
     	            coordinates.set_timestamp(cursor.getLong(cursor.getColumnIndex(KEY_TIMESTAMP)));
-    	            // Adding pair of coordinates to list
     	            coordinateList.add(coordinates);
     	        } while (cursor.moveToNext());
     	    }
@@ -341,11 +334,11 @@ public class DataBaseHandler extends SQLiteOpenHelper{
     	    cursor.close();
     	    db.close();
     	 
-    	    // return list of coordinate pairs
+    	    // Liste mit Koordinatenparen zurückgeben
     	    return coordinateList;
 		}
  
-    // Adding new achievement
+    // Fügt neues Achievement in die Datenbank ein
     public void addAchievement(SQLiteDatabase db, Achievement achievement) {
     	ContentValues values = new ContentValues();
 	    values.put(KEY_NAME, achievement.getName());
@@ -361,7 +354,7 @@ public class DataBaseHandler extends SQLiteOpenHelper{
     public void addAchievement(Achievement achievement) {
     	SQLiteDatabase db = getWritableDatabase();	
     	addAchievement(db, achievement);
-	    db.close(); // Closing database connection
+	    db.close(); // Datenbankverbindung schließen
     }
     
     public int setAchieved(int id) {
@@ -370,7 +363,7 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 	    ContentValues values = new ContentValues();
 	    values.put(KEY_ACHIEVED, 1);
 	    
-	    // updating row
+	    // Aktualisiert Zeile
 	    int dbUpdate = db.update(TABLE_ACHIEVEMENTS, values, KEY_ID + " = ?",
 	            new String[] { String.valueOf(id) });
 	    db.close();
@@ -378,7 +371,7 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 	    return dbUpdate;
 	}
     
-    // Get number of achievements
+    // Gibt die Anzahl aller achievements aus der Datenbank zurück
     public int getAchievementCount() {
         String countQuery = "SELECT * FROM " + TABLE_ACHIEVEMENTS;
         SQLiteDatabase db = getReadableDatabase();
@@ -390,7 +383,7 @@ public class DataBaseHandler extends SQLiteOpenHelper{
         return count;
 	}
     
- // Get number of achievements by unit
+    // Gibt Anzahl von Achievements pro Einheit zurück (z.B. km/h, Sekunden etc.)
     public int getAchievementCount(String unit) {
         return getAchievementCount(unit, false);
 	}
@@ -410,7 +403,7 @@ public class DataBaseHandler extends SQLiteOpenHelper{
         return count;
 	}
     
-    // Get achievement from id
+    // Gibt Achievement anhand der ID zurück
     public Achievement getAchievement(int id) {
     	SQLiteDatabase db = getReadableDatabase();
     	  
@@ -430,20 +423,19 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 	    cursor.close();
 	    db.close();
 	    
-	    return achievement; // return achievement
+	    return achievement; // gibt Achievement zurück
 	}
     
-    // Getting All Achievements
-    
+    // Gibt alle Achievements zurück
 	public List <Achievement> getAllAchievements() {
 	    List <Achievement> achievementList = new ArrayList<Achievement>();
-	    // Select All Query
+	    // Select all Query
 	    String selectQuery = "SELECT  * FROM " + TABLE_ACHIEVEMENTS;
 	 
 	    SQLiteDatabase db = this.getWritableDatabase();
 	    Cursor cursor = db.rawQuery(selectQuery, null);
 	 
-	    // looping through all rows and adding to list
+	    // Geht alle Zeilen durch und fügt sie der Liste hinzu
 	    if (cursor.moveToFirst()) {
 	        do {
 		            Achievement achievement = new Achievement();
@@ -457,7 +449,6 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 		            	achievement.setAchieved(false);
 		            else
 		            	achievement.setAchieved(true);
-		            // Adding achievement to list
 		            achievementList.add(achievement);
 	        } while (cursor.moveToNext());
 	    }
@@ -465,16 +456,16 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 	    cursor.close();
 	    db.close();
 	 
-	    // return achievement list
+	    // Gibt Achievements Liste zurück
 	    return achievementList;
 	}
 	
-	// Getting All Achievements
+	// Gibt alle Achievements einer Einheit zurück (z.B. km/h, Sekunden)
 	public List <Achievement> getAchievementsByUnit(String unit) {
 		return getAchievementsByUnit(unit, false);
 	}
 	
-	// Getting All Achievements
+	// Gibt alle Achievements einer Einheit zurück (optional nur errungene Achievements)
 	public List <Achievement> getAchievementsByUnit(String unit, Boolean achieved) {
 	    List <Achievement> achievementList = new ArrayList<Achievement>();
 	    // Select All Query
@@ -486,7 +477,7 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 	    SQLiteDatabase db = this.getWritableDatabase();
 	    Cursor cursor = db.rawQuery(selectQuery, null);
 	 
-	    // looping through all rows and adding to list
+	    // Geht alle Zeilen durch und fügt sie der Liste hinzu
 	    if (cursor.moveToFirst()) {
 	        do {
 		            Achievement achievement = new Achievement();
@@ -496,7 +487,6 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 		            achievement.setImageName(cursor.getString(cursor.getColumnIndex(KEY_IMAGENAME)));
 		            achievement.setRequiredUnit(cursor.getString(cursor.getColumnIndex(KEY_REQUIREMENT_UNIT)));
 		            achievement.setRequiredNumber(cursor.getInt(cursor.getColumnIndex(KEY_REQUIREMENT_NUMBER)));
-		            // Adding achievement to list
 		            achievementList.add(achievement);
 	        } while (cursor.moveToNext());
 	    }
@@ -504,7 +494,7 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 	    cursor.close();
 	    db.close();
 	 
-	    // return achievement list
+	    // Gibt (Achievements-)Liste zurück
 	    return achievementList;
 	}
 	
@@ -516,7 +506,7 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 	    SQLiteDatabase db = this.getReadableDatabase();
 	    Cursor cursor = db.rawQuery(selectQuery, null);
 	    
-	    // looping through all rows and adding to list
+	    //Geht alle Zeilen durch und fügt sie der Liste hinzu
 	    if (cursor.moveToFirst()) {
 	        do {
 	        		AnalysisCategory analysisCategory = new AnalysisCategory();
@@ -524,7 +514,6 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 	        		analysisCategory.setName(cursor.getString(cursor.getColumnIndex(KEY_NAME)));
 		            analysisCategory.setImageName(cursor.getString(cursor.getColumnIndex(KEY_IMAGENAME)));
 		            analysisCategory.setFormat(cursor.getString(cursor.getColumnIndex(KEY_FORMAT)));
-		            // Adding analysisCategory to list
 		            analysisCategoryList.add(analysisCategory);
 	        } while (cursor.moveToNext());
 	    }
@@ -532,27 +521,27 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 	    cursor.close();
 	    db.close();
 	 
-	    // return analysisCategoryList
+	    // gibt analysisCategoryList zurück
 	    return analysisCategoryList;
 	}
 		
-	// Adding new AnalysisCategory
+	// Fügt neue AnalysisCategory in die DB ein
     public void addAnalysisCategory(SQLiteDatabase db, AnalysisCategory analysisCategory) {
     	ContentValues values = new ContentValues();
 	    values.put(KEY_NAME, analysisCategory.getName());
 	    values.put(KEY_IMAGENAME, analysisCategory.getImageName());
 	    values.put(KEY_FORMAT, analysisCategory.getFormat());
-	    // Inserting Row
+	    // Fügt neue Zeile ein
 	    db.insert(TABLE_ANALYSIS_CATEGORY, null, values);
     }
     
     public void addAnalysisCategory(AnalysisCategory analysisCategory) {
     	SQLiteDatabase db = getWritableDatabase();
     	addAnalysisCategory(db, analysisCategory);
-	    db.close(); // Closing database connection
+	    db.close(); // Schließt Datenbankverbindung 
     }
     
-    // Getting CategoryId by Position
+    // Gibt CategoryId anhand der ID zurück
   	public AnalysisCategory getAnalysisCategoryById(int id) {
   		
   		AnalysisCategory analysisCategory = new AnalysisCategory();
@@ -563,7 +552,7 @@ public class DataBaseHandler extends SQLiteOpenHelper{
   	    SQLiteDatabase db = this.getWritableDatabase();
   	    Cursor cursor = db.rawQuery(selectQuery, null);
   	 
-  	    // looping through all rows and adding to list
+  	    // Geht alle Zeilen durch und fügt sie der analysisCategory Liste hinzu
   	    if (cursor.moveToFirst()) {
   	        analysisCategory.setId(cursor.getInt(cursor.getColumnIndex(KEY_ID)));
   	        analysisCategory.setName(cursor.getString(cursor.getColumnIndex(KEY_NAME)));
@@ -584,11 +573,11 @@ public class DataBaseHandler extends SQLiteOpenHelper{
     	ContentValues values = new ContentValues();
 	    values.put(KEY_CATEGORY_ID, categoryPosition.getCategoryId());
 	    values.put(KEY_POSITION, categoryPosition.getPosition());
-	    // Inserting Row
+	    // Fügt neue Zeile ein
 	    db.insert(TABLE_CATEGORY_POSITIONS, null, values);
     }
     
-    // Updating single category position
+    // Aktualisiert einzelne CategoryPosition Einträge
     public int updateCategoryPosition(CategoryPosition categoryPosition) 
     {
     	SQLiteDatabase db = this.getWritableDatabase();
@@ -596,7 +585,7 @@ public class DataBaseHandler extends SQLiteOpenHelper{
 	    ContentValues values = new ContentValues();
 	    values.put(KEY_CATEGORY_ID, categoryPosition.getCategoryId());
 	    
-	    // updating row
+	    // Zeile aktualisieren
 	    int dbUpdate = db.update(TABLE_CATEGORY_POSITIONS, values, KEY_POSITION + " = ?",
 	            new String[] { String.valueOf(categoryPosition.getPosition()) });
 	    
@@ -614,13 +603,12 @@ public class DataBaseHandler extends SQLiteOpenHelper{
  	    SQLiteDatabase db = this.getReadableDatabase();
  	    Cursor cursor = db.rawQuery(selectQuery, null);
  	 
- 	    // looping through all rows and adding to list
+ 	    // Geht alle Zeilen durch und fügt sie der categoryPositionList Liste hinzu
  	    if (cursor.moveToFirst()) {
  	        do {
  	        		CategoryPosition categoryPosition = new CategoryPosition();
  	        		categoryPosition.setPosition(cursor.getInt(cursor.getColumnIndex(KEY_POSITION)));
  	        		categoryPosition.setCategoryId(cursor.getInt(cursor.getColumnIndex(KEY_CATEGORY_ID)));
- 		            // Adding analysisCategory to list
  		           categoryPositionList.add(categoryPosition);
  	        } while (cursor.moveToNext());
  	    }
@@ -628,11 +616,11 @@ public class DataBaseHandler extends SQLiteOpenHelper{
  	    cursor.close();
  	    db.close();
  	 
- 	    // return analysisCategoryList
+ 	    // Gibt analysisCategoryList zurück
  	    return categoryPositionList;
     }
     
-    // Getting CategoryId by Position
+    // Liefert CategoryId anhand der ID zurück
  	public int getCategoryIdByPosition(int position) {
  		int categoryId;
  	    // Select All Query
@@ -641,7 +629,6 @@ public class DataBaseHandler extends SQLiteOpenHelper{
  	    SQLiteDatabase db = this.getWritableDatabase();
  	    Cursor cursor = db.rawQuery(selectQuery, null);
  	 
- 	    // looping through all rows and adding to list
  	    if (cursor.moveToFirst()) {
  	        categoryId = cursor.getInt(cursor.getColumnIndex(KEY_CATEGORY_ID));
  	    }
@@ -654,7 +641,7 @@ public class DataBaseHandler extends SQLiteOpenHelper{
  	    return categoryId;
  	}
  	
-    
+    //TODO comment
     private void initCategoryPositions (SQLiteDatabase db)
     {
     	//add category positions
@@ -738,21 +725,21 @@ public class DataBaseHandler extends SQLiteOpenHelper{
     
     private void initAchievements(SQLiteDatabase db)
     {
-    	// total distance achievements
+    	// Gesamtentfernung Achievements
         addAchievement(db, new Achievement("Beginner", "Laufe insgesamt 5 Kilometer", "ic_achievement_trophy", "tkm", 5));
         addAchievement(db, new Achievement("Advanced", "Laufe insgesamt 10 Kilometer", "ic_achievement_trophy", "tkm", 10));
         addAchievement(db, new Achievement("Marathon", "Laufe insgesamt 42 Kilometer", "ic_achievement_trophy", "tkm", 42));
         addAchievement(db, new Achievement("Runner", "Laufe insgesamt 50 Kilometer", "ic_achievement_trophy", "tkm", 50));
         addAchievement(db, new Achievement("Always running", "Laufe insgesamt 75 Kilometer", "ic_achievement_trophy", "tkm", 75));
         
-        // total time achievements
+        // Gesamtdauer Achievements
         addAchievement(db, new Achievement("And here...we...go!", "Laufe insgesamt 5 Minuten", "ic_achievement_trophy", "ts", 300));
         addAchievement(db, new Achievement("So far so good!", "Laufe insgesamt 30 Minuten", "ic_achievement_trophy", "ts", 1800));
         addAchievement(db, new Achievement("The first hour!", "Laufe insgesamt eine Stunde", "ic_achievement_trophy", "ts", 3600));
         addAchievement(db, new Achievement("Time goes by...", "Laufe insgesamt 5 Stunden", "ic_achievement_trophy", "ts", 18000));
         addAchievement(db, new Achievement("Indestructible!", "Laufe insgesamt 10 Stunden", "ic_achievement_trophy", "ts", 36000));
         
-        // single distance achievements
+        // Einezelne Entfernungen Achievements
         addAchievement(db, new Achievement("So it begins...", "Laufe einen Kilometer am Stueck", "ic_achievement_trophy", "skm", 1));
         addAchievement(db, new Achievement("Double the distance!", "Laufe 2 Kilometer am Stueck", "ic_achievement_trophy", "skm", 2));
         addAchievement(db, new Achievement("High Five!", "Laufe 5 Kilometer am Stueck", "ic_achievement_trophy", "skm", 5));
@@ -762,7 +749,7 @@ public class DataBaseHandler extends SQLiteOpenHelper{
         addAchievement(db, new Achievement("Almost there...", "Laufe 40 Kilometer am Stueck", "ic_achievement_trophy", "skm", 40));
         addAchievement(db, new Achievement("Just ran a marathon.", "Laufe 42 Kilometer am Stueck", "ic_achievement_trophy", "skm", 42));
         
-        // single time achievements
+        // Einzeldauer achievements
         addAchievement(db, new Achievement("The first experiences", "Laufe 1 Minute am Stueck", "ic_achievement_trophy", "ss", 60));
         addAchievement(db, new Achievement("Training", "Laufe 10 Minuten am Stueck", "ic_achievement_trophy", "ss", 600));
         addAchievement(db, new Achievement("Walker", "Laufe 20 Minuten am Stueck", "ic_achievement_trophy", "ss", 1200));
