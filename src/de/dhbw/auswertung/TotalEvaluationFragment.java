@@ -25,8 +25,8 @@ public class TotalEvaluationFragment extends SherlockFragment{
 	private DataBaseHandler db;
 	private Context mContext;
 	
+	//leerer Konstruktor
 	public TotalEvaluationFragment() {
-		// Empty constructor required for fragment subclasses
 	}
 	
 	@Override
@@ -48,15 +48,20 @@ public class TotalEvaluationFragment extends SherlockFragment{
     	mContext = getActivity();
     	db = new DataBaseHandler(mContext);
     	
-    	
+    	//liefert alle Workouts aus der DB zurück
+    	//Initialisiert den WorkoutTotalEvaluationAdapter
     	workouts = db.getAllWorkouts();
-    	
+    	//(Gesamtauswertungs-)fragment definieren
 		View rootView = inflater.inflate(R.layout.total_evaluation_fragment, container,
 				false);
 		
+		//Ladet total_evaluation listview
         lv = (ListView) rootView.findViewById(R.id.total_evaluation);
+        //Initialisiert WorkoutTotalEvaluationAdapter
         adapter = new WorkoutTotalEvaluationAdapter(mContext, R.id.total_evaluation, workouts);
+        //Listview mit Daten befüllen
         lv.setAdapter(adapter);
+    	//(Gesamtauswertungs-)fragment laden
 		return rootView;
 	}
 }
