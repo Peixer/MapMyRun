@@ -34,4 +34,4 @@ limitations under the License.
 osmDroid:
 
 © OpenStreetMap-Mitwirkende
-www.openstretmap.org/copyright
+www.openstreetmap.org/copyright
