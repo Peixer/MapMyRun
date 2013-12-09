@@ -32,13 +32,13 @@ import android.os.IBinder;
 import android.os.StrictMode;
 import android.provider.Settings;
 import android.util.Log;
-import android.widget.Toast;
 
 public class GPSTracker extends Service implements LocationListener {
 	private final Context mContext;
 	
 	//LiveTrackingFragment um Listenwerte zu aktualisieren
 	private LiveTrackingFragment mLiveTrackingFragment;
+	@SuppressWarnings("unused")
 	private List<DistanceSegment> mSegmentList = new ArrayList<DistanceSegment>();
 	
 	// Flag fuer GPS Status

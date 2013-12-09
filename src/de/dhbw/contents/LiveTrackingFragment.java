@@ -392,5 +392,4 @@ public class LiveTrackingFragment extends SherlockFragment {
 			.replace(R.id.currentFragment,
 						evp, evp.TAG).addToBackStack(null).commit();
 	}
-
 }

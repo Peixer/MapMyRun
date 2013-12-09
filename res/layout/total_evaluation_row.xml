@@ -3,7 +3,7 @@
      android:paddingTop="5dp"
      android:paddingBottom="5dp"
      android:layout_width="match_parent"
-     android:layout_height="30dp"
+     android:layout_height="wrap_content"
      android:orientation="horizontal">
  
     <ImageView
@@ -20,7 +20,8 @@
         android:layout_width="0dp"
 		android:layout_weight="4"
 		android:gravity="center"
-        android:layout_height="30dp"/>
+		android:layout_gravity="center"
+        android:layout_height="wrap_content"/>
      
      <ImageView
 		android:id="@+id/road_icon"
@@ -36,7 +37,8 @@
         android:layout_width="0dp"
 		android:layout_weight="2"
 		android:gravity="center"
-        android:layout_height="30dp" />
+		android:layout_gravity="center"
+        android:layout_height="wrap_content" />
      
      <ImageView
 		android:id="@+id/clock_icon"
@@ -51,7 +53,8 @@
         android:layout_width="0dp"
 		android:layout_weight="3"	
 		android:gravity="center"
-        android:layout_height="30dp" />
+		android:layout_gravity="center"
+        android:layout_height="wrap_content" />
      
  
 </LinearLayout>
