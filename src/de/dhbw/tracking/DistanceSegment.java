@@ -7,7 +7,6 @@ public class DistanceSegment {
 	private String speed;
 	
 	public DistanceSegment() {
-		// TODO Auto-generated constructor stub
 	}
 	
 	public DistanceSegment(String distance, String duration, String speed) {

@@ -2,14 +2,14 @@
 package de.dhbw.database;
 
 public class Coordinates {
-	 //private variables
+	 //Attribute
     int _id;
     Double _longitude;
     Double _latitude;
     Double _altitude;
     long _timestamp;
     
-    //Constructors
+    //Konstruktoren
     
     public Coordinates(){
     	
@@ -29,6 +29,8 @@ public class Coordinates {
     	this._altitude = altitude;
     	this._timestamp = timestamp;
     }
+    
+    //Getter und Setter
 
 	public long get_timestamp() {
 		return _timestamp;

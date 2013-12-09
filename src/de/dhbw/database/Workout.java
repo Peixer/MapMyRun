@@ -3,7 +3,7 @@ package de.dhbw.database;
 import java.util.Date;
 
 public class Workout {
-	 //private variables
+	 //Attribute
     private int _id;
     private String _duration;
     private Double _pace;
@@ -14,11 +14,11 @@ public class Workout {
     private Date _date;
     
      
-    // Empty constructor
+    // leerer Konstruktor
     public Workout(){
          
     }
-    // constructor
+    // Konstruktoren
     public Workout(int id, 
     		       String duration, 
     		       Double pace, 
@@ -81,6 +81,8 @@ public class Workout {
 		this._date = date;
 	}
      
+	
+	//Getter und Setter
 	public Date get_date() {
 		return _date;
 	}
@@ -93,17 +95,16 @@ public class Workout {
 	public void set_distance(Double _distance) {
 		this._distance = _distance;
 	}
-	// constructor
+	
     public Workout(String duration, Double pace){
 		this._duration = duration;
 	    this._pace = pace;
     }
-    // getting ID
+    
     public int getID(){
         return this._id;
     }
      
-    // setting id
     public void setID(int id){
         this._id = id;
     }
@@ -126,22 +127,18 @@ public class Workout {
 	public void setCaloriesBurned(Double _calories_burned) {
 		this._calories_burned = _calories_burned;
 	}
-	// getting duration
     public String getDuration(){
         return this._duration;
     }
      
-    // setting duration
     public void setDuration(String duration){
         this._duration = duration;
     }
      
-    // getting phone number
     public Double getPace(){
         return this._pace;
     }
      
-    // setting phone number
     public void setPace(Double pace){
         this._pace = pace;
     }
