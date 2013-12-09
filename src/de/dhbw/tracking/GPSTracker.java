@@ -169,12 +169,18 @@ public class GPSTracker extends Service implements LocationListener {
 			if (distance >= distanceBorder)
 			{
 				int oldDuration = 0;
+				double oldDistance = 0;
 				if (mLiveTrackingFragment.mSegmentList.size() >= 1)
+				{
 					oldDuration = durationToSeconds(mLiveTrackingFragment.mSegmentList.get(mLiveTrackingFragment.mSegmentList.size()-1).getDuration());
+					oldDistance = Double.parseDouble(mLiveTrackingFragment.mSegmentList.get(mLiveTrackingFragment.mSegmentList.size()-1).getDistance());
+				}
 				int newDuration = durationToSeconds(TrackService.calcDuration(coordinatePairs));
+				double newDistance = distance-oldDistance;
 				String distanceString = String.valueOf(distance);
 				String duration = secondsToString(newDuration - oldDuration);
-				String speed = String.valueOf(TrackService.calcPace(coordinatePairs));
+				double speedValue = (newDistance/newDuration)*3600;
+				String speed = String.valueOf(speedValue);
 				mLiveTrackingFragment.mSegmentList.add(new DistanceSegment(distanceString, duration, speed));
 				distanceBorder++;
 			}
