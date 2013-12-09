@@ -327,6 +327,7 @@ public class LiveTrackingFragment extends SherlockFragment {
 	public void showTrackingRouteOnMap(){
 		//Karte einblenden
 		mView.findViewById(R.id.workout_layout).setVisibility(View.GONE);
+		((TextView) mView.findViewById(R.id.map_copyright)).setVisibility(View.VISIBLE);
 		MapView mapView = (MapView) mView.findViewById(R.id.mapview);
 		mapView.setVisibility(View.VISIBLE);
 		
