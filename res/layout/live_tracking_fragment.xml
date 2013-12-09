@@ -26,6 +26,16 @@
         android:layout_above="@+id/tracking"
         tilesource="Mapnik" />
     
+    <TextView 
+        android:id="@+id/map_copyright"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:background="@drawable/live_timing_background"
+        android:text="@string/map_copyright"
+        android:padding="2dp"
+        android:textSize="12sp"/>
+    
     <ListView
         android:id="@+id/category_list"
         android:layout_width="match_parent"

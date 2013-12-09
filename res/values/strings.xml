@@ -14,6 +14,8 @@
     <string name="button_workout_stop">Stop</string>
     <string name="button_workout_analyse">Auswerten</string>
     
+    <string name="map_copyright">© OpenStreetMap-Mitwirkende</string>
+    
     <string name="achievements_icon_default">Achievement-Bild</string>
     
     <string name="icon_default">Standardicon</string>
