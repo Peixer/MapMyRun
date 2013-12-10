@@ -179,8 +179,9 @@ public class GPSTracker extends Service implements LocationListener {
 				double newDistance = distance-oldDistance;
 				String distanceString = String.valueOf(distance);
 				String duration = secondsToString(newDuration - oldDuration);
-				double speedValue = (newDistance/newDuration)*3600;
-				String speed = String.valueOf(speedValue);
+				DecimalFormat f = new DecimalFormat("#0.00"); 
+				double speedValue = (3600*newDistance)/(newDuration - oldDuration);
+				String speed = String.valueOf(f.format(speedValue));
 				mLiveTrackingFragment.mSegmentList.add(new DistanceSegment(distanceString, duration, speed));
 				distanceBorder++;
 			}
