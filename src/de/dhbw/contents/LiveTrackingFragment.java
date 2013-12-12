@@ -6,13 +6,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Timer;
 
 import org.osmdroid.DefaultResourceProxyImpl;
 import org.osmdroid.ResourceProxy;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -21,9 +21,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -34,24 +31,25 @@ import com.actionbarsherlock.app.SherlockFragment;
 import de.dhbw.container.MenuContainerActivity;
 import de.dhbw.container.R;
 import de.dhbw.database.AnalysisCategory;
-import de.dhbw.database.CategoryPosition;
 import de.dhbw.database.Coordinates;
 import de.dhbw.database.DataBaseHandler;
 import de.dhbw.database.Workout;
 import de.dhbw.helpers.TrackService;
+import de.dhbw.tracking.CustomTimerTask;
 import de.dhbw.tracking.DistanceSegment;
 import de.dhbw.tracking.GPSTracker;
 import de.dhbw.tracking.MyItemizedOverlay;
 
 public class LiveTrackingFragment extends SherlockFragment {
 
-	private Context mContext;
-	private GPSTracker gps;
-    private DataBaseHandler db;
-    private View mView;
-    private LinearLayout mWorkoutLayout;
-    private ListView mListView;
+	public Context mContext;
+	public GPSTracker gps;
+	private DataBaseHandler db;
+    public View mView;
+    public LinearLayout mWorkoutLayout;
+    public ListView mListView;
     
+    public Timer timer = new Timer();	//Timer für Dauer
     public List<DistanceSegment> mSegmentList = new ArrayList<DistanceSegment>();
     
     //leerer Konstruktor
@@ -94,7 +92,8 @@ public class LiveTrackingFragment extends SherlockFragment {
 		return v;
 	}
 	
-	//TODO comment
+	//Sperre Zurück-Taste, da diese in den meisten Fällen die App beendet
+	//Ausnahme: Wenn in Auswahlliste der kategorien, blende wieder Live-Tracking ein
 	public void onBackPressed()
 	{
 		if (mListView.getVisibility() == View.VISIBLE)
@@ -104,21 +103,20 @@ public class LiveTrackingFragment extends SherlockFragment {
 		}
 	}
 	
-	//TODO comment
 	@Override
 	public void onResume() {
-		// Set List
+		//Setze Liste bei Fortsetzen des Fragments
 		mView = getView();	
 		setList();
 		super.onResume();
 	}
 	
-	//TODO comment
+	//Setze Default-Werte für die einzelnen Kategorien
 	public void formatCategoryHeadline(AnalysisCategory ac, TextView valueView ){
 		String format = ac.getFormat();
 		
-		if (format.equals("hh:mm:ss"))
-			valueView.setText("00:00:00");
+		if (format.equals("hh:mm:ss") && valueView.getText().equals(""))
+            valueView.setText("00:00:00");
 		else if (format.equals("km"))
 			valueView.setText("0");
 		else if (format.equals("m"))
@@ -129,8 +127,9 @@ public class LiveTrackingFragment extends SherlockFragment {
 			valueView.setText("0,0");	
 		else if (format.equals("hh:mm"))
 		{
-			if (!ac.getName().equals("Zeit"))
-				valueView.setText("00:00");
+			Calendar c = Calendar.getInstance();
+			SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
+			valueView.setText(sdf.format(c.getTime()));
 		}
 
 	}
@@ -139,8 +138,7 @@ public class LiveTrackingFragment extends SherlockFragment {
 		//Tracking Kategorien Werte zuordnen
 		switch(ac.getId())
 		{
-			case 1:		//Dauer
-				valueView.setText(TrackService.calcDuration(listContents));
+			case 1:		//Dauer wird per Timer gesetzt
 				break;
 			case 2:		//Distanz
 				valueView.setText(String.valueOf(TrackService.calcDistance(listContents)));
@@ -157,118 +155,45 @@ public class LiveTrackingFragment extends SherlockFragment {
 			case 6:		//Durchschnittsgeschwindigkeit
 				valueView.setText(String.valueOf(TrackService.calcPace(listContents)));
 				break;
-			case 7:		//Zeit
-				Calendar c = Calendar.getInstance();
-				SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
-				valueView.setText(sdf.format(c.getTime()));
+			case 7:		//Zeit wird per Timer gesetzt				
 				break;
 			default:	//Wird nie erreicht
 				break;
 		}
 	}
 	
-	//TODO comment
+	//Lese Liste des letzten zusammengestellten Listen-Layouts aus der Datenbank und übernehme das Layout
 	public void setList()
 	{
 		
 		for (int i=0; i<7; i++)
 		{
+			db = new DataBaseHandler(mContext);
 			AnalysisCategory ac = db.getAnalysisCategoryById(db.getCategoryIdByPosition(i+1));
 			if (ac == null)
 				continue;
 			
 			int viewId = getResources().getIdentifier("workout_element_"+i, "id", mContext.getPackageName());
 			View listElement = mView.findViewById(viewId);
-			listElement.setOnClickListener(new CustomListOnClickListener());
+			listElement.setOnClickListener(new CustomListOnClickListener(this));
 			TextView valueView = ((TextView) listElement.findViewById(R.id.live_tracking_element_value_text));
-			db = new DataBaseHandler(mContext);
+			
+			//Prüfen, ob Dauer und nicht oberes Feld (->Schriftgröße)
+			if (ac.getId() == 1 && i != 0)
+				valueView.setTextSize(20);
+			else
+				valueView.setTextSize(30);
+			
 			List <Coordinates> listContents = new ArrayList<Coordinates>();
 			listContents = db.getAllCoordinatePairs();
 			formatCategoryHeadline(ac, valueView);
 			populateCategories(ac, valueView, listContents);
-			//Zu Karegorien icons laden
+			//Zu Kategorien Icons laden
 			int imageId = getResources().getIdentifier(ac.getImageName(), "drawable", mContext.getPackageName());
 			((ImageView) listElement.findViewById(R.id.live_tracking_element_value_icon)).setImageResource(imageId);
-			//Zu Kategorien Ueberschriften laden		
+			//Zu Kategorien Überschriften laden		
 			((TextView) listElement.findViewById(R.id.live_tracking_element_name)).setText(ac.getName() + " (" + ac.getFormat() + ")");
 		
-		}
-	}
-	
-	
-	//TODO comment
-	private class CustomListOnClickListener implements View.OnClickListener
-	{
-		private List<AnalysisCategory> mCategoryList;
-		private ListView mListView = (ListView) ((Activity) mContext).findViewById(R.id.category_list);;
-		
-		@Override
-		public void onClick(View v) {
-			for (int i=0; i<7; i++)
-			{
-				if (v.getId() == getResources().getIdentifier("workout_element_"+i, "id", mContext.getPackageName()))
-				{
-					List<String> listElements = new ArrayList<String>();
-					mCategoryList = db.getAllAnalysisCategories();
-					for (AnalysisCategory category : mCategoryList)
-						listElements.add(String.valueOf(category.getId()));
-						
-					mView.findViewById(R.id.workout_layout).setVisibility(View.GONE);
-					
-					mListView.setAdapter(new CustomListAdapter(mContext, R.layout.list_row, listElements));
-					mListView.setOnItemClickListener(new CustomCategoryListOnItemClickListener(i));
-					
-					mListView.setVisibility(View.VISIBLE);
-				}
-			}			
-		}	
-		
-		private class CustomListAdapter extends ArrayAdapter<String> {
-
-			private List<String> objects;
-			
-			public CustomListAdapter(Context context, int resource,
-					List<String> objects) {
-				super(context, resource, objects);
-				this.objects = objects;
-			}
-			
-			@Override
-			public View getView(int position, View convertView, ViewGroup parent) {
-				
-				LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-				View view = inflater.inflate(R.layout.list_row, null);
-				
-				AnalysisCategory category = db.getAnalysisCategoryById(Integer.parseInt(objects.get(position)));
-				
-				((TextView) view.findViewById(R.id.textView)).setText(category.getName() + " (" + category.getFormat() + ")");
-				int imageId = getResources().getIdentifier(category.getImageName(), "drawable", mContext.getPackageName());
-				((ImageView) view.findViewById(R.id.icon)).setImageResource(imageId);
-				
-				return view;
-				//return super.getView(position, convertView, parent);
-			}
-			
-			
-		}
-		
-		//TODO comment
-		private class CustomCategoryListOnItemClickListener implements OnItemClickListener
-		{
-			private int categoryPosition;
-			
-			public CustomCategoryListOnItemClickListener(int categoryPosition) {
-				this.categoryPosition = categoryPosition;
-			}
-			
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int position,
-					long id) {
-				db.updateCategoryPosition(new CategoryPosition(categoryPosition+1, mCategoryList.get(position).getId()));				
-				mListView.setVisibility(View.GONE);
-				setList();
-				mView.findViewById(R.id.workout_layout).setVisibility(View.VISIBLE);
-			}	
 		}
 	}
 
@@ -286,6 +211,8 @@ public class LiveTrackingFragment extends SherlockFragment {
 			//Tracking Ã¼ber GPS oder Netzwerk starten
 			gps = new GPSTracker(mContext, this);
 			view.setTag(1);
+			
+			timer.schedule(new CustomTimerTask(this),0,1000);//Update text every second
 			
 			//Ãœberschrift von Start auf Stop aendern
 			((TextView) view).setText(getString(R.string.button_workout_stop));
@@ -326,6 +253,7 @@ public class LiveTrackingFragment extends SherlockFragment {
 	public void showTrackingRouteOnMap(){
 		//Karte einblenden
 		mView.findViewById(R.id.workout_layout).setVisibility(View.GONE);
+		((TextView) mView.findViewById(R.id.map_copyright)).setVisibility(View.VISIBLE);
 		MapView mapView = (MapView) mView.findViewById(R.id.mapview);
 		mapView.setVisibility(View.VISIBLE);
 		
@@ -377,9 +305,10 @@ public class LiveTrackingFragment extends SherlockFragment {
 
 	
 	//Zur Detailauswertung
+	@SuppressWarnings("static-access")
 	public void getToTrackingEvaluation() {
 		
-		//TODO comment
+		//Speichere Länge der Liste der Segmente
 		Bundle bundle = new Bundle();
 		bundle.putInt("segmentlength", mSegmentList.size());
 		for (int i=0; i<mSegmentList.size(); i++)

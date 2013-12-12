@@ -2,12 +2,15 @@ package de.dhbw.tracking;
 
 public class DistanceSegment {
 
+	//Members
+	
 	private String distance;
 	private String duration;
 	private String speed;
 	
+	//Constructors
+	
 	public DistanceSegment() {
-		// TODO Auto-generated constructor stub
 	}
 	
 	public DistanceSegment(String distance, String duration, String speed) {
@@ -15,6 +18,8 @@ public class DistanceSegment {
 		setDuration(duration);
 		setSpeed(speed);
 	}
+	
+	//Methods
 
 	public String getDistance() {
 		return distance;

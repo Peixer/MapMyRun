@@ -33,6 +33,7 @@ public class AchievementFragment extends Fragment{
 		
 		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		
+		//Lade Status der ausklappbaren Listen (Ausgeklappt/Eingeklappt)		
         ExpandableListView elv = (ExpandableListView) v.findViewById(R.id.list);
         elv.setAdapter(new SavedTabsListAdapter());
         for (int i=0; i < elv.getExpandableListAdapter().getGroupCount(); i++)
@@ -52,6 +53,7 @@ public class AchievementFragment extends Fragment{
 	    
 	    private DataBaseHandler db = new DataBaseHandler(getActivity());
 	    
+	    // Setze ausklappbare Gruppen
 	    public SavedTabsListAdapter() {
 	    	groups[0] = "Gesamtdistanz (" + db.getAchievementCount("tkm", true) + " von " + db.getAchievementCount("tkm") + ")";
 	    	groups[1] = "Gesamtzeit (" + db.getAchievementCount("ts", true) + " von " + db.getAchievementCount("ts") + ")";
@@ -59,6 +61,8 @@ public class AchievementFragment extends Fragment{
 			groups[3] = "Einzelzeit (" + db.getAchievementCount("ss", true) + " von " + db.getAchievementCount("ss") + ")";
 		}
 	    
+	    //Gebe zu jeder Position der ausklappbaren Gruppen die Einheit zurück, von der die in der
+	    //Gruppe enthaltenen Achievements sein sollen
 	    private String getUnitByPos(int position)
 	    {
 	    	switch (position)
@@ -78,6 +82,7 @@ public class AchievementFragment extends Fragment{
 	    
 	    @Override
 	    public void onGroupCollapsed(int groupPosition) {
+	    	//Klappe Liste ein und speichere neuen Status
 	    	SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 	    	sharedPreferences.edit().putBoolean("Group"+groupPosition+"Expanded", false)
 	    							.commit();
@@ -86,6 +91,7 @@ public class AchievementFragment extends Fragment{
 	    
 	    @Override
 	    public void onGroupExpanded(int groupPosition) {
+	    	//Klappe Lsite aus und speichere neuen Status
 	    	SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 	    	sharedPreferences.edit().putBoolean("Group"+groupPosition+"Expanded", true)
 	    							.commit();
@@ -135,6 +141,7 @@ public class AchievementFragment extends Fragment{
 	    @Override
 	    public View getGroupView(int i, boolean b, View arg0, ViewGroup viewGroup) {
 	        
+	    	//Setze Layout für Listengruppen
 	        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			View view = inflater.inflate(R.layout.achievements_list_group, viewGroup, false);
 			
@@ -147,6 +154,7 @@ public class AchievementFragment extends Fragment{
 	    @Override
 	    public View getChildView(int i, int i1, boolean b, View arg0, ViewGroup viewGroup) {
 	    	
+	    	//Setze Layout für Listenelementen
 	    	LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			View view = inflater.inflate(R.layout.achievements_list_element, viewGroup, false);
 			

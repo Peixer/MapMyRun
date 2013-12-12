@@ -164,7 +164,7 @@ public class GPSTracker extends Service implements LocationListener {
 			
 			List<Coordinates> coordinatePairs = db.getAllCoordinatePairs();
 			
-			//TODO comment
+			//Füge bei ganzen Kilometern (1km, 2km, 3km etc.) ein Segment in die mSegmentList hinzu
 			double distance = TrackService.calcDistance(coordinatePairs);
 			if (distance >= distanceBorder)
 			{
@@ -179,8 +179,9 @@ public class GPSTracker extends Service implements LocationListener {
 				double newDistance = distance-oldDistance;
 				String distanceString = String.valueOf(distance);
 				String duration = secondsToString(newDuration - oldDuration);
-				double speedValue = (newDistance/newDuration)*3600;
-				String speed = String.valueOf(speedValue);
+				DecimalFormat f = new DecimalFormat("#0.00"); 
+				double speedValue = (3600*newDistance)/(newDuration - oldDuration);
+				String speed = String.valueOf(f.format(speedValue));
 				mLiveTrackingFragment.mSegmentList.add(new DistanceSegment(distanceString, duration, speed));
 				distanceBorder++;
 			}
@@ -189,6 +190,7 @@ public class GPSTracker extends Service implements LocationListener {
 		mLiveTrackingFragment.setList();
 	}
 	
+	//Konvertiere Sekunden (z.B. 132 sec) in Dauer (String, z.B. 00:02:12)
 	public String secondsToString(int seconds) {	
 		String duration = "";
 		DecimalFormat df = new DecimalFormat("00");
@@ -201,6 +203,7 @@ public class GPSTracker extends Service implements LocationListener {
 		return duration;
 	}
 	
+	//Konvertiere Dauer (String, z.B. 00:02:12) in Sekunden (z.B. 132 sec)
 	public int durationToSeconds(String duration) {		
 		int seconds = 0;
 		String[] durationArray = duration.split(":");
@@ -297,6 +300,8 @@ public class GPSTracker extends Service implements LocationListener {
             locationManager.removeUpdates(GPSTracker.this);
         }      
         distanceBorder = DEFAULT_DISTANCE_BORDER;
+        mLiveTrackingFragment.timer.cancel();
+        mLiveTrackingFragment.timer.purge();
     }
     
     

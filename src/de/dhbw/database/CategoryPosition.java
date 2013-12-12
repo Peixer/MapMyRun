@@ -3,7 +3,7 @@ package de.dhbw.database;
 public class CategoryPosition {
 
 	public CategoryPosition() {
-		// TODO Auto-generated constructor stub
+		
 	}
 	
 	public CategoryPosition(int position, int categoryId)

@@ -23,6 +23,10 @@ public class EvaluationStagesFragment extends SherlockFragment{
     
 	private List<DistanceSegment> mDistanceSegmentList;
 	
+	public EvaluationStagesFragment() {
+		
+	}
+	
 	public EvaluationStagesFragment(List<DistanceSegment> distanceSegmentList) {
 		
 		mDistanceSegmentList = distanceSegmentList;
@@ -44,6 +48,8 @@ public class EvaluationStagesFragment extends SherlockFragment{
             Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.evaluation_stages_fragment, container, false);
         
+        // Finde aus den Segmenten das schnellste bzw. langsamste Segment heraus
+        
         String fastest;
         String slowest;
         
@@ -59,6 +65,7 @@ public class EvaluationStagesFragment extends SherlockFragment{
         }
         
         List<String> listElements = new ArrayList<String>();
+        //Konvertiere Elemente in Strings (getrennt durch !), da ListAdapter nur List<String> entgegennimmt
         listElements.add("Distanz (km)!Dauer\n(hh:mm:ss)!Speed\n(km/h)");
         for (DistanceSegment ds : mDistanceSegmentList)
         {
@@ -72,6 +79,7 @@ public class EvaluationStagesFragment extends SherlockFragment{
         ((TextView) view.findViewById(R.id.stages_fast)).setText(fastest);
         ((TextView) view.findViewById(R.id.stages_slow)).setText(slowest);
         
+        //Setze Listadapter
         ListView listView = (ListView) view.findViewById(R.id.stages_list);
         listView.setAdapter(new CustomListAdapter(getActivity(), R.layout.evaluation_stages_fragment, listElements));
         
@@ -96,6 +104,7 @@ public class EvaluationStagesFragment extends SherlockFragment{
     		LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     		View view = inflater.inflate(R.layout.stages_list_row, null);
     		
+    		//Trenne oben zusammengefügte Elemente
     		String[] element = objects.get(position).split("!");
     		
     		((TextView) view.findViewById(R.id.stages_distance)).setText(element[0]);
