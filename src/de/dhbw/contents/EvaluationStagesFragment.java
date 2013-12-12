@@ -23,6 +23,10 @@ public class EvaluationStagesFragment extends SherlockFragment{
     
 	private List<DistanceSegment> mDistanceSegmentList;
 	
+	public EvaluationStagesFragment() {
+		
+	}
+	
 	public EvaluationStagesFragment(List<DistanceSegment> distanceSegmentList) {
 		
 		mDistanceSegmentList = distanceSegmentList;

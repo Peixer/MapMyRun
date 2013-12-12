@@ -190,6 +190,7 @@ public class GPSTracker extends Service implements LocationListener {
 		mLiveTrackingFragment.setList();
 	}
 	
+	//Konvertiere Sekunden (z.B. 132 sec) in Dauer (String, z.B. 00:02:12)
 	public String secondsToString(int seconds) {	
 		String duration = "";
 		DecimalFormat df = new DecimalFormat("00");
@@ -202,6 +203,7 @@ public class GPSTracker extends Service implements LocationListener {
 		return duration;
 	}
 	
+	//Konvertiere Dauer (String, z.B. 00:02:12) in Sekunden (z.B. 132 sec)
 	public int durationToSeconds(String duration) {		
 		int seconds = 0;
 		String[] durationArray = duration.split(":");

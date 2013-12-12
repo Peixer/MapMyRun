@@ -1,22 +1,24 @@
-package de.dhbw.contents;
+package de.dhbw.tracking;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 import java.util.TimerTask;
-import java.util.concurrent.TimeUnit;
 
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import de.dhbw.container.R;
+import de.dhbw.contents.CustomListOnClickListener;
+import de.dhbw.contents.LiveTrackingFragment;
 import de.dhbw.database.AnalysisCategory;
 import de.dhbw.database.DataBaseHandler;
 
 public class CustomTimerTask extends TimerTask {
 
+	// Timer zur Zeitmessung
+	
 	private LiveTrackingFragment mLiveTrackingFragment;
 	private long start;
 	private DataBaseHandler db;
@@ -29,6 +31,8 @@ public class CustomTimerTask extends TimerTask {
 	
 	@Override
 	public void run() {
+		
+		//Gehe angezeigte Kacheln durch
 		
 		for (int i=0; i<7; i++)
 		{
@@ -46,7 +50,7 @@ public class CustomTimerTask extends TimerTask {
 			
 			String text = "";
 			
-			if (ac.getId() == 1)
+			if (ac.getId() == 1)	//Dauer
 			{
 				long diff = System.currentTimeMillis() - start;
 				DecimalFormat df = new DecimalFormat("00");
@@ -55,7 +59,7 @@ public class CustomTimerTask extends TimerTask {
             	int hours   = (int) ((diff / (1000*60*60)) % 24);
             	text = df.format(hours) + ":" + df.format(minutes) + ":" + df.format(seconds);
 			}
-			else
+			else	//Uhr
 			{
 				Calendar c = Calendar.getInstance();
 				SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());

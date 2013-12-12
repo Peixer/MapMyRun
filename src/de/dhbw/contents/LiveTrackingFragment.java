@@ -7,14 +7,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
-import java.util.TimerTask;
 
 import org.osmdroid.DefaultResourceProxyImpl;
 import org.osmdroid.ResourceProxy;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -23,9 +21,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -36,11 +31,11 @@ import com.actionbarsherlock.app.SherlockFragment;
 import de.dhbw.container.MenuContainerActivity;
 import de.dhbw.container.R;
 import de.dhbw.database.AnalysisCategory;
-import de.dhbw.database.CategoryPosition;
 import de.dhbw.database.Coordinates;
 import de.dhbw.database.DataBaseHandler;
 import de.dhbw.database.Workout;
 import de.dhbw.helpers.TrackService;
+import de.dhbw.tracking.CustomTimerTask;
 import de.dhbw.tracking.DistanceSegment;
 import de.dhbw.tracking.GPSTracker;
 import de.dhbw.tracking.MyItemizedOverlay;
@@ -54,7 +49,7 @@ public class LiveTrackingFragment extends SherlockFragment {
     public LinearLayout mWorkoutLayout;
     public ListView mListView;
     
-    public Timer timer = new Timer();
+    public Timer timer = new Timer();	//Timer für Dauer
     public List<DistanceSegment> mSegmentList = new ArrayList<DistanceSegment>();
     
     //leerer Konstruktor
