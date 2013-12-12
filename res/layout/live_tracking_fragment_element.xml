@@ -22,8 +22,7 @@
 	        android:layout_width="match_parent"
 		    android:layout_height="match_parent"
 		    android:layout_weight="1"
-		    android:textSize="30sp"
-		    android:gravity="left" />
+		    android:gravity="center" />
     </LinearLayout>    
     <TextView 
         android:id="@+id/live_tracking_element_name"

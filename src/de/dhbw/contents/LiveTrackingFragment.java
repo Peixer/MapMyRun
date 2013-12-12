@@ -6,6 +6,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.osmdroid.DefaultResourceProxyImpl;
 import org.osmdroid.ResourceProxy;
@@ -45,13 +47,14 @@ import de.dhbw.tracking.MyItemizedOverlay;
 
 public class LiveTrackingFragment extends SherlockFragment {
 
-	private Context mContext;
-	private GPSTracker gps;
-    private DataBaseHandler db;
-    private View mView;
-    private LinearLayout mWorkoutLayout;
-    private ListView mListView;
+	public Context mContext;
+	public GPSTracker gps;
+	private DataBaseHandler db;
+    public View mView;
+    public LinearLayout mWorkoutLayout;
+    public ListView mListView;
     
+    public Timer timer = new Timer();
     public List<DistanceSegment> mSegmentList = new ArrayList<DistanceSegment>();
     
     //leerer Konstruktor
@@ -117,8 +120,8 @@ public class LiveTrackingFragment extends SherlockFragment {
 	public void formatCategoryHeadline(AnalysisCategory ac, TextView valueView ){
 		String format = ac.getFormat();
 		
-		if (format.equals("hh:mm:ss"))
-			valueView.setText("00:00:00");
+		if (format.equals("hh:mm:ss") && valueView.getText().equals(""))
+            valueView.setText("00:00:00");
 		else if (format.equals("km"))
 			valueView.setText("0");
 		else if (format.equals("m"))
@@ -129,8 +132,9 @@ public class LiveTrackingFragment extends SherlockFragment {
 			valueView.setText("0,0");	
 		else if (format.equals("hh:mm"))
 		{
-			if (!ac.getName().equals("Zeit"))
-				valueView.setText("00:00");
+			Calendar c = Calendar.getInstance();
+			SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
+			valueView.setText(sdf.format(c.getTime()));
 		}
 
 	}
@@ -139,8 +143,7 @@ public class LiveTrackingFragment extends SherlockFragment {
 		//Tracking Kategorien Werte zuordnen
 		switch(ac.getId())
 		{
-			case 1:		//Dauer
-				valueView.setText(TrackService.calcDuration(listContents));
+			case 1:		//Dauer wird per Timer gesetzt
 				break;
 			case 2:		//Distanz
 				valueView.setText(String.valueOf(TrackService.calcDistance(listContents)));
@@ -157,10 +160,7 @@ public class LiveTrackingFragment extends SherlockFragment {
 			case 6:		//Durchschnittsgeschwindigkeit
 				valueView.setText(String.valueOf(TrackService.calcPace(listContents)));
 				break;
-			case 7:		//Zeit
-				Calendar c = Calendar.getInstance();
-				SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
-				valueView.setText(sdf.format(c.getTime()));
+			case 7:		//Zeit wird per Timer gesetzt				
 				break;
 			default:	//Wird nie erreicht
 				break;
@@ -173,15 +173,22 @@ public class LiveTrackingFragment extends SherlockFragment {
 		
 		for (int i=0; i<7; i++)
 		{
+			db = new DataBaseHandler(mContext);
 			AnalysisCategory ac = db.getAnalysisCategoryById(db.getCategoryIdByPosition(i+1));
 			if (ac == null)
 				continue;
 			
 			int viewId = getResources().getIdentifier("workout_element_"+i, "id", mContext.getPackageName());
 			View listElement = mView.findViewById(viewId);
-			listElement.setOnClickListener(new CustomListOnClickListener());
+			listElement.setOnClickListener(new CustomListOnClickListener(this));
 			TextView valueView = ((TextView) listElement.findViewById(R.id.live_tracking_element_value_text));
-			db = new DataBaseHandler(mContext);
+			
+			//Prüfen, ob Dauer und nicht oberes Feld (->Schriftgröße)
+			if (ac.getId() == 1 && i != 0)
+				valueView.setTextSize(20);
+			else
+				valueView.setTextSize(30);
+			
 			List <Coordinates> listContents = new ArrayList<Coordinates>();
 			listContents = db.getAllCoordinatePairs();
 			formatCategoryHeadline(ac, valueView);
@@ -192,84 +199,6 @@ public class LiveTrackingFragment extends SherlockFragment {
 			//Zu Kategorien Überschriften laden		
 			((TextView) listElement.findViewById(R.id.live_tracking_element_name)).setText(ac.getName() + " (" + ac.getFormat() + ")");
 		
-		}
-	}
-	
-	
-	//OnClickListener; Falls auf ein Element geklickt wurde, rufe Liste zur Auswahl einer Kategorie (z.B. Dauer, Kalorien etc) aus
-	private class CustomListOnClickListener implements View.OnClickListener
-	{
-		private List<AnalysisCategory> mCategoryList;
-		private ListView mListView = (ListView) ((Activity) mContext).findViewById(R.id.category_list);;
-		
-		@Override
-		public void onClick(View v) {
-			for (int i=0; i<7; i++)
-			{
-				if (v.getId() == getResources().getIdentifier("workout_element_"+i, "id", mContext.getPackageName()))
-				{
-					List<String> listElements = new ArrayList<String>();
-					mCategoryList = db.getAllAnalysisCategories();
-					for (AnalysisCategory category : mCategoryList)
-						listElements.add(String.valueOf(category.getId()));
-						
-					mView.findViewById(R.id.workout_layout).setVisibility(View.GONE);
-					
-					mListView.setAdapter(new CustomListAdapter(mContext, R.layout.list_row, listElements));
-					mListView.setOnItemClickListener(new CustomCategoryListOnItemClickListener(i));
-					
-					mListView.setVisibility(View.VISIBLE);
-				}
-			}			
-		}	
-		
-		//Setze Liste der verfügbaren Kategorien
-		private class CustomListAdapter extends ArrayAdapter<String> {
-
-			private List<String> objects;
-			
-			public CustomListAdapter(Context context, int resource,
-					List<String> objects) {
-				super(context, resource, objects);
-				this.objects = objects;
-			}
-			
-			@Override
-			public View getView(int position, View convertView, ViewGroup parent) {
-				
-				LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-				View view = inflater.inflate(R.layout.list_row, null);
-				
-				AnalysisCategory category = db.getAnalysisCategoryById(Integer.parseInt(objects.get(position)));
-				
-				((TextView) view.findViewById(R.id.textView)).setText(category.getName() + " (" + category.getFormat() + ")");
-				int imageId = getResources().getIdentifier(category.getImageName(), "drawable", mContext.getPackageName());
-				((ImageView) view.findViewById(R.id.icon)).setImageResource(imageId);
-				
-				return view;
-				//return super.getView(position, convertView, parent);
-			}
-			
-			
-		}
-		
-		//OnClickListener; Schreibe ausgewählte Kategorie in die Datenbank, lade neues Layout und zeige Live-Tracking an
-		private class CustomCategoryListOnItemClickListener implements OnItemClickListener
-		{
-			private int categoryPosition;
-			
-			public CustomCategoryListOnItemClickListener(int categoryPosition) {
-				this.categoryPosition = categoryPosition;
-			}
-			
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int position,
-					long id) {
-				db.updateCategoryPosition(new CategoryPosition(categoryPosition+1, mCategoryList.get(position).getId()));				
-				mListView.setVisibility(View.GONE);
-				setList();
-				mView.findViewById(R.id.workout_layout).setVisibility(View.VISIBLE);
-			}	
 		}
 	}
 
@@ -287,6 +216,8 @@ public class LiveTrackingFragment extends SherlockFragment {
 			//Tracking Ã¼ber GPS oder Netzwerk starten
 			gps = new GPSTracker(mContext, this);
 			view.setTag(1);
+			
+			timer.schedule(new CustomTimerTask(this),0,1000);//Update text every second
 			
 			//Ãœberschrift von Start auf Stop aendern
 			((TextView) view).setText(getString(R.string.button_workout_stop));

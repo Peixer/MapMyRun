@@ -298,6 +298,8 @@ public class GPSTracker extends Service implements LocationListener {
             locationManager.removeUpdates(GPSTracker.this);
         }      
         distanceBorder = DEFAULT_DISTANCE_BORDER;
+        mLiveTrackingFragment.timer.cancel();
+        mLiveTrackingFragment.timer.purge();
     }
     
     
