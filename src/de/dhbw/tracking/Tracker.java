@@ -163,11 +163,15 @@ public class Tracker extends Service implements LocationListener {
 			Coordinates c1 = db.getCoordinatePair(totalNumberOfCoordinates);
 			Coordinates c2 = new Coordinates(longitude, latitude, altitude, timestamp);
 			
-			if(TrackService.calcTwoPointsDistance(c1, c2) > 0.01){
-				//neue Koordinaten speichern
-				db.addCoordinates(new Coordinates(longitude, latitude, altitude, timestamp));
+			if (totalNumberOfCoordinates > 1){
+				if(TrackService.calcTwoPointsDistance(c1, c2) > 0.01){
+					//neue Koordinaten speichern
+					db.addCoordinates(new Coordinates(longitude, latitude, altitude, timestamp));
+				}else {
+					db.addCoordinates(new Coordinates(0.0, 0.0, 0.0, timestamp));
+				}
 			}else {
-				db.addCoordinates(new Coordinates(0.0, 0.0, 0.0, timestamp));
+				db.addCoordinates(new Coordinates(longitude, latitude, altitude, timestamp));
 			}
 			
 			
