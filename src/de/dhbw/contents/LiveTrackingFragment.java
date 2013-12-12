@@ -40,13 +40,13 @@ import de.dhbw.database.DataBaseHandler;
 import de.dhbw.database.Workout;
 import de.dhbw.helpers.TrackService;
 import de.dhbw.tracking.DistanceSegment;
-import de.dhbw.tracking.GPSTracker;
-import de.dhbw.tracking.MyItemizedOverlay;
+import de.dhbw.tracking.Tracker;
+import de.dhbw.tracking.Overlay;
 
 public class LiveTrackingFragment extends SherlockFragment {
 
 	private Context mContext;
-	private GPSTracker gps;
+	private Tracker gps;
     private DataBaseHandler db;
     private View mView;
     private LinearLayout mWorkoutLayout;
@@ -184,7 +184,9 @@ public class LiveTrackingFragment extends SherlockFragment {
 			db = new DataBaseHandler(mContext);
 			List <Coordinates> listContents = new ArrayList<Coordinates>();
 			listContents = db.getAllCoordinatePairs();
+			//Kategorieuberschriften formatieren
 			formatCategoryHeadline(ac, valueView);
+			//Kategorien mit aktualisieren Daten befuellen
 			populateCategories(ac, valueView, listContents);
 			//Zu Karegorien icons laden
 			int imageId = getResources().getIdentifier(ac.getImageName(), "drawable", mContext.getPackageName());
@@ -284,7 +286,7 @@ public class LiveTrackingFragment extends SherlockFragment {
 			db.clearCoordinates();
 			
 			//Tracking über GPS oder Netzwerk starten
-			gps = new GPSTracker(mContext, this);
+			gps = new Tracker(mContext, this);
 			view.setTag(1);
 			
 			//Überschrift von Start auf Stop aendern
@@ -342,7 +344,7 @@ public class LiveTrackingFragment extends SherlockFragment {
 		
 		//Markierungselement auf Karte positionieren
 		ResourceProxy resourceProxy = new DefaultResourceProxyImpl(mContext);
-		MyItemizedOverlay myItemizedOverlay = new MyItemizedOverlay(marker,
+		Overlay myItemizedOverlay = new Overlay(marker,
 				resourceProxy);
 		mapView.getOverlays().add(myItemizedOverlay);
 		List<Coordinates> listContents = new ArrayList<Coordinates>();

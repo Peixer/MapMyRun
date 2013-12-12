@@ -12,8 +12,24 @@ public class TrackService {
 
 	}
 
+	//Distanz zwischen zwei Punkten berechnen
+	public static double calcTwoPointsDistance(Coordinates c1, Coordinates c2) {
+		int R = 6371;
+		double distance = 0;
+		double dLat = Math.toRadians(c2.get_latitude() - c1.get_latitude());
+		double dLon = Math.toRadians(c2.get_longitude() - c1.get_longitude());
+		double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+				+ Math.cos(Math.toRadians(c1.get_latitude()))
+				* Math.cos(Math.toRadians(c2.get_latitude()))
+				* Math.sin(dLon / 2) * Math.sin(dLon / 2);
+		double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+		double d = R * c;
+		distance = distance + d;
+
+		return roundNumber(distance, 3);
+	}
 	
-	//Distanz berechnen
+	//Distanz aus der gesamten Listen berechnen
 	public static double calcDistance(List<Coordinates> listContents) {
 		int R = 6371;
 		double distance = 0;
