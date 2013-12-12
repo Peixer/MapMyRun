@@ -70,7 +70,7 @@ public class Tracker extends Service implements LocationListener {
 	private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 0; // 0 Meter
 
 	//Die minimale vergangene Zeit um Trackingdaten zu aktualisieren
-	private static final long MIN_TIME_BW_UPDATES = 1000*10; //10 Sekunde
+	private static final long MIN_TIME_BW_UPDATES = 1000*25; //25 Sekunden
 
 
 	// Location Manager
@@ -157,21 +157,26 @@ public class Tracker extends Service implements LocationListener {
 			longitude = location.getLongitude();
 			altitude = getElevationFromGoogleMaps(longitude, latitude);
 			timestamp = location.getTime();
+			Coordinates c2 = new Coordinates(longitude, latitude, altitude, timestamp);
 			
 			DataBaseHandler db = new DataBaseHandler(mContext);
 			int totalNumberOfCoordinates = db.getCoordinatePairsCount();
-			Coordinates c1 = db.getCoordinatePair(totalNumberOfCoordinates);
-			Coordinates c2 = new Coordinates(longitude, latitude, altitude, timestamp);
 			
-			if (totalNumberOfCoordinates > 1){
+			if (totalNumberOfCoordinates >= 1){
+				//Get last coordinate
+				Coordinates c1 = db.getCoordinatePair(totalNumberOfCoordinates);
+				//Create new Coordinate Pair from current sample
+				
+				//If distance difference between last and current Coordinate Pairs is at least 10 m
 				if(TrackService.calcTwoPointsDistance(c1, c2) > 0.01){
 					//neue Koordinaten speichern
-					db.addCoordinates(new Coordinates(longitude, latitude, altitude, timestamp));
+					db.addCoordinates(c2);
 				}else {
+					//Nur Zeitstempel speichern
 					db.addCoordinates(new Coordinates(0.0, 0.0, 0.0, timestamp));
 				}
 			}else {
-				db.addCoordinates(new Coordinates(longitude, latitude, altitude, timestamp));
+				db.addCoordinates(c2);
 			}
 			
 			
