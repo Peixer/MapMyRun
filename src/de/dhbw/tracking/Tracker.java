@@ -151,52 +151,44 @@ public class Tracker extends Service implements LocationListener {
     }
 
 	@Override
-	public void onLocationChanged(Location location) {
-		if (location != null) {
-			latitude = location.getLatitude();
-			longitude = location.getLongitude();
-			altitude = getElevationFromGoogleMaps(longitude, latitude);
-			timestamp = location.getTime();
-			
-			DataBaseHandler db = new DataBaseHandler(mContext);
-			int totalNumberOfCoordinates = db.getCoordinatePairsCount();
-			Coordinates c1 = db.getCoordinatePair(totalNumberOfCoordinates);
-			Coordinates c2 = new Coordinates(longitude, latitude, altitude, timestamp);
-			
-			if(TrackService.calcTwoPointsDistance(c1, c2) > 0.01){
-				//neue Koordinaten speichern
-				db.addCoordinates(new Coordinates(longitude, latitude, altitude, timestamp));
-			}else {
-				db.addCoordinates(new Coordinates(0.0, 0.0, 0.0, timestamp));
-			}
-			
-			
-			
-			List<Coordinates> coordinatePairs = db.getAllCoordinatePairs();
-			
-			double distance = TrackService.calcDistance(coordinatePairs);
-			if (distance >= distanceBorder)
-			{
-				int oldDuration = 0;
-				double oldDistance = 0;
-				if (mLiveTrackingFragment.mSegmentList.size() >= 1)
-				{
-					oldDuration = durationToSeconds(mLiveTrackingFragment.mSegmentList.get(mLiveTrackingFragment.mSegmentList.size()-1).getDuration());
-					oldDistance = Double.parseDouble(mLiveTrackingFragment.mSegmentList.get(mLiveTrackingFragment.mSegmentList.size()-1).getDistance());
-				}
-				int newDuration = durationToSeconds(TrackService.calcDuration(coordinatePairs));
-				double newDistance = distance-oldDistance;
-				String distanceString = String.valueOf(distance);
-				String duration = secondsToString(newDuration - oldDuration);
-				double speedValue = (newDistance/newDuration)*3600;
-				String speed = String.valueOf(speedValue);
-				mLiveTrackingFragment.mSegmentList.add(new DistanceSegment(distanceString, duration, speed));
-				distanceBorder++;
-			}
-		}		
-		// Live Tracking Liste aktualisieren
-		mLiveTrackingFragment.setList();
-	}
+    public void onLocationChanged(Location location) {
+            if (location != null) {
+                    latitude = location.getLatitude();
+                    longitude = location.getLongitude();
+                    altitude = getElevationFromGoogleMaps(longitude, latitude);
+                    timestamp = location.getTime();
+                    DataBaseHandler db = new DataBaseHandler(mContext);
+                    
+                    //neue Koordinaten speichern
+                    db.addCoordinates(new Coordinates(longitude, latitude, altitude, timestamp));
+                    
+                    List<Coordinates> coordinatePairs = db.getAllCoordinatePairs();
+                    
+                    //Füge bei ganzen Kilometern (1km, 2km, 3km etc.) ein Segment in die mSegmentList hinzu
+                    double distance = TrackService.calcDistance(coordinatePairs);
+                    if (distance >= distanceBorder)
+                    {
+                            int oldDuration = 0;
+                            double oldDistance = 0;
+                            if (mLiveTrackingFragment.mSegmentList.size() >= 1)
+                            {
+                                    oldDuration = durationToSeconds(mLiveTrackingFragment.mSegmentList.get(mLiveTrackingFragment.mSegmentList.size()-1).getDuration());
+                                    oldDistance = Double.parseDouble(mLiveTrackingFragment.mSegmentList.get(mLiveTrackingFragment.mSegmentList.size()-1).getDistance());
+                            }
+                            int newDuration = durationToSeconds(TrackService.calcDuration(coordinatePairs));
+                            double newDistance = distance-oldDistance;
+                            String distanceString = String.valueOf(distance);
+                            String duration = secondsToString(newDuration - oldDuration);
+                            DecimalFormat f = new DecimalFormat("#0.00");
+                            double speedValue = (3600*newDistance)/(newDuration - oldDuration);
+                            String speed = String.valueOf(f.format(speedValue));
+                            mLiveTrackingFragment.mSegmentList.add(new DistanceSegment(distanceString, duration, speed));
+                            distanceBorder++;
+                    }
+            }                
+            // Live Tracking Liste aktualisieren
+            mLiveTrackingFragment.setList();
+    }
 	
 	public String secondsToString(int seconds) {	
 		String duration = "";
