@@ -5,7 +5,7 @@ public class AnalysisCategory {
 	//Constructors
 	
 	public AnalysisCategory() {
-		// TODO Auto-generated constructor stub
+		
 	}
 	
 	public AnalysisCategory(int id, String name, String imageName, String format) {

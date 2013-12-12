@@ -164,7 +164,7 @@ public class GPSTracker extends Service implements LocationListener {
 			
 			List<Coordinates> coordinatePairs = db.getAllCoordinatePairs();
 			
-			//TODO comment
+			//Füge bei ganzen Kilometern (1km, 2km, 3km etc.) ein Segment in die mSegmentList hinzu
 			double distance = TrackService.calcDistance(coordinatePairs);
 			if (distance >= distanceBorder)
 			{
