@@ -67,10 +67,10 @@ public class Tracker extends Service implements LocationListener {
 
 
 	// Die minimale Entfernung um Trackingdaten zu aktualisiern
-	private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 0; // 0 Meter
+	private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10; // 0 Meter
 
 	//Die minimale vergangene Zeit um Trackingdaten zu aktualisieren
-	private static final long MIN_TIME_BW_UPDATES = 1000*10; //10 Sekunde
+	private static final long MIN_TIME_BW_UPDATES = 1000*25; //10 Sekunde
 
 
 	// Location Manager
